@@ -7,11 +7,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.48.0",
-    "prettier": "^3.0.3",
+    "@types/node": "^20.9.1",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
     "tsconfig": "workspace:*",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@8.9.0",
-  "name": "flipbook"
+  "name": "flipbook",
+  "license": "MIT",
+  "author": {
+    "name": "Patrick Cason",
+    "email": "me@patrickcason.com",
+    "url": "https://patrickcason.com"
+  }
 }

@@ -1,7 +1,8 @@
 'use client';
 
+import { reader } from '@flipbook/reader';
 import { writer, compose, type WriterResult } from '@flipbook/writer';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Roboto_Mono as RobotoMono } from 'next/font/google';
 import styles from './page.module.css';
@@ -29,10 +30,14 @@ export default function Page(): JSX.Element {
   const [qr, setQR] = useState<string>('');
 
   // Store the processing state
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isProcessingWrite, setIsProcessingWrite] = useState<boolean>(false);
+  const [isProcessingRead, setIsProcessingRead] = useState<boolean>(false);
 
   // Store the size of the QR code
   const [size, setSize] = useState<number>(512);
+
+  // Store the read output
+  const [output, setOutput] = useState<string>('');
 
   // Store the canvas element
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,7 +49,7 @@ export default function Page(): JSX.Element {
       if (canvasRef.current === null) return;
 
       // Set the processing state to true
-      setIsProcessing(true);
+      setIsProcessingWrite(true);
 
       // Show the canvas
       setQR('');
@@ -72,11 +77,26 @@ export default function Page(): JSX.Element {
       canvasRef.current.height = 0;
 
       // Set the processing state to false
-      setIsProcessing(false);
+      setIsProcessingWrite(false);
     } catch (e) {
       console.error(e);
     }
   }, [size, text]);
+
+  // A function to read a QR on the screen
+  const readQR = useCallback(async (): Promise<void> => {
+    // Set the processing state to true
+    setIsProcessingRead(true);
+
+    // Read the QR code
+    const readResult = await reader();
+
+    // Set the output
+    setOutput(readResult);
+
+    // Set the processing state to false
+    setIsProcessingRead(false);
+  }, []);
 
   return (
     <main className={styles.main}>
@@ -97,15 +117,25 @@ export default function Page(): JSX.Element {
           value={text}
         />
       </div>
-      {qr !== '' && (
-        <Image alt="Flipbook QR" height={size} src={qr} width={size} />
+      {output !== '' && !isProcessingRead && (
+        <pre>
+          <code>{output}</code>
+        </pre>
       )}
-      {!isProcessing && (
+      {qr !== '' && !isProcessingWrite && (
+        <>
+          <Image alt="Flipbook QR" height={size} src={qr} width={size} />
+          <button onClick={() => void readQR()} type="button">
+            Read QR
+          </button>
+        </>
+      )}
+      {!isProcessingWrite && (
         <button onClick={() => void createQR()} type="button">
           Create QR
         </button>
       )}
-      {Boolean(isProcessing) && (
+      {Boolean(isProcessingWrite) && (
         <>
           {qrImages.map((item) => (
             <Image

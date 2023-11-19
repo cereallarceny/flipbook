@@ -20,6 +20,7 @@ importers:
 
   apps/web:
     specifiers:
+      '@flipbook/reader': workspace:*
       '@flipbook/writer': workspace:*
       '@next/eslint-plugin-next': ^14.0.3
       '@types/react': ^18.2.37
@@ -30,6 +31,7 @@ importers:
       react-dom: ^18.2.0
       tsconfig: workspace:*
     dependencies:
+      '@flipbook/reader': link:../../packages/reader
       '@flipbook/writer': link:../../packages/writer
       next: 14.0.3_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
@@ -50,6 +52,21 @@ importers:
       '@vercel/style-guide': 5.1.0_6acznz3ehjwuvmze655r5sqk3e
       eslint-config-turbo: 1.10.16_eslint@8.54.0
       typescript: 5.2.2
+
+  packages/reader:
+    specifiers:
+      '@flipbook/writer': workspace:*
+      '@types/w3c-image-capture': ^1.0.10
+      eslint-config-custom: workspace:*
+      jsqr: ^1.4.0
+      tsconfig: workspace:*
+    dependencies:
+      '@flipbook/writer': link:../writer
+      jsqr: 1.4.0
+    devDependencies:
+      '@types/w3c-image-capture': 1.0.10
+      eslint-config-custom: link:../eslint-config-custom
+      tsconfig: link:../tsconfig
 
   packages/tsconfig:
     specifiers: {}
@@ -596,6 +613,16 @@ packages:
 
   /@types/semver/7.5.5:
     resolution: {integrity: sha512-+d+WYC1BxJ6yVOgUgzK8gWvp5qF8ssV5r4nsDcZWKRWcDQLQ619tvWAxJQYGgBrO1MnLJC7a5GtiYsAoQ47dJg==}
+    dev: true
+
+  /@types/w3c-image-capture/1.0.10:
+    resolution: {integrity: sha512-7DR36sb0os7qVy2HI9wW6BV9oFjZVA8xnKM0cZGdL5XKa6ZgurA+U8T8xUNccERiWkvk641bAItMWCU++1B7jg==}
+    dependencies:
+      '@types/webrtc': 0.0.40
+    dev: true
+
+  /@types/webrtc/0.0.40:
+    resolution: {integrity: sha512-1Wk5NiYM81TOeK77AYKouD/GrcTceSRfKHOn/jofhwAeg5N16z4cL+D8WOquYaWxv5XydJ9fPnHiI+CeIaSz3A==}
     dev: true
 
   /@typescript-eslint/eslint-plugin/6.11.0_suaazqqmsvjwi354emhlwyvpyq:
@@ -2529,6 +2556,10 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /jsqr/1.4.0:
+    resolution: {integrity: sha512-dxLob7q65Xg2DvstYkRpkYtmKm2sPJ9oFhrhmudT1dZvNFFTlroai3AWSpLey/w5vMcLBXRgOJsbXpdN9HzU/A==}
+    dev: false
 
   /jsx-ast-utils/3.3.5:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}

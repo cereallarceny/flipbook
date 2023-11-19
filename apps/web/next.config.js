@@ -1,4 +1,4 @@
 module.exports = {
   reactStrictMode: true,
-  transpilePackages: ['@flipbook/writer'],
+  transpilePackages: ['@flipbook/reader', '@flipbook/writer'],
 };

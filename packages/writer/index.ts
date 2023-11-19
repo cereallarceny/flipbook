@@ -1,31 +1,50 @@
 import { type QRCodeToDataURLOptions, toDataURL, create } from 'qrcode';
+import {
+  createHeadTag,
+  createIndexTag,
+  getHeadLength,
+  getIndex,
+  isHead,
+} from './helpers';
 
+// The result of writing an image to a QR code
 export interface WriterResult {
-  index: number;
   code: string;
   image: string;
+  index: number;
 }
 
+// Default options for QR codes
 const DEFAULT_QR_OPTIONS: QRCodeToDataURLOptions = {
   errorCorrectionLevel: 'M',
   type: 'image/png',
 };
 
+// The default length of each QR code
 const DEFAULT_SPLIT_LENGTH = 100;
 
 // Split an input string into multiple string of a certain length
 const splitCode = (code: string): string[] => {
+  // Store all the codes and the length of the input string
   const codes: string[] = [];
   const length = code.length;
 
+  // Loop through the input string
   let i = 0;
-
   while (i < length) {
+    // Get a slice and push it into the codes array and move onto the next
     codes.push(code.slice(i, i + DEFAULT_SPLIT_LENGTH));
     i += DEFAULT_SPLIT_LENGTH;
   }
 
-  return codes;
+  // Add the index to each of the codes
+  const indexedCodes = codes.map((v, idx) => `${createIndexTag(idx)} ${v}`);
+
+  // Add the head tag to the first code with the number of codes
+  indexedCodes[0] = `${createHeadTag(indexedCodes.length)} ${indexedCodes[0]}`;
+
+  // Return the indexedCodes array
+  return indexedCodes;
 };
 
 // Receive a long string and split it into multiple QR codes
@@ -114,3 +133,6 @@ export const compose = async (
     }
   });
 };
+
+// Re-export the headers
+export { createHeadTag, createIndexTag, getHeadLength, getIndex, isHead };

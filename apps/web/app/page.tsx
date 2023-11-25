@@ -5,7 +5,7 @@ import { writer, compose, type WriterResult } from '@flipbook/writer';
 import { useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Roboto_Mono as RobotoMono } from 'next/font/google';
-import styles from './page.module.css';
+import Hero from './components/hero';
 
 const robotoMono = RobotoMono({
   subsets: ['latin'],
@@ -99,24 +99,59 @@ export default function Page(): JSX.Element {
   }, []);
 
   return (
-    <main className={styles.main}>
-      <h1>Flipbook</h1>
-      <input
-        onChange={(e) => {
-          setSize(Number(e.target.value));
-        }}
-        type="number"
-        value={size}
-      />
-      <div className={robotoMono.className} style={{ width: '100%' }}>
-        <textarea
-          className={styles.textarea}
-          onChange={(e) => {
-            setText(e.target.value);
-          }}
-          value={text}
-        />
-      </div>
+    <div>
+      <Hero
+        buttons={[
+          { children: 'Documentation', href: '#' },
+          {
+            children: (
+              <>
+                View on GitHub <span aria-hidden="true">→</span>
+              </>
+            ),
+            href: 'https://github.com/cereallarceny/flipbook',
+          },
+        ]}
+        description="Flipbook is a new superset of QR codes that allows for infinite size. By chunking any payload into a series of QR codes, they can be read and stitched together reliably."
+        fileName="main.ts"
+        title="QR Codes of infinite size"
+      >
+        <div className="relative">
+          <div className={robotoMono.className} style={{ width: '100%' }}>
+            <textarea
+              className="appearance-none bg-transparent block w-full text-white placeholder-white border-none focus:outline-none resize-none h-72"
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+              value={text}
+            />
+          </div>
+          {!isProcessingWrite && (
+            <div className="absolute right-0 -bottom-8 flex align-middle">
+              <div className="relative mr-4 rounded-md overflow-hidden">
+                <input
+                  className=" text-black px-4 py-2 text-md w-28 pr-10 focus:outline-none"
+                  onChange={(e) => {
+                    setSize(Number(e.target.value));
+                  }}
+                  type="number"
+                  value={size}
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <span className="text-gray-500 sm:text-sm">px</span>
+                </div>
+              </div>
+              <button
+                className="rounded-md bg-indigo-500 px-4 py-2 text-md font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline"
+                onClick={() => void createQR()}
+                type="button"
+              >
+                Generate Flipbook
+              </button>
+            </div>
+          )}
+        </div>
+      </Hero>
       {output !== '' && !isProcessingRead && (
         <pre>
           <code>{output}</code>
@@ -129,11 +164,6 @@ export default function Page(): JSX.Element {
             Read QR
           </button>
         </>
-      )}
-      {!isProcessingWrite && (
-        <button onClick={() => void createQR()} type="button">
-          Create QR
-        </button>
       )}
       {Boolean(isProcessingWrite) && (
         <>
@@ -149,6 +179,6 @@ export default function Page(): JSX.Element {
         </>
       )}
       <canvas height={0} ref={canvasRef} width={0} />
-    </main>
+    </div>
   );
 }

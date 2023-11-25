@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.9.1",
+    "@types/w3c-image-capture": "^1.0.10",
     "eslint": "^8.54.0",
     "prettier": "^3.1.0",
     "tsconfig": "workspace:*",

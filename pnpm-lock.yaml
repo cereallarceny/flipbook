@@ -5,6 +5,7 @@ importers:
   .:
     specifiers:
       '@types/node': ^20.9.1
+      '@types/w3c-image-capture': ^1.0.10
       eslint: ^8.54.0
       prettier: ^3.1.0
       tsconfig: workspace:*
@@ -12,6 +13,7 @@ importers:
       typescript: ^5.2.2
     devDependencies:
       '@types/node': 20.9.1
+      '@types/w3c-image-capture': 1.0.10
       eslint: 8.54.0
       prettier: 3.1.0
       tsconfig: link:packages/tsconfig
@@ -66,7 +68,6 @@ importers:
   packages/reader:
     specifiers:
       '@flipbook/writer': workspace:*
-      '@types/w3c-image-capture': ^1.0.10
       eslint-config-custom: workspace:*
       jsqr: ^1.4.0
       tsconfig: workspace:*
@@ -74,7 +75,6 @@ importers:
       '@flipbook/writer': link:../writer
       jsqr: 1.4.0
     devDependencies:
-      '@types/w3c-image-capture': 1.0.10
       eslint-config-custom: link:../eslint-config-custom
       tsconfig: link:../tsconfig
 

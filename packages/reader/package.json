@@ -12,7 +12,6 @@
     "jsqr": "^1.4.0"
   },
   "devDependencies": {
-    "@types/w3c-image-capture": "^1.0.10",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   }

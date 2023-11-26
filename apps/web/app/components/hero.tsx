@@ -1,13 +1,16 @@
 import Image from 'next/image';
-import logo from '../../public/logo.svg';
+import { type FileType } from '../lib/filetypes';
 
 interface HeroProps {
   buttons: {
-    href: string;
+    id: number;
+    href?: string;
     children: string | JSX.Element;
   }[];
   description: string;
   fileName: string;
+  setFileName: (fileName: string) => void;
+  fileTypes: FileType[];
   title: string;
   children: JSX.Element;
 }
@@ -16,9 +19,15 @@ export default function Hero({
   buttons,
   description,
   fileName,
+  setFileName,
+  fileTypes,
   title,
   children,
 }: HeroProps): JSX.Element {
+  const currentFileType = fileTypes.find(
+    (fileType) => fileType.value === fileName
+  );
+
   return (
     <div className="bg-white">
       <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
@@ -26,34 +35,50 @@ export default function Hero({
           <div className="px-6 lg:px-0 lg:pt-4">
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
-                <Image alt="Your Company" className="h-11" {...logo} />
-                <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                <Image
+                  alt="Flipbook"
+                  height={50}
+                  src="/logotype.svg"
+                  width={200}
+                />
+                <h1 className="mt-10 text-4xl font-bold text-gray-900 sm:text-6xl sm:leading-tight">
                   {title}
                 </h1>
-                <p className="mt-6 text-lg leading-8 text-gray-600">
+                <p className="mt-6 text-xl leading-8 text-gray-600">
                   {description}
                 </p>
                 <div className="mt-10 flex items-center gap-x-6">
-                  {buttons.length > 0 && (
-                    <a
-                      className="rounded-md bg-indigo-500 px-4 py-3 font-semibold text-white hover:bg-indigo-600 focus:outline-none"
-                      href={buttons[0]?.href}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {buttons[0]?.children}
-                    </a>
-                  )}
-                  {buttons.length > 1 && (
-                    <a
-                      className="font-semibold text-gray-700 hover:text-gray-900"
-                      href={buttons[1]?.href}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {buttons[1]?.children}
-                    </a>
-                  )}
+                  {buttons.length > 0 &&
+                    (buttons[0]?.href ? (
+                      <a
+                        className="rounded-md bg-indigo-500 px-4 py-3 font-semibold text-white hover:bg-indigo-600 focus:outline-none"
+                        href={buttons[0]?.href}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        {buttons[0]?.children}
+                      </a>
+                    ) : (
+                      buttons[0]?.children
+                    ))}
+                  {buttons.length > 1 &&
+                    buttons.slice(1).map((button) => {
+                      if (button.href) {
+                        return (
+                          <a
+                            className="font-semibold text-gray-700 hover:text-gray-900"
+                            href={button.href}
+                            key={button.id}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {button.children}
+                          </a>
+                        );
+                      }
+
+                      return <div key={button.id}>{button.children}</div>;
+                    })}
                 </div>
               </div>
             </div>
@@ -75,7 +100,21 @@ export default function Hero({
                       <div className="flex bg-gray-800/40 ring-1 ring-white/5">
                         <div className="-mb-px flex text-sm font-medium leading-6 text-gray-400">
                           <div className="border-b border-r border-b-white/20 border-r-white/10 bg-white/5 px-4 py-2 text-white">
-                            {fileName}
+                            <select
+                              className="bg-transparent block w-full border-0 py-2 pl-2 pr-8 text-white sm:text-sm sm:leading-6 focus:outline-none"
+                              defaultValue={currentFileType?.value}
+                              id="location"
+                              name="location"
+                              onChange={(e) => {
+                                setFileName(e.target.value);
+                              }}
+                            >
+                              {fileTypes.map(({ value, label }) => (
+                                <option key={value} value={value}>
+                                  {label}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                         </div>
                       </div>

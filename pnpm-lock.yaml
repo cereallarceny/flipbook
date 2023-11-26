@@ -26,15 +26,18 @@ importers:
       '@flipbook/writer': workspace:*
       '@headlessui/react': ^1.7.17
       '@heroicons/react': ^2.0.18
+      '@monaco-editor/react': ^4.6.0
       '@next/eslint-plugin-next': ^14.0.3
       '@types/react': ^18.2.37
       '@types/react-dom': ^18.2.15
       autoprefixer: ^10.4.16
       eslint-config-custom: workspace:*
+      monaco-editor: 0.44.0
       next: ^14.0.3
       postcss: ^8.4.31
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-github-btn: ^1.4.0
       tailwindcss: ^3.3.5
       tsconfig: workspace:*
     dependencies:
@@ -42,11 +45,14 @@ importers:
       '@flipbook/writer': link:../../packages/writer
       '@headlessui/react': 1.7.17_biqbaboplfbrettd7655fr4n2y
       '@heroicons/react': 2.0.18_react@18.2.0
+      '@monaco-editor/react': 4.6.0_6halqazrxtaf5dimyhafimruce
       autoprefixer: 10.4.16_postcss@8.4.31
+      monaco-editor: 0.44.0
       next: 14.0.3_biqbaboplfbrettd7655fr4n2y
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-github-btn: 1.4.0_react@18.2.0
       tailwindcss: 3.3.5
     devDependencies:
       '@next/eslint-plugin-next': 14.0.3
@@ -454,6 +460,28 @@ packages:
   /@microsoft/tsdoc/0.14.2:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
+
+  /@monaco-editor/loader/1.4.0_monaco-editor@0.44.0:
+    resolution: {integrity: sha512-00ioBig0x642hytVspPl7DbQyaSWRaolYie/UFNjoTdvoKPzo6xrXLhTk9ixgIKcLH5b5vDOjVNiGyY+uDCUlg==}
+    peerDependencies:
+      monaco-editor: '>= 0.21.0 < 1'
+    dependencies:
+      monaco-editor: 0.44.0
+      state-local: 1.0.7
+    dev: false
+
+  /@monaco-editor/react/4.6.0_6halqazrxtaf5dimyhafimruce:
+    resolution: {integrity: sha512-RFkU9/i7cN2bsq/iTkurMWOEErmYcY6JiQI3Jn+WeR/FGISH8JbHERjpS9oRuSOPvDMJI0Z8nJeKkbOs9sBYQw==}
+    peerDependencies:
+      monaco-editor: '>= 0.25.0 < 1'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@monaco-editor/loader': 1.4.0_monaco-editor@0.44.0
+      monaco-editor: 0.44.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /@next/env/14.0.3:
     resolution: {integrity: sha512-7xRqh9nMvP5xrW4/+L0jgRRX+HoNRGnfJpD+5Wq6/13j3dsdzxO3BCXn7D3hMqsDb+vjZnJq+vI7+EtgrYZTeA==}
@@ -2163,6 +2191,10 @@ packages:
     resolution: {integrity: sha512-LF8VeHeR7v+wAbXqfgRlTSX/1BJR9Q1vEMR8JAz1cEg6GX07+zyj3sAdDvYjj/xnlIfVuGgj4qBei1K3hKH+PA==}
     dev: true
 
+  /github-buttons/2.27.0:
+    resolution: {integrity: sha512-PmfRMI2Rttg/2jDfKBeSl621sEznrsKF019SuoLdoNlO7qRUZaOyEI5Li4uW+79pVqnDtKfIEVuHTIJ5lgy64w==}
+    dev: false
+
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -2825,6 +2857,10 @@ packages:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
 
+  /monaco-editor/0.44.0:
+    resolution: {integrity: sha512-5SmjNStN6bSuSE5WPT2ZV+iYn1/yI9sd4Igtk23ChvqB7kDk9lZbB9F5frsuvpB+2njdIeGGFf2G4gbE6rCC9Q==}
+    dev: false
+
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
@@ -3288,6 +3324,15 @@ packages:
       scheduler: 0.23.0
     dev: false
 
+  /react-github-btn/1.4.0_react@18.2.0:
+    resolution: {integrity: sha512-lV4FYClAfjWnBfv0iNlJUGhamDgIq6TayD0kPZED6VzHWdpcHmPfsYOZ/CFwLfPv4Zp+F4m8QKTj0oy2HjiGXg==}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      github-buttons: 2.27.0
+      react: 18.2.0
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
@@ -3604,6 +3649,10 @@ packages:
   /spdx-license-ids/3.0.16:
     resolution: {integrity: sha512-eWN+LnM3GR6gPu35WxNgbGl8rmY1AEmoMDvL/QD6zYmPWgywxWqJWNdLGT+ke8dKNWrcYgYjPpG5gbTfghP8rw==}
     dev: true
+
+  /state-local/1.0.7:
+    resolution: {integrity: sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==}
+    dev: false
 
   /streamsearch/1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}

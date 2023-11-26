@@ -5,9 +5,60 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const title = 'Flipbook - QR Codes of infinite size';
+const description =
+  'Flipbook is a superset of QR codes that allows for infinitely sized payloads. Download apps, rich-text, and more without the need for an internet connection.';
+const url = 'https://flipbook.codes';
+const logotype = {
+  url: `${url}/logotype.svg`,
+  width: 3200,
+  height: 800,
+  alt: title,
+};
+
 export const metadata: Metadata = {
-  title: 'Flipbook - Large Payload, Animated QR Codes',
-  description: 'MIT Licensed, Created by Patrick Cason',
+  title,
+  description,
+  icons: [
+    {
+      url: '/apple-touch-icon.png',
+      sizes: '180x180',
+      type: 'image/png',
+      rel: 'apple-touch-icon',
+    },
+    {
+      url: '/favicon-32x32.png',
+      sizes: '32x32',
+      type: 'image/png',
+      rel: 'icon',
+    },
+    {
+      url: '/favicon-16x16.png',
+      sizes: '16x16',
+      type: 'image/png',
+      rel: 'icon',
+    },
+    {
+      url: '/safari-pinned-tab.svg',
+      color: '#444444',
+      rel: 'mask-icon',
+    },
+  ],
+  manifest: '/site.webmanifest',
+  openGraph: {
+    type: 'website',
+    url,
+    title,
+    description,
+    images: [logotype],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: url,
+    title,
+    description,
+    images: [logotype],
+  },
 };
 
 export default function RootLayout({

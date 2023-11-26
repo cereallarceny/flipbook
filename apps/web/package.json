@@ -13,11 +13,14 @@
     "@flipbook/writer": "workspace:*",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@monaco-editor/react": "^4.6.0",
     "autoprefixer": "^10.4.16",
+    "monaco-editor": "0.44.0",
     "next": "^14.0.3",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-github-btn": "^1.4.0",
     "tailwindcss": "^3.3.5"
   },
   "devDependencies": {

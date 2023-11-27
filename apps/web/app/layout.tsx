@@ -1,20 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { title, description, url, logotype } from './content';
+
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
-
-const title = 'Flipbook - QR Codes of infinite size';
-const description =
-  'Flipbook is a superset of QR codes that allows for infinitely sized payloads. Download apps, rich-text, and more without the need for an internet connection.';
-const url = 'https://flipbook.codes';
-const logotype = {
-  url: `${url}/logotype.svg`,
-  width: 3200,
-  height: 800,
-  alt: title,
-};
 
 export const metadata: Metadata = {
   title,

@@ -2,11 +2,7 @@ import Image from 'next/image';
 import { type FileType } from '../lib/filetypes';
 
 interface HeroProps {
-  buttons: {
-    id: number;
-    href?: string;
-    children: string | JSX.Element;
-  }[];
+  buttons: { children: JSX.Element }[];
   description: string;
   fileName: string;
   setFileName: (fileName: string) => void;
@@ -48,37 +44,9 @@ export default function Hero({
                   {description}
                 </p>
                 <div className="mt-10 flex items-center gap-x-6">
-                  {buttons.length > 0 &&
-                    (buttons[0]?.href ? (
-                      <a
-                        className="rounded-md bg-indigo-500 px-4 py-3 font-semibold text-white hover:bg-indigo-600 focus:outline-none"
-                        href={buttons[0]?.href}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {buttons[0]?.children}
-                      </a>
-                    ) : (
-                      buttons[0]?.children
-                    ))}
-                  {buttons.length > 1 &&
-                    buttons.slice(1).map((button) => {
-                      if (button.href) {
-                        return (
-                          <a
-                            className="font-semibold text-gray-700 hover:text-gray-900"
-                            href={button.href}
-                            key={button.id}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            {button.children}
-                          </a>
-                        );
-                      }
-
-                      return <div key={button.id}>{button.children}</div>;
-                    })}
+                  {buttons.map((button, i) => (
+                    <div key={i}>{button.children}</div>
+                  ))}
                 </div>
               </div>
             </div>

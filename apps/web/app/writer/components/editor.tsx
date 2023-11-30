@@ -1,11 +1,11 @@
 import { Editor as MonacoEditor } from '@monaco-editor/react';
 import Spinner from '../../components/spinner';
 
-type EditorProps = {
+interface EditorProps {
   fileName: string;
   onChange: (code: string | undefined) => void;
   sampleCode: string;
-};
+}
 
 const EDITOR_THEME = 'flipbook-theme';
 
@@ -20,6 +20,9 @@ export default function Editor({
       defaultValue={sampleCode}
       language={fileName}
       loading={<Spinner />}
+      onChange={(code) => {
+        onChange(code);
+      }}
       onMount={(_e, m) => {
         m.editor.defineTheme(EDITOR_THEME, {
           base: 'vs-dark',
@@ -49,7 +52,6 @@ export default function Editor({
         },
         wordWrap: 'on',
       }}
-      onChange={(code) => onChange(code)}
     />
   );
 }

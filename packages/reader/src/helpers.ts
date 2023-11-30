@@ -1,4 +1,4 @@
-import { createIndexTag, getIndex, isHead } from '@flipbook/writer';
+import { createIndexTag, getIndex, isHead } from 'shared';
 
 export const sortFrames = (a: string, b: string): number => {
   // Make sure the head frame is first

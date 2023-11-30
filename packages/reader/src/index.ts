@@ -1,5 +1,5 @@
 import jsQR from 'jsqr';
-import { getHeadLength } from '@flipbook/writer';
+import { getHeadLength } from 'shared';
 import { sliceFrames, sortFrames } from './helpers';
 
 const DEFAULT_DISPLAY_MEDIA_OPTIONS: DisplayMediaStreamOptions = {

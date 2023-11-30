@@ -5,14 +5,21 @@ importers:
   .:
     specifiers:
       '@types/node': ^20.9.1
+      '@types/qrcode': ^1.5.5
       '@types/w3c-image-capture': ^1.0.10
       eslint: ^8.54.0
+      loglevel: ^1.8.1
       prettier: ^3.1.0
+      qrcode: ^1.5.3
       tsconfig: workspace:*
       turbo: latest
       typescript: ^5.2.2
+    dependencies:
+      loglevel: 1.8.1
+      qrcode: 1.5.3
     devDependencies:
       '@types/node': 20.9.1
+      '@types/qrcode': 1.5.5
       '@types/w3c-image-capture': 1.0.10
       eslint: 8.54.0
       prettier: 3.1.0
@@ -73,13 +80,21 @@ importers:
 
   packages/reader:
     specifiers:
-      '@flipbook/writer': workspace:*
       eslint-config-custom: workspace:*
       jsqr: ^1.4.0
+      shared: workspace:*
       tsconfig: workspace:*
     dependencies:
-      '@flipbook/writer': link:../writer
       jsqr: 1.4.0
+      shared: link:../shared
+    devDependencies:
+      eslint-config-custom: link:../eslint-config-custom
+      tsconfig: link:../tsconfig
+
+  packages/shared:
+    specifiers:
+      eslint-config-custom: workspace:*
+      tsconfig: workspace:*
     devDependencies:
       eslint-config-custom: link:../eslint-config-custom
       tsconfig: link:../tsconfig
@@ -89,16 +104,14 @@ importers:
 
   packages/writer:
     specifiers:
-      '@types/qrcode': ^1.5.5
       canvas-capture: ^2.1.1
       eslint-config-custom: workspace:*
-      qrcode: ^1.5.3
+      shared: workspace:*
       tsconfig: workspace:*
     dependencies:
       canvas-capture: 2.1.1
-      qrcode: 1.5.3
+      shared: link:../shared
     devDependencies:
-      '@types/qrcode': 1.5.5
       eslint-config-custom: link:../eslint-config-custom
       tsconfig: link:../tsconfig
 
@@ -2789,6 +2802,11 @@ packages:
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: true
+
+  /loglevel/1.8.1:
+    resolution: {integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==}
+    engines: {node: '>= 0.6.0'}
+    dev: false
 
   /loose-envify/1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}

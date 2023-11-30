@@ -30,5 +30,11 @@ module.exports = {
       },
     },
   },
+  rules: {
+    'import/no-extraneous-dependencies': [
+      'error',
+      { packageDir: ['.', '../../'] },
+    ],
+  },
   ignorePatterns: ['node_modules/', 'dist/'],
 };

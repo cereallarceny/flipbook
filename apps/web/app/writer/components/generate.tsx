@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { type WriterProps, compose, write } from '@flipbook/writer';
+import { Writer } from '@flipbook/writer';
 import { Button } from '../../components/button';
 
 interface GenerateProps {
@@ -24,9 +24,9 @@ export default function Generate({
       setQR('');
 
       // Write the QR code
-      const opts: Partial<WriterProps> = { size, logLevel: 'debug' };
-      const qrs = await write(code, opts);
-      const result = await compose(qrs, opts);
+      const writer = new Writer({ size, logLevel: 'debug' });
+      const qrs = await writer.write(code);
+      const result = await writer.newCompose(qrs);
 
       // Set the QR code
       setQR(result);

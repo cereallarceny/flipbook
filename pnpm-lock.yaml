@@ -5,21 +5,17 @@ importers:
   .:
     specifiers:
       '@types/node': ^20.9.1
-      '@types/qrcode': ^1.5.5
       '@types/w3c-image-capture': ^1.0.10
       eslint: ^8.54.0
       loglevel: ^1.8.1
       prettier: ^3.1.0
-      qrcode: ^1.5.3
       tsconfig: workspace:*
       turbo: latest
       typescript: ^5.2.2
     dependencies:
       loglevel: 1.8.1
-      qrcode: 1.5.3
     devDependencies:
       '@types/node': 20.9.1
-      '@types/qrcode': 1.5.5
       '@types/w3c-image-capture': 1.0.10
       eslint: 8.54.0
       prettier: 3.1.0
@@ -104,14 +100,22 @@ importers:
 
   packages/writer:
     specifiers:
+      '@types/gif.js': ^0.2.5
+      '@types/qrcode': ^1.5.5
       canvas-capture: ^2.1.1
       eslint-config-custom: workspace:*
+      gif.js: ^0.2.0
+      qrcode: ^1.5.3
       shared: workspace:*
       tsconfig: workspace:*
     dependencies:
       canvas-capture: 2.1.1
+      gif.js: 0.2.0
+      qrcode: 1.5.3
       shared: link:../shared
     devDependencies:
+      '@types/gif.js': 0.2.5
+      '@types/qrcode': 1.5.5
       eslint-config-custom: link:../eslint-config-custom
       tsconfig: link:../tsconfig
 
@@ -632,6 +636,16 @@ packages:
     dependencies:
       tslib: 2.6.2
     dev: false
+
+  /@types/events/3.0.3:
+    resolution: {integrity: sha512-trOc4AAUThEz9hapPtSd7wf5tiQKvTtu5b371UxXdTuqzIh0ArcRspRP0i0Viu+LXstIQ1z96t1nsPxT9ol01g==}
+    dev: true
+
+  /@types/gif.js/0.2.5:
+    resolution: {integrity: sha512-OdDQYh9v7td9ztjaooBSqjUBAyAuui2xwDDmQcyRLd6c9T0iWgkebAoCBEdEEBoZG3ekJE/6UnH63Dzq0S3bvw==}
+    dependencies:
+      '@types/events': 3.0.3
+    dev: true
 
   /@types/json-schema/7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -2199,6 +2213,10 @@ packages:
     dependencies:
       resolve-pkg-maps: 1.0.0
     dev: true
+
+  /gif.js/0.2.0:
+    resolution: {integrity: sha512-bYxCoT8OZKmbxY8RN4qDiYuj4nrQDTzgLRcFVovyona1PTWNePzI4nzOmotnlOFIzTk/ZxAHtv+TfVLiBWj/hw==}
+    dev: false
 
   /git-hooks-list/3.1.0:
     resolution: {integrity: sha512-LF8VeHeR7v+wAbXqfgRlTSX/1BJR9Q1vEMR8JAz1cEg6GX07+zyj3sAdDvYjj/xnlIfVuGgj4qBei1K3hKH+PA==}

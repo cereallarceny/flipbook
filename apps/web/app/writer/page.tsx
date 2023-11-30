@@ -5,8 +5,7 @@ import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
 // ----- Features ----- //
-// TODO: Figure out a way to do this without passing a canvas via React
-//  - Currently renders a black gif as a result of putting this in the compose file
+// TODO: Sort out race condition with the writer that results in an all black GIF or pick a better library
 // TODO: Find a better way to do reader with just one function, hide canvas complexity
 // TODO: Add an "advanced mode" where you can pass a lot more options
 // TODO: Look into performance issues with screen reading

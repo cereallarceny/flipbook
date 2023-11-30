@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import { type WriterProps } from './types';
 
 // The base index tag
 const DEFAULT_IDX_TAG = '>>>IDX';
@@ -59,36 +58,3 @@ export const getHeadLength = (str: string): number => {
   log.debug('returning head length', result);
   return result;
 };
-
-// Split an input string into multiple string of a certain length
-export const split = (code: string, opts: WriterProps): string[] => {
-  // Get the split length from the options
-  const { splitLength } = opts;
-  log.debug('split length', splitLength);
-
-  // Store all the codes and the length of the input string
-  const codes: string[] = [];
-  const length = code.length;
-
-  // Loop through the input string
-  let i = 0;
-  while (i < length) {
-    // Get a slice and push it into the codes array and move onto the next
-    codes.push(code.slice(i, i + splitLength));
-    log.debug('creating slice', i, i + splitLength);
-    i += splitLength;
-  }
-
-  // Add the index to each of the codes
-  const indexedCodes = codes.map((v, idx) => `${createIndexTag(idx)} ${v}`);
-  log.debug('indexed codes', indexedCodes);
-
-  // Add the head tag to the first code with the number of codes
-  indexedCodes[0] = `${createHeadTag(indexedCodes.length)} ${indexedCodes[0]}`;
-  log.debug('indexing head', [indexedCodes[0]]);
-
-  // Return the indexedCodes array
-  return indexedCodes;
-};
-
-export type { WriterProps, WriterResult } from './types';

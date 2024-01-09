@@ -24,9 +24,9 @@ export default function Generate({
       setQR('');
 
       // Write the QR code
-      const writer = new Writer({ size, logLevel: 'debug' });
+      const writer = new Writer({ size, logLevel: 'DEBUG' });
       const qrs = await writer.write(code);
-      const result = await writer.newCompose(qrs);
+      const result = await writer.compose(qrs);
 
       // Set the QR code
       setQR(result);

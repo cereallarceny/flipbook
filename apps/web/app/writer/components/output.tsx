@@ -24,7 +24,7 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
     setOutput('Reading...');
 
     // Read the QR code
-    const reader = new Reader({ logLevel: 'DEBUG' });
+    const reader = new Reader({ logLevel: 'debug' });
     const readResult = await reader.read();
 
     // Set the output

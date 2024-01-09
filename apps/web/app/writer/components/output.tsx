@@ -1,6 +1,6 @@
 'use client';
 
-import { reader } from '@flipbook/reader';
+import { Reader } from '@flipbook/reader';
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
@@ -24,7 +24,8 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
     setOutput('Reading...');
 
     // Read the QR code
-    const readResult = await reader();
+    const reader = new Reader({ logLevel: 'DEBUG' });
+    const readResult = await reader.read();
 
     // Set the output
     setOutput(readResult);

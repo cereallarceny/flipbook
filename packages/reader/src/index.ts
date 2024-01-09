@@ -28,7 +28,7 @@ export class Reader {
     this.opts = { ...DEFAULT_READER_PROPS, ...opts };
 
     // Set up the logger
-    const logger = log.getLogger('qr-writer');
+    const logger = log.getLogger('qr-reader');
     logger.setLevel(this.opts.logLevel);
     this.log = logger;
   }

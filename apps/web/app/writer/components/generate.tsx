@@ -26,7 +26,7 @@ export default function Generate({
       // Write the QR code
       const writer = new Writer({ size, logLevel: 'debug' });
       const qrs = await writer.write(code);
-      const result = await writer.newCompose(qrs);
+      const result = await writer.compose(qrs);
 
       // Set the QR code
       setQR(result);

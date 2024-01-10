@@ -5,7 +5,9 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --list-different \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",

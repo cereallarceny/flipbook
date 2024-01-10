@@ -5,7 +5,9 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "format:fix": "turbo run format:fix"
+    "format:fix": "turbo run format:fix",
+    "pre:commit": "lint-staged",
+    "prepare": "husky install"
   },
   "dependencies": {
     "loglevel": "^1.8.1"
@@ -17,7 +19,9 @@
     "prettier": "^3.1.0",
     "tsconfig": "workspace:*",
     "turbo": "latest",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
   },
   "packageManager": "pnpm@8.9.0",
   "name": "flipbook",

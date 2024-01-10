@@ -1,0 +1,5 @@
+{
+  "*.ts": ["pnpm run format:fix --"],
+  "*.tsx": ["pnpm run format:fix --"],
+  "*.json": ["pnpm run format:fix --"]
+}

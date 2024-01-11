@@ -24,7 +24,16 @@ export default function Generate({
       setQR('');
 
       // Write the QR code
-      const writer = new Writer({ size, logLevel: 'debug' });
+      const writer = new Writer({
+        size,
+        logLevel: 'debug',
+        fps: 60,
+        qrOptions: {
+          frameOptions: {
+            delay: 300,
+          },
+        },
+      });
       const qrs = await writer.write(code);
       const result = await writer.compose(qrs);
 

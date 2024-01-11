@@ -1,7 +1,7 @@
 import log, { type LogLevelDesc } from 'loglevel';
 import { create, toDataURL, type QRCodeToDataURLOptions } from 'qrcode';
 import { createHeadTag, createIndexTag } from 'shared';
-import GIF from 'gif.js';
+import GIF, { type AddFrameOptions } from 'gif.js';
 import { workerBlob } from './gif-worker';
 
 interface WriterResult {
@@ -12,7 +12,7 @@ interface WriterResult {
 interface WriterProps {
   fps: number;
   logLevel: LogLevelDesc;
-  qrOptions: QRCodeToDataURLOptions;
+  qrOptions: QRCodeToDataURLOptions & { frameOptions: AddFrameOptions };
   size: number;
   splitLength: number;
 }
@@ -29,6 +29,9 @@ export class Writer {
       qrOptions: {
         errorCorrectionLevel: 'M',
         type: 'image/png',
+        frameOptions: {
+          delay: 100,
+        },
       },
       size: 512,
       splitLength: 100,
@@ -145,9 +148,7 @@ export class Writer {
 
           // Use the onload event to ensure the image is fully loaded before adding it to the GIF
           img.onload = () => {
-            gif.addFrame(img, {
-              delay: 100, // Milliseconds (images in gif are 100ms apart)
-            });
+            gif.addFrame(img, this.opts.qrOptions.frameOptions);
             addFrameAndCheckCompletion();
           };
 

@@ -2,7 +2,7 @@ import log, { type LogLevelDesc } from 'loglevel';
 import { getHeadLength } from 'shared';
 import { sliceFrames, sortFrames } from './helpers';
 import { type FrameProcessor } from './frame-processor';
-import { CanvasProcesstor } from './canvas-processor';
+import { CanvasProcessor } from './canvas-processor';
 
 interface ReaderProps {
   logLevel: LogLevelDesc;
@@ -24,7 +24,7 @@ export class Reader {
         audio: false,
       },
       logLevel: 'silent',
-      frameProcessor: new CanvasProcesstor(),
+      frameProcessor: new CanvasProcessor(),
     };
 
     // Merge the options with the defaults

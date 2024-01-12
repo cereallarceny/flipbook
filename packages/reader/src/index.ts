@@ -1,11 +1,13 @@
 import log, { type LogLevelDesc } from 'loglevel';
-import jsQR from 'jsqr';
 import { getHeadLength } from 'shared';
 import { sliceFrames, sortFrames } from './helpers';
+import { type FrameProcessor } from './frame-processor';
+import { CanvasProcesstor } from './canvas-processor';
 
 interface ReaderProps {
-  mediaOptions: DisplayMediaStreamOptions;
   logLevel: LogLevelDesc;
+  mediaOptions: DisplayMediaStreamOptions;
+  frameProcessor: FrameProcessor;
 }
 
 export class Reader {
@@ -22,6 +24,7 @@ export class Reader {
         audio: false,
       },
       logLevel: 'silent',
+      frameProcessor: new CanvasProcesstor(),
     };
 
     // Merge the options with the defaults
@@ -33,57 +36,57 @@ export class Reader {
     this.log = logger;
   }
 
-  // grab the frames from track and return the code against all frames
-  private async processAllFrames(
-    track: MediaStreamTrack,
-    ctx: CanvasRenderingContext2D,
-    { width, height }: { width: number; height: number }
-  ): Promise<string[]> {
-    // Store all the frames
-    const allFrames: string[] = [];
+  private processAllFrames(track: MediaStreamTrack): Promise<string[]> {
+    const processedFrames = new Promise((resolve) => {
+      // Store all the frames
+      const allFrames = new Set<string>();
 
-    // Store the expected number of frames
-    let numExpectedFrames: number;
+      // Store the expected number of frames
+      let numExpectedFrames: number;
 
-    const process = async (): Promise<void> => {
-      // Get the current frame
+      // Create an image capture
       const imageCapture = new ImageCapture(track);
-      const frame = await imageCapture.grabFrame();
 
-      // Draw it on the canvas
-      ctx.drawImage(frame, 0, 0, width, height);
+      const processFrame = async (): Promise<void> => {
+        try {
+          // Grab the next frame
+          const frame: ImageBitmap = await imageCapture.grabFrame();
 
-      // Get the data from the canvas
-      const { data } = ctx.getImageData(0, 0, width, height);
+          // Give frame to the frameProcessor
+          this.opts.frameProcessor.setFrame(frame);
 
-      // Decode the data
-      const result = jsQR(data, width, height);
+          // Get the data from the frameProcessor
+          const result = this.opts.frameProcessor.getFrameData();
 
-      // Get the code from the result
-      const code = result && 'data' in result ? result.data : '';
+          // Get the code from the result
+          const code = result && 'data' in result ? result.data : '';
 
-      // If the code is not empty and we haven't seen it before, add it to the list
-      if (code !== '' && !allFrames.includes(code)) {
-        allFrames.push(code);
+          // If the code is not empty and we haven't seen it before, add it to the list
+          if (code !== '' && !allFrames.has(code)) {
+            allFrames.add(code);
 
-        // If the code is the head frame, get the number of frames
-        if (getHeadLength(code) !== -1) {
-          numExpectedFrames = getHeadLength(code);
+            // If the code is the head frame, get the number of frames
+            if (getHeadLength(code) !== -1) {
+              numExpectedFrames = getHeadLength(code);
+            }
+          }
+
+          // If we haven't seen all the frames, continue processing
+          if (allFrames.size !== numExpectedFrames) {
+            requestAnimationFrame(processFrame as () => void);
+          } else {
+            resolve(Array.from(allFrames));
+          }
+        } catch (error) {
+          this.log.error('Error processing frame:', error);
         }
-      }
+      };
 
-      // If we've seen all the frames, stop the interval
-      if (allFrames.length !== numExpectedFrames) {
-        await process();
-      }
-    };
-
-    // Kick it off
-    await process();
-
-    return new Promise((resolve) => {
-      resolve(allFrames);
+      // Kick off the first frame processing
+      requestAnimationFrame(processFrame as () => void);
     });
+
+    return processedFrames as Promise<string[]>;
   }
 
   async read(): Promise<string> {
@@ -96,30 +99,14 @@ export class Reader {
     try {
       if (!track) throw new Error('Could not get video track');
 
-      const { width = 1920, height = 1080 } = track.getSettings();
-
-      // Create a canvas to draw the frame
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-
-      // Get the canvas context
-      const ctx = canvas.getContext('2d');
-
-      // Make sure the context exists
-      if (!ctx) throw new Error('Could not create canvas context');
-
       // Process all the frames
-      const allFrames = await this.processAllFrames(track, ctx, {
-        width,
-        height,
-      });
+      const allFrames = await this.processAllFrames(track);
 
       // Stop the track
       track.stop();
 
-      // Destroy the temporary canvas
-      canvas.remove();
+      // Remove listeners etc, setup by frameProcessor after the process is completed.
+      this.opts.frameProcessor.destroy();
 
       // Sort the frames, slice their tags off, and join them into a single string
       const result = allFrames.sort(sortFrames).map(sliceFrames).join('');

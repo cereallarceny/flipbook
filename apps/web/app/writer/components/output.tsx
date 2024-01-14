@@ -24,7 +24,10 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
     setOutput('Reading...');
 
     // Read the QR code
-    const reader = new Reader({ logLevel: 'debug' });
+    const reader = new Reader({
+      logLevel: 'debug',
+      /* frameProcessor: new AdvancedProcessor() // defaults to "new CanvasProcesstor()" */
+    });
     const readResult = await reader.read();
 
     // Set the output
@@ -65,7 +68,7 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
           {output !== '' && (
             <div className="w-full px-8 my-2">
               <p className="font-bold mb-1">Results:</p>
-              <pre>
+              <pre className="overflow-y-auto max-h-60">
                 <code>{output}</code>
               </pre>
             </div>

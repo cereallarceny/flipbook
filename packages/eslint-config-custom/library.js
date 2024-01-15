@@ -16,6 +16,7 @@ module.exports = {
     '@vercel/style-guide/eslint/node',
     '@vercel/style-guide/eslint/typescript',
   ].map(require.resolve),
+  plugins: ['jest'],
   parserOptions: {
     project,
   },
@@ -37,4 +38,7 @@ module.exports = {
     ],
   },
   ignorePatterns: ['node_modules/', 'dist/'],
+  env: {
+    'jest/globals': true,
+  },
 };

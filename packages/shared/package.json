@@ -7,9 +7,12 @@
   "scripts": {
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "format": "prettier --list-different \"**/*.{ts,tsx,md}\""
+    "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
+    "jest-config": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   }

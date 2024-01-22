@@ -7,6 +7,10 @@ module.exports = {
       extends: ['plugin:jest/recommended'],
       rules: {
         'jest/prefer-expect-assertions': 'off',
+        'eslint-comments/require-description': [
+          'error',
+          { ignore: ['eslint-disable-next-line'] },
+        ],
       },
     },
   ],

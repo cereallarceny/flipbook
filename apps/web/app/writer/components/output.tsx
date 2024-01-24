@@ -93,6 +93,7 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
               onClick={() => {
                 reset();
               }}
+              role="spinbutton"
               type="button"
             >
               <ArrowPathIcon className="w-6 h-6" />

@@ -5,6 +5,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "benchmark": "turbo run benchmark",
     "test:watch": "turbo run test:watch",
     "format": "turbo run format",
     "format:fix": "turbo run format:fix",

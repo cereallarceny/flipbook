@@ -22,6 +22,9 @@
     },
     "test:watch": {
       "dependsOn": ["^test:watch"]
+    },
+    "benchmark": {
+      "dependsOn": ["^benchmark"]
     }
   }
 }

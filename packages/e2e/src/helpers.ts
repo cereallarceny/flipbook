@@ -43,3 +43,8 @@ export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
     console.log('Error saving benchmark:', err);
   }
 };
+
+// Pretty print a number like 100000 to 100,000
+export const formatNumber = (no: number) => {
+  return new Intl.NumberFormat().format(no);
+};

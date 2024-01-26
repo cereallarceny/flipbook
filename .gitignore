@@ -34,3 +34,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# playwright
+test-results/
+
+# benchmarks
+benchmarks.md

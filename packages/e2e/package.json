@@ -1,0 +1,18 @@
+{
+  "name": "e2e",
+  "license": "MIT",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "benchmark:dev": "playwright test --headed --ui",
+    "benchmark": "playwright test && pnpm generate:readme",
+    "generate:readme": "node ./scripts/add-benchmarks-to-markdown.js && markdown-include ./markdown.json",
+    "postinstall": "pnpm playwright install"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tinybench": "^2.6.0",
+    "@playwright/test": "^1.41.1",
+    "markdown-include": "^0.4.3"
+  }
+}

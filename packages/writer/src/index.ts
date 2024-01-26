@@ -9,7 +9,7 @@ interface WriterResult {
   image: string;
 }
 
-interface WriterProps {
+export interface WriterProps {
   fps: number;
   logLevel: LogLevelDesc;
   qrOptions: QRCodeToDataURLOptions;

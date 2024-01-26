@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
-    "@vercel/style-guide": "^5.0.0",
     "eslint-config-turbo": "^1.10.12",
+    "eslint-plugin-jest": "^27.6.3",
     "typescript": "^5.2.2",
-    "eslint-plugin-jest": "^27.6.3"
+    "@vercel/style-guide": "^5.0.0"
   }
 }

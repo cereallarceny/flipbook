@@ -76,13 +76,13 @@ const generateTest = (charLength: number, fileName: string) => {
 test.describe.configure({ mode: 'parallel' });
 
 // Generate Test for 100 char strings
-generateTest(100, 'bench-hundred.json');
+generateTest(100, 'writer-bench-hundred.json');
 
 // Generate Test for 1,000 char strings
-generateTest(1000, 'bench-1k.json');
+generateTest(1000, 'writer-bench-1k.json');
 
 // Generate Test for 10,000 char strings
-generateTest(10000, 'bench-10k.json');
+generateTest(10000, 'writer-bench-10k.json');
 
 // Generate Test for 100,000 char strings
-generateTest(100000, 'bench-100k.json');
+generateTest(100000, 'writer-bench-100k.json');

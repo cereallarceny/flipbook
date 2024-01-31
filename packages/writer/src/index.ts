@@ -9,10 +9,11 @@ interface WriterResult {
   image: string;
 }
 
-interface WriterProps {
+export interface WriterProps {
   fps: number;
   logLevel: LogLevelDesc;
-  qrOptions: QRCodeToDataURLOptions & { frameOptions: AddFrameOptions };
+  qrOptions: QRCodeToDataURLOptions;
+  gifOptions: AddFrameOptions;
   size: number;
   splitLength: number;
 }
@@ -29,9 +30,9 @@ export class Writer {
       qrOptions: {
         errorCorrectionLevel: 'M',
         type: 'image/png',
-        frameOptions: {
-          delay: 100,
-        },
+      },
+      gifOptions: {
+        delay: 100,
       },
       size: 512,
       splitLength: 100,
@@ -148,7 +149,7 @@ export class Writer {
 
           // Use the onload event to ensure the image is fully loaded before adding it to the GIF
           img.onload = () => {
-            gif.addFrame(img, this.opts.qrOptions.frameOptions);
+            gif.addFrame(img, this.opts.gifOptions);
             addFrameAndCheckCompletion();
           };
 

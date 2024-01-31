@@ -5,12 +5,15 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint .",
+    "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "format": "prettier --list-different \"**/*.{ts,tsx,md}\""
+    "lint": "eslint .",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
+    "jest-config": "workspace:*",
     "tsconfig": "workspace:*"
   }
 }

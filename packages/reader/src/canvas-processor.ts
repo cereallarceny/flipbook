@@ -1,7 +1,7 @@
 import jsQR, { type QRCode } from 'jsqr';
 import { FrameProcessor } from './frame-processor';
 
-export class CanvasProcesstor extends FrameProcessor {
+export class CanvasProcessor extends FrameProcessor {
   private _ctx: CanvasRenderingContext2D | null;
   private _canvas: HTMLCanvasElement;
   private _width: number;

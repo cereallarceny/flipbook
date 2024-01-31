@@ -28,10 +28,9 @@ export default function Generate({
         size,
         logLevel: 'debug',
         fps: 60,
-        qrOptions: {
-          frameOptions: {
-            delay: 300,
-          },
+        qrOptions: {},
+        gifOptions: {
+          delay: 300,
         },
       });
       const qrs = await writer.write(code);

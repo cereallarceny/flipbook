@@ -7,7 +7,9 @@
   "scripts": {
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "format": "prettier --list-different \"**/*.{ts,tsx,md}\""
+    "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "canvas-capture": "^2.1.1",
@@ -19,6 +21,7 @@
     "@types/gif.js": "^0.2.5",
     "@types/qrcode": "^1.5.5",
     "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "jest-config": "workspace:*"
   }
 }

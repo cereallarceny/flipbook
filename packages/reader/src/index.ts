@@ -6,7 +6,6 @@ import { CanvasProcessor } from './canvas-processor';
 
 interface ReaderProps {
   logLevel: LogLevelDesc;
-  mediaOptions: DisplayMediaStreamOptions;
   frameProcessor: FrameProcessor;
 }
 
@@ -17,12 +16,6 @@ export class Reader {
   constructor(opts: Partial<ReaderProps> = {}) {
     // Set up the default options
     const DEFAULT_READER_PROPS: ReaderProps = {
-      mediaOptions: {
-        video: {
-          displaySurface: 'window',
-        },
-        audio: false,
-      },
       logLevel: 'silent',
       frameProcessor: new CanvasProcessor(),
     };
@@ -90,9 +83,12 @@ export class Reader {
   }
 
   async read(): Promise<string> {
-    const captureStream = await navigator.mediaDevices.getDisplayMedia(
-      this.opts.mediaOptions
-    );
+    const captureStream = await navigator.mediaDevices.getDisplayMedia({
+      video: {
+        displaySurface: 'window',
+      },
+      audio: false,
+    });
 
     const track = captureStream.getVideoTracks()[0];
 

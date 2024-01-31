@@ -7,6 +7,11 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NODE_ENV === 'production'
+      ? 'https://flipbook.codes'
+      : 'http://localhost:3000'
+  ),
   title,
   description,
   icons: [

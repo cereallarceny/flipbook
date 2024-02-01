@@ -25,7 +25,7 @@ type TBenchOutput = ({
 
 export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
   try {
-    const outDir = path.resolve(__dirname, '..', 'build');
+    const outDir = path.resolve(__dirname, '..', 'results');
 
     const jsonData = {
       'Task Name': value[0]?.['Task Name'] || null,

@@ -130,9 +130,6 @@ importers:
       '@playwright/test':
         specifier: ^1.41.1
         version: 1.41.1
-      markdown-include:
-        specifier: ^0.4.3
-        version: 0.4.3
       tinybench:
         specifier: ^2.6.0
         version: 2.6.0
@@ -4884,13 +4881,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /markdown-include@0.4.3:
-    resolution: {integrity: sha512-kw1f+iJ8jAH9SYljv2RXmhRQFr2oMPPVdyoKaZIH+uA1rrQqDjLk6EQZW65oVz1Y+BkC3V//9lEvKKjRZNb1Jg==}
-    hasBin: true
-    dependencies:
-      q: 1.5.1
-    dev: true
-
   /mdn-polyfills@5.20.0:
     resolution: {integrity: sha512-AbTv1ytcoOUAkxw6u5oo2QPf27kEZgxBAQr49jFb4i2VnTnFGfJbcIQ9UDBOdfNECeXsgkYFwB2BkdeTfOzztw==}
     dev: false
@@ -5504,11 +5494,6 @@ packages:
 
   /pure-rand@6.0.4:
     resolution: {integrity: sha512-LA0Y9kxMYv47GIPJy6MI84fqTd2HmYZI83W/kM/SkKfDlajnZYfmXFTxkbY+xSBPkLJxltMa9hIkmdc29eguMA==}
-    dev: true
-
-  /q@1.5.1:
-    resolution: {integrity: sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==}
-    engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     dev: true
 
   /qrcode@1.5.3:

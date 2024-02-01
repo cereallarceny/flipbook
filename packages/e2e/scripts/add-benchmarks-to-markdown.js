@@ -36,10 +36,10 @@ function generateMarkdownTable(data) {
     };
 
     // output directory
-    const outDir = path.resolve(__dirname, '..', 'build');
+    const outDir = path.resolve(__dirname, '..', 'results');
 
     // docs directory
-    const docsDir = path.resolve(__dirname, '..', 'docs');
+    const docsDir = path.resolve(__dirname, '..');
 
     // read files
     const writerHundred = await fs.readFile(
@@ -103,7 +103,7 @@ function generateMarkdownTable(data) {
     const markdown = `\n## Benchmarks\n\n### Writer\n\n#### For 100 char string\n\n${writerHundredTable}\n\n#### For 1,000 char string\n\n${writerThousandTable}\n\n#### For 10,000 char string\n\n${writerTenThousandTable}\n\n#### For 100,000 char string\n\n${writerHundredThousandTable}\n\n### Reader\n\n#### For 100 char string\n\n${readerHundredTable}\n\n#### For 1,000 char string\n\n${readerThousandTable}\n\n#### For 10,000 char string\n\n${readerTenThousandTable}\n\n#### For 100,000 char string\n\n${readerHundredThousandTable}`;
 
     // save markdown
-    await fs.writeFile(`${docsDir}/benchmarks.md`, markdown, 'utf-8');
+    await fs.writeFile(`${docsDir}/README.md`, markdown, 'utf-8');
   } catch (err) {
     console.log('Error saving benchmark:', err);
   }

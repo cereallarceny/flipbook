@@ -1,81 +1,43 @@
-# Turborepo starter
 
-This is an official starter Turborepo.
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <img src="apps/web/public/logo.svg" alt="Flipbook Logo" width="200" />
+  <h1 style="margin-top: 10px">Flipbook</h1>
 
-## Using this example
+  [![Build Status](https://travis-ci.org/cereallarceny/flipbook.svg?branch=main)](https://travis-ci.org/cereallrceny/flipbook)
+  [![Coverage Status](https://coveralls.io/repos/github/cereallarceny/flipbook/badge.svg?branch=main)](https://coveralls.io/github/cereallarceny/flipbook?branch=main)
+</div>
 
-Run the following command:
+## Getting Started
 
-```sh
-npx create-turbo@latest
-```
+Flipbook is a series of libraries that you can use in any web, mobile, or desktop application that enable the writing and reading of QR codes that contain larger payloads than traditional QR codes. This is done by creating a series of QR codes that are stitched together into an animated GIF, called a "Flipbook". This Flipbook can then be scanned by the reader library and subsequently reassembled into the original payload.
 
-## What's inside?
+### Are there any size limitations?
 
-This Turborepo includes the following packages/apps:
+In theory, no. It would simply be a matter of how long it takes for the writer to encode the payload into a Flipbook, and how long it takes for the reader to decode the Flipbook back into the original payload.
 
-### Apps and Packages
+### What can a Flipbook contain?
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+Anything! Books... movies... music... software... anything that can be represented as a series of bytes can be encoded into a Flipbook.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Why?
 
-### Utilities
+The ubiquity of QR codes in daily life has made them a popular tool for sharing information. But the medium is inherently limited to payloads of small sizes. While larger payloads can be supported (to a point), the resulting QR code becomes too difficult to scan reliably. 
 
-This Turborepo has some additional tools already setup for you:
+## Libraries
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Writer (Typescript): [Documentation](./packages/writer) | [NPM Package](https://www.npmjs.com/package/@flipbook/writer)
+- Reader (Typescript): [Documentation](./packages/reader) | [NPM Package](https://www.npmjs.com/package/@flipbook/reader)
+- Writer (Rust): *Coming soon...*
+- Reader (Rust): *Coming soon...*
 
-### Build
+### Want to write a Flipbook binding?
 
-To build all apps and packages, run the following command:
+If you want to write a Flipbook binding for a language that isn't listed here, feel free to open an issue or a pull request. We'd love to see Flipbook supported in as many languages as possible!
 
-```
-cd my-turborepo
-pnpm build
-```
+## Contributing
 
-### Develop
+If you'd like to contribute to Flipbook, please read our [contributing guide](./CONTRIBUTING.md) to learn how to get started.
 
-To develop all apps and packages, run the following command:
+## License
 
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+Flipbook is licensed under the [MIT License](./LICENSE). Go nuts!

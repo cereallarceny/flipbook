@@ -8,8 +8,8 @@ import { Sponsor, Star } from './components/github-button';
 // TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
 
 // ----- UI/UX ----- //
-// TODO: Add a proper readme
-// TODO: Create better logs and only output them if desired in the console
+// TODO: Finish readme
+// TODO: Add Github actions for testing and such and show badge and coverage on the README
 // TODO: Create a "install" version of the reader
 // TODO: Create homepage to advertise the reader
 

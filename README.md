@@ -1,15 +1,23 @@
 
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="apps/web/public/logo.svg" alt="Flipbook Logo" width="200" />
-  <h1 style="margin-top: 10px">Flipbook</h1>
+<p align="center">
+  <img src="apps/web/public/logo.svg" alt="Flipbook" width="200" />
+  <h1 style="text-align: center; margin-top: 10px;">Flipbook</h1>
+</p>
 
-  [![Build Status](https://travis-ci.org/cereallarceny/flipbook.svg?branch=main)](https://travis-ci.org/cereallrceny/flipbook)
-  [![Coverage Status](https://coveralls.io/repos/github/cereallarceny/flipbook/badge.svg?branch=main)](https://coveralls.io/github/cereallarceny/flipbook?branch=main)
-</div>
+[![Build Status](https://travis-ci.org/cereallarceny/flipbook.svg?branch=main)](https://travis-ci.org/cereallrceny/flipbook)
+[![Coverage Status](https://coveralls.io/repos/github/cereallarceny/flipbook/badge.svg?branch=main)](https://coveralls.io/github/cereallarceny/flipbook?branch=main)
 
 ## Getting Started
 
 Flipbook is a series of libraries that you can use in any web, mobile, or desktop application that enable the writing and reading of QR codes that contain larger payloads than traditional QR codes. This is done by creating a series of QR codes that are stitched together into an animated GIF, called a "Flipbook". This Flipbook can then be scanned by the reader library and subsequently reassembled into the original payload.
+
+![Flipbook Example](./docs/flipbook-qr.gif)
+
+**[Download Reader](https://flipbook.codes)**
+
+### Why?
+
+The ubiquity of QR codes in daily life has made them a popular tool for sharing information. But the medium is inherently limited to payloads of small sizes. While larger payloads can be supported (to a point), the resulting QR code becomes too difficult to scan reliably.
 
 ### Are there any size limitations?
 
@@ -18,10 +26,6 @@ In theory, no. It would simply be a matter of how long it takes for the writer t
 ### What can a Flipbook contain?
 
 Anything! Books... movies... music... software... anything that can be represented as a series of bytes can be encoded into a Flipbook.
-
-### Why?
-
-The ubiquity of QR codes in daily life has made them a popular tool for sharing information. But the medium is inherently limited to payloads of small sizes. While larger payloads can be supported (to a point), the resulting QR code becomes too difficult to scan reliably. 
 
 ## Libraries
 

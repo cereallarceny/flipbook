@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };
 
 export default config;

@@ -1,22 +1,28 @@
 'use client';
 
-import { useCallback } from 'react';
-import { Writer } from '@flipbook/writer';
-import { Button } from '../../components/button';
+import { useCallback, useState } from 'react';
+import { Writer, type WriterProps } from '@flipbook/writer';
+import { CogIcon } from '@heroicons/react/24/solid';
+import { Button, IconButton } from '../../components/button';
+import DialogBox from '../../components/dialog';
+import ConfigurationForm from './configuration-form';
 
 interface GenerateProps {
   code: string;
-  size: number;
   setQR: (qr: string) => void;
-  setSize: (size: number) => void;
+  configuration: Partial<WriterProps>;
+  setConfiguration: (config: Partial<WriterProps>) => void;
 }
 
 export default function Generate({
   code,
-  size,
-  setSize,
   setQR,
+  configuration,
+  setConfiguration,
 }: GenerateProps): JSX.Element {
+  // State whether the dialog is open
+  const [isOpen, setIsOpen] = useState(false);
+
   // A function to create the QR code
   const createQR = useCallback(async (): Promise<void> => {
     try {
@@ -24,15 +30,7 @@ export default function Generate({
       setQR('');
 
       // Write the QR code
-      const writer = new Writer({
-        size,
-        logLevel: 'debug',
-        fps: 60,
-        qrOptions: {},
-        gifOptions: {
-          delay: 300,
-        },
-      });
+      const writer = new Writer(configuration);
       const qrs = await writer.write(code);
       const result = await writer.compose(qrs);
 
@@ -41,26 +39,32 @@ export default function Generate({
     } catch (e) {
       console.error(e);
     }
-  }, [code, setQR, size]);
+  }, [code, setQR, configuration]);
+
+  // A function to launch the configuration dialog
+  const launchDialog = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
 
   return (
-    <div className="absolute right-0 -bottom-8 flex align-middle">
-      <div className="relative mr-4 rounded-md overflow-hidden">
-        <input
-          className=" text-black px-4 py-3 text-md w-28 pr-10 focus:outline-none"
-          onChange={(e) => {
-            setSize(Number(e.target.value));
+    <>
+      <DialogBox isOpen={isOpen} setIsOpen={setIsOpen}>
+        <ConfigurationForm
+          defaultValues={configuration}
+          onSubmit={(data) => {
+            setConfiguration({ ...configuration, ...data });
+            setIsOpen(false);
           }}
-          type="number"
-          value={size}
         />
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          <span className="text-gray-500 sm:text-sm">px</span>
-        </div>
+      </DialogBox>
+      <div className="absolute right-0 -bottom-8 flex align-middle gap-4">
+        <IconButton color="secondary" onClick={launchDialog} type="button">
+          <CogIcon className="h-6 w-6" />
+        </IconButton>
+        <Button onClick={createQR} type="button">
+          Generate Flipbook
+        </Button>
       </div>
-      <Button onClick={() => void createQR()} type="button">
-        Generate Flipbook
-      </Button>
-    </div>
+    </>
   );
 }

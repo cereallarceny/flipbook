@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 type ButtonProps<T extends React.ElementType> =
   React.ComponentPropsWithoutRef<T> & {
     as?: T;
@@ -7,7 +9,7 @@ type ButtonProps<T extends React.ElementType> =
 
 function BaseButton<T extends React.ElementType>({
   as: asComponent,
-  className,
+  className = '',
   color = 'primary',
   ...props
 }: ButtonProps<T>): JSX.Element {
@@ -28,9 +30,11 @@ function BaseButton<T extends React.ElementType>({
 
   return (
     <Component
-      className={`rounded-md font-semibold focus:outline-none transition-colors ${
-        colorClasses[color]
-      } ${className || ''}`}
+      className={twMerge(
+        'rounded-md font-semibold focus:outline-none transition-colors',
+        colorClasses[color],
+        className
+      )}
       rel={isLink ? 'noreferrer' : undefined}
       target={isLink ? '_blank' : undefined}
       {...props}
@@ -40,13 +44,13 @@ function BaseButton<T extends React.ElementType>({
 
 export function Button<T extends React.ElementType>({
   as: asComponent,
-  className,
+  className = '',
   ...props
 }: ButtonProps<T>): JSX.Element {
   return (
     <BaseButton
       as={asComponent || 'button'}
-      className={`px-4 py-3 ${className || ''}`}
+      className={twMerge('px-4 py-3', className)}
       {...props}
     />
   );
@@ -54,15 +58,16 @@ export function Button<T extends React.ElementType>({
 
 export function IconButton<T extends React.ElementType>({
   as: asComponent,
-  className,
+  className = '',
   ...props
 }: ButtonProps<T>): JSX.Element {
   return (
     <BaseButton
       as={asComponent || 'button'}
-      className={`inline-flex items-center justify-center w-12 h-12 ${
-        className || ''
-      }`}
+      className={twMerge(
+        'inline-flex items-center justify-center w-12 h-12',
+        className
+      )}
       {...props}
     />
   );

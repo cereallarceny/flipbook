@@ -5,14 +5,12 @@ import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
 // ----- Features ----- //
-// TODO: Create a benchmarking suite where we can measure the writer and reader speeds
-// TODO: Write tests and manage coverage
-// TODO: Add an "advanced mode" where you can pass a lot more options
 // TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
 
 // ----- UI/UX ----- //
 // TODO: Add a proper readme
 // TODO: Create better logs and only output them if desired in the console
+// TODO: Create a "install" version of the reader
 // TODO: Create homepage to advertise the reader
 
 // ----- Final Steps ----- //

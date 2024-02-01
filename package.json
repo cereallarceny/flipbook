@@ -1,5 +1,13 @@
 {
+  "name": "flipbook",
+  "license": "MIT",
+  "author": {
+    "name": "Patrick Cason",
+    "email": "me@patrickcason.com",
+    "url": "https://patrickcason.com"
+  },
   "private": true,
+  "packageManager": "pnpm@8.9.0",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -31,13 +39,5 @@
     "tsconfig": "workspace:*",
     "turbo": "latest",
     "typescript": "^5.2.2"
-  },
-  "packageManager": "pnpm@8.9.0",
-  "name": "flipbook",
-  "license": "MIT",
-  "author": {
-    "name": "Patrick Cason",
-    "email": "me@patrickcason.com",
-    "url": "https://patrickcason.com"
   }
 }

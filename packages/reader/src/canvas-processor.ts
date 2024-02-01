@@ -1,4 +1,6 @@
 import jsQR, { type QRCode } from 'jsqr';
+import { getLogger } from 'shared';
+import type { Logger } from 'loglevel';
 import { FrameProcessor } from './frame-processor';
 
 export class CanvasProcessor extends FrameProcessor {
@@ -6,9 +8,12 @@ export class CanvasProcessor extends FrameProcessor {
   private _canvas: HTMLCanvasElement;
   private _width: number;
   private _height: number;
+  private log: Logger;
 
   constructor() {
     super();
+
+    this.log = getLogger();
 
     // Create canvas element
     const canvas = document.createElement('canvas');
@@ -38,6 +43,8 @@ export class CanvasProcessor extends FrameProcessor {
     this._canvas.width = width;
     this._canvas.height = height;
 
+    this.log.debug('Drawing frame', frame);
+
     // Draw the frame to the context
     this._ctx?.drawImage(frame, 0, 0, this._width, this._height);
   }
@@ -49,8 +56,12 @@ export class CanvasProcessor extends FrameProcessor {
     // If there is no data, return null
     if (!results) return null;
 
+    this.log.debug('Got frame data', results);
+
     // Decode the results data
     const decodedData = jsQR(results.data, this._width, this._height);
+
+    this.log.debug('Decoded frame data', decodedData);
 
     return decodedData;
   }

@@ -27,9 +27,7 @@ jobs:
       - run: pnpm install
       - run: pnpm dev
 
-      - name: Wait for localhost
-        run: |
-          timeout 300 bash -c 'until curl -s -o /dev/null http://localhost:3000; do sleep 5; done'
+      # TODO: Wait for dev server to start
 
       - run: pnpm benchmark
 

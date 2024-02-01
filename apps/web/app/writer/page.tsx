@@ -9,6 +9,7 @@ import { Sponsor, Star } from './components/github-button';
 
 // ----- UI/UX ----- //
 // TODO: Write the following readmes: reader, writer, and contributing
+// TODO: Fix benchmark CI
 // TODO: Add Github actions for testing and such and show badge and coverage on the README
 // TODO: Create a "install" version of the reader
 // TODO: Create homepage to advertise the reader

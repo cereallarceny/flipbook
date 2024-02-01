@@ -1,7 +1,7 @@
 {
   "Task Name": "Generate QrCode Gif from 100 char string",
   "ops/sec": "6",
-  "Average Time (ns)": 143733162.69999996,
-  "Margin": "±6.02%",
+  "Average Time (ns)": 143473700.10000002,
+  "Margin": "±4.40%",
   "Samples": 10
 }

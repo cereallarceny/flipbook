@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { WriterProps } from '@flipbook/writer';
 import { fileTypes, type FileType } from '../../lib/filetypes';
 import Editor from './editor';
 import Generate from './generate';
@@ -29,11 +30,17 @@ export default function Playground(): JSX.Element {
   // Store the QR code
   const [qr, setQR] = useState<string>('');
 
-  // Store the size of the QR code
-  const [size, setSize] = useState<number>(512);
+  // Store the configuration
+  const [configuration, setConfiguration] = useState<Partial<WriterProps>>({
+    size: 512,
+    logLevel: 'debug',
+    gifOptions: {
+      delay: 100,
+    },
+  });
 
   if (qr !== '') {
-    return <Output qr={qr} setQR={setQR} />;
+    return <Output configuration={configuration} qr={qr} setQR={setQR} />;
   }
 
   return (
@@ -68,7 +75,12 @@ export default function Playground(): JSX.Element {
             }}
             sampleCode={sampleCode}
           />
-          <Generate code={code} setQR={setQR} setSize={setSize} size={size} />
+          <Generate
+            code={code}
+            configuration={configuration}
+            setConfiguration={setConfiguration}
+            setQR={setQR}
+          />
         </div>
       </div>
     </div>

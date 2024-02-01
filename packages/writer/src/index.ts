@@ -1,7 +1,7 @@
-import log, { type LogLevelDesc } from 'loglevel';
 import { create, toDataURL, type QRCodeToDataURLOptions } from 'qrcode';
-import { createHeadTag, createIndexTag } from 'shared';
+import { createHeadTag, createIndexTag, getLogger } from 'shared';
 import GIF, { type AddFrameOptions } from 'gif.js';
+import type { Logger, LogLevelDesc } from 'loglevel';
 import { workerBlob } from './gif-worker';
 
 interface WriterResult {
@@ -10,7 +10,6 @@ interface WriterResult {
 }
 
 export interface WriterProps {
-  fps: number;
   logLevel: LogLevelDesc;
   qrOptions: QRCodeToDataURLOptions;
   gifOptions: AddFrameOptions;
@@ -19,20 +18,19 @@ export interface WriterProps {
 }
 
 export class Writer {
-  private log: log.Logger;
+  private log: Logger;
   opts: WriterProps;
 
   constructor(opts: Partial<WriterProps> = {}) {
     // Set up the default options
     const DEFAULT_WRITER_PROPS: WriterProps = {
-      fps: 10,
       logLevel: 'silent',
       qrOptions: {
         errorCorrectionLevel: 'M',
         type: 'image/png',
       },
       gifOptions: {
-        delay: 100,
+        delay: 300,
       },
       size: 512,
       splitLength: 100,
@@ -42,7 +40,7 @@ export class Writer {
     this.opts = { ...DEFAULT_WRITER_PROPS, ...opts };
 
     // Set up the logger
-    const logger = log.getLogger('qr-writer');
+    const logger = getLogger();
     logger.setLevel(this.opts.logLevel);
     this.log = logger;
   }
@@ -51,7 +49,7 @@ export class Writer {
   private split(code: string, opts: WriterProps): string[] {
     // Get the split length from the options
     const { splitLength } = opts;
-    this.log.debug('split length', splitLength);
+    this.log.debug('Split length', splitLength);
 
     // Store all the codes and the length of the input string
     const codes: string[] = [];
@@ -62,19 +60,19 @@ export class Writer {
     while (i < length) {
       // Get a slice and push it into the codes array and move onto the next
       codes.push(code.slice(i, i + splitLength));
-      this.log.debug('creating slice', i, i + splitLength);
+      this.log.debug('Creating slice', i, i + splitLength);
       i += splitLength;
     }
 
     // Add the index to each of the codes
     const indexedCodes = codes.map((v, idx) => `${createIndexTag(idx)} ${v}`);
-    this.log.debug('indexed codes', indexedCodes);
+    this.log.debug('Indexed codes', indexedCodes);
 
     // Add the head tag to the first code with the number of codes
     indexedCodes[0] = `${createHeadTag(indexedCodes.length)} ${
       indexedCodes[0]
     }`;
-    this.log.debug('indexing head', [indexedCodes[0]]);
+    this.log.debug('Indexing head', [indexedCodes[0]]);
 
     // Return the indexedCodes array
     return indexedCodes;
@@ -82,24 +80,24 @@ export class Writer {
 
   // Write a string of code to a series of QR code frames
   async write(code: string): Promise<WriterResult[]> {
-    this.log.debug('writing code', code);
+    this.log.debug('Writing code', code);
 
     // Split the code into multiple strings
     const codes = this.split(code, this.opts);
-    this.log.debug('split codes', codes);
+    this.log.debug('Split codes', codes);
 
     // Generate all the QR codes
     const allQrs = await Promise.all(
       codes.map((v) => create(v, this.opts.qrOptions))
     );
-    this.log.debug('generated QR codes', allQrs);
+    this.log.debug('Generated QR codes', allQrs);
 
     // Find the highest version of all the QR codes
     const highestVersion = allQrs.reduce((acc, v) => {
       if (v.version > acc) return v.version;
       return acc;
     }, 0);
-    this.log.debug('highest version', highestVersion);
+    this.log.debug('Highest version', highestVersion);
 
     // Regenerate each frame again with the highest version
     return Promise.all(
@@ -134,7 +132,7 @@ export class Writer {
           if (loadedImagesCount === qrs.length) {
             // All images are loaded, resolve the promise
             gif.on('finished', (blob) => {
-              this.log.debug('created blob', blob);
+              this.log.debug('Created blob', blob);
               resolve(URL.createObjectURL(blob));
             });
 

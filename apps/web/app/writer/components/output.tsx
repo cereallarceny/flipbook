@@ -5,16 +5,22 @@ import Image from 'next/image';
 import { useCallback, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import type { WriterProps } from '@flipbook/writer';
 import { Button, IconButton } from '../../components/button';
 
 interface OutputProps {
   qr: string;
   setQR: (qr: string) => void;
+  configuration: Partial<WriterProps>;
 }
 
 const GIF_NAME = 'flipbook-qr.gif';
 
-export default function Output({ qr, setQR }: OutputProps): JSX.Element {
+export default function Output({
+  qr,
+  setQR,
+  configuration,
+}: OutputProps): JSX.Element {
   // Store the read output
   const [output, setOutput] = useState<string>('');
 
@@ -24,15 +30,12 @@ export default function Output({ qr, setQR }: OutputProps): JSX.Element {
     setOutput('Reading...');
 
     // Read the QR code
-    const reader = new Reader({
-      logLevel: 'debug',
-      /* frameProcessor: new AdvancedProcessor() // defaults to "new CanvasProcesstor()" */
-    });
+    const reader = new Reader({ logLevel: configuration.logLevel });
     const readResult = await reader.read();
 
     // Set the output
     setOutput(readResult);
-  }, []);
+  }, [configuration]);
 
   // A function to download the current QR code as a GIF
   const downloadQR = useCallback(() => {

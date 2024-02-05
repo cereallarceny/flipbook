@@ -1,3 +1,3 @@
 const sharedConfig = require('jest-config');
 
-module.exports = sharedConfig;
+module.exports = { ...sharedConfig, setupFiles: ['jest-canvas-mock'] };

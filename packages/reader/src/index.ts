@@ -29,7 +29,7 @@ export class Reader {
     this.log = logger;
   }
 
-  private processAllFrames(track: MediaStreamTrack): Promise<string[]> {
+  protected processAllFrames(track: MediaStreamTrack): Promise<string[]> {
     return new Promise((resolve) => {
       // Store all the frames
       const allFrames = new Set<string>();

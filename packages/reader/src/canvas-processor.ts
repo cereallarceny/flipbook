@@ -4,11 +4,11 @@ import type { Logger } from 'loglevel';
 import { FrameProcessor } from './frame-processor';
 
 export class CanvasProcessor extends FrameProcessor {
-  private _ctx: CanvasRenderingContext2D | null;
-  private _canvas: HTMLCanvasElement;
-  private _width: number;
-  private _height: number;
-  private log: Logger;
+  protected _ctx: CanvasRenderingContext2D | null;
+  protected _canvas: HTMLCanvasElement;
+  protected _width: number;
+  protected _height: number;
+  protected log: Logger;
 
   constructor() {
     super();
@@ -27,9 +27,6 @@ export class CanvasProcessor extends FrameProcessor {
 
     // Store canvas context
     this._ctx = canvas.getContext('2d');
-
-    // Make sure the context exists
-    if (!this._ctx) throw new Error('Could not create canvas context');
   }
 
   setFrame(frame: ImageBitmap): void {

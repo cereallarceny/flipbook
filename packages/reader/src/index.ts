@@ -1,8 +1,7 @@
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { getHeadLength, getLogger } from 'shared';
 import { sliceFrames, sortFrames } from './helpers';
-import { type FrameProcessor } from './frame-processor';
-import { CanvasProcessor } from './canvas-processor';
+import { CanvasProcessor, type FrameProcessor } from './processors';
 
 interface ReaderProps {
   logLevel: LogLevelDesc;

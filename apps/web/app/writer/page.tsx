@@ -5,7 +5,6 @@ import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
 // TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
-// TODO: Write the following readmes: reader, writer, and contributing
 // TODO: Fix benchmark CI
 // TODO: Add Github actions for testing and such and show badge and coverage on the README
 // TODO: Create a "install" version of the reader

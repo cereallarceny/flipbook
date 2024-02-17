@@ -105,6 +105,7 @@ export class Writer {
         code: v,
         image: await toDataURL(v, {
           ...this.opts.qrOptions,
+          width: this.opts.size,
           version: highestVersion,
         }),
       }))

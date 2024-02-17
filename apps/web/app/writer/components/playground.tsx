@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { WriterProps } from '@flipbook/writer';
-import { fileTypes, type FileType } from '../../lib/filetypes';
+import { fileTypes, type FileType } from './filetypes';
 import Editor from './editor';
 import Generate from './generate';
 import Output from './output';

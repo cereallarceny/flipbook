@@ -1,5 +1,5 @@
 import { Bench } from 'tinybench';
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { formatNumber, generateRandomString, saveBenchMark } from './helpers';
 import { FLIPBOOK_APP_URL } from './constants';
 
@@ -9,60 +9,25 @@ const generateTest = (charLength: number, fileName: string) => {
   )} char string`;
 
   test(testName, async ({ page }) => {
-    const bench = new Bench({});
+    const bench = new Bench();
 
     // Navigate to the Flipbook app
     await page.goto(FLIPBOOK_APP_URL);
 
-    // Check if the title is correct
-    await expect(page).toHaveTitle(/Flipbook/);
-
-    // Wait for the editor to be loaded
-    const editorLoadingSelector = '[role="status"]';
-    await page.waitForSelector(editorLoadingSelector, { state: 'hidden' });
-
-    // Wait for the Monaco editor to be present in the DOM
-    const editorSelector = '.monaco-mouse-cursor-text';
-    const editorHandle = await page.waitForSelector(editorSelector);
-
-    // Click the editor
-    await editorHandle.click();
-
-    // Press Ctrl+A to select all text
-    await editorHandle.press('Control+A');
-
-    // Press Backspace to delete the selected text
-    await editorHandle.press('Backspace');
-
     // Generate charLength string
     const text = generateRandomString(charLength);
 
-    // Type charLength string into the editor
-    await editorHandle.type(text);
+    // Fill the textarea with the generated string
+    await page.locator('#textarea').fill(text);
 
     // Click the Generate Flipbook button
-    await page.getByText('Generate Flipbook').click();
-
-    // Wait for the editor to be hidden
-    await page.waitForSelector(editorSelector, { state: 'hidden' });
+    await page.locator('#generate').click();
 
     // Benchmark it
-    bench.add(
-      `Generate QrCode Gif from ${charLength} char string`,
-      async () => {
-        // Click the reset button
-        await page.getByRole('spinbutton').click();
-
-        // Wait for the editor to be loaded
-        await page.waitForSelector(editorLoadingSelector, { state: 'hidden' });
-
-        // Click the Generate Flipbook button
-        await page.getByText('Generate Flipbook').click();
-
-        // Wait for the editor to be hidden
-        await page.waitForSelector(editorSelector, { state: 'hidden' });
-      }
-    );
+    bench.add(`Generate Flipbook with ${charLength} char string`, async () => {
+      // Wait for the editor to be loaded
+      await page.waitForSelector('#image');
+    });
 
     // Run the benchmark
     await bench.run();

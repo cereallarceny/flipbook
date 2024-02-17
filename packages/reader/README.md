@@ -36,7 +36,7 @@ const result = await reader.read();
 
 The `result` is a is the original payload that was encoded into the series of QR codes.
 
-**Please note:** The default configuration of the reader is to read the QR codes visible on the screen using WebRTC's `getUserMedia` API. This means that the reader will ask for permission to view the user's screen. *Currently the only method of reading is using `getUserMedia`, if you'd like to add file upload option, or some other mechanism, please feel free to submit a pull request!*
+**Please note:** The default configuration of the reader is to read the QR codes visible on the screen using WebRTC's `getUserMedia` API. This means that the reader will ask for permission to view the user's screen. _Currently the only method of reading is using `getUserMedia`, if you'd like to add file upload option, or some other mechanism, please feel free to submit a pull request!_
 
 ## Configuration
 

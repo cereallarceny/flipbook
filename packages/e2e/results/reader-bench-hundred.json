@@ -1,7 +1,0 @@
-{
-  "Task Name": "Generate QrCode Gif from 100 char string",
-  "ops/sec": "1",
-  "Average Time (ns)": 547995820.7,
-  "Margin": "±36.60%",
-  "Samples": 10
-}

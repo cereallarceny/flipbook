@@ -45,7 +45,7 @@ export default function Page(): JSX.Element {
           <button id="read-qr" onClick={() => void read()} type="button">
             Read Flipbook
           </button>
-          <div id="read-result">{readResult}</div>
+          {readResult ? <div id="read-result">{readResult}</div> : null}
         </div>
       ) : null}
     </div>

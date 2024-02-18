@@ -1,38 +1,46 @@
-# name: Benchmark
+name: Benchmark
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   run:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-#       - uses: pnpm/action-setup@v2
-#         with:
-#           version: 8
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-#       - name: Use Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '20.x'
-#           cache: 'pnpm'
+      - name: 👷‍♂️ Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
 
-#       - run: pnpm install
-#       - run: pnpm dev
+      - name: 🏗️ Install dependencies
+        run: pnpm install
 
-#       # TODO: Wait for dev server to start
+      - name: 🚗 Start dev server
+        run: pnpm dev
 
-#       - run: pnpm benchmark
+      - name: ✋ Wait for dev server to start
+        run: |
+          while ! nc -z localhost 3000; do   
+            sleep 1
+          done
 
-#       - name: Upload benchmark results
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: benchmark-results
-#           path: packages/e2e/results
+      - name: 📊 Run benchmark
+        run: pnpm benchmark
+
+      - name: 📄 Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: packages/e2e/results

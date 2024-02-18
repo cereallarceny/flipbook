@@ -4,13 +4,10 @@ import Hero from './hero';
 import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
-// TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
-// TODO: Fix benchmark CI
-// TODO: Add Github actions for testing and such and show badge and coverage on the README
 // TODO: Create a "install" version of the reader
 // TODO: Create homepage to advertise the reader
-// TODO: Create a series of "help wanted" issues for people to contribute to
-// - Bindings for other languages?
+// TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
+// TODO: Create a series of "help wanted" issues for people to contribute to based on contributing.md
 // TODO: Post to HN
 
 export default function Page(): JSX.Element {

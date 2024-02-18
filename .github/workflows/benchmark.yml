@@ -9,7 +9,22 @@ on:
       - main
 
 jobs:
-  run:
+  test_setup:
+    name: Test setup
+    runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+    steps:
+      - name: Wait for Vercel preview deployment to be ready
+        uses: patrickedqvist/wait-for-vercel-preview
+        id: waitForVercelPreviewDeployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600
+  benchmark:
+    name: Benchmark
+    needs: test_setup
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,17 +42,10 @@ jobs:
       - name: 🏗️ Install dependencies
         run: pnpm install
 
-      - name: 🚗 Start dev server
-        run: pnpm dev
-
-      - name: ✋ Wait for dev server to start
-        run: |
-          while ! nc -z localhost 3000; do   
-            sleep 1
-          done
-
       - name: 📊 Run benchmark
         run: pnpm benchmark
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
 
       - name: 📄 Upload benchmark results
         uses: actions/upload-artifact@v4

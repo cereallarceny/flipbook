@@ -1,7 +1,10 @@
 import { Bench } from 'tinybench';
 import { test, expect, chromium } from '@playwright/test';
-import { generateRandomString, saveBenchMark } from './helpers';
-import { FLIPBOOK_APP_URL } from './constants';
+import {
+  generateRandomString,
+  saveBenchMark,
+  FLIPBOOK_APP_URL,
+} from './helpers';
 
 const generateTest = (charLength: number, fileName: string) => {
   const testName = `Benchmark with ${charLength} char string`;

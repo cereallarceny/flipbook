@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+export const FLIPBOOK_APP_URL = '/benchmark';
+
 export function generateRandomString(length: number) {
   let result = '';
   const characters =

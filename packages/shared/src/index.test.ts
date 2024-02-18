@@ -39,6 +39,11 @@ describe('Shared', () => {
       expect(result).toBe(789);
     });
 
+    it('should return -1 if there is no more space', () => {
+      const result = getIndex('>>>IDX');
+      expect(result).toBe(-1);
+    });
+
     it('should return NaN for string without index tag', () => {
       const result = getIndex('some text without index tag');
       expect(result).toBe(NaN);

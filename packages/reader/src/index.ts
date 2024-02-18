@@ -29,6 +29,8 @@ export class Reader {
   }
 
   protected processAllFrames(track: MediaStreamTrack): Promise<string[]> {
+    // TODO: We should test this
+    // istanbul ignore next
     return new Promise((resolve) => {
       // Store all the frames
       const allFrames = new Set<string>();

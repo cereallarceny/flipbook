@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+export const FLIPBOOK_APP_URL = '/benchmark';
+
 export function generateRandomString(length: number) {
   let result = '';
   const characters =
@@ -35,6 +37,8 @@ export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
       Samples: value[0]?.Samples || null,
     };
 
+    console.log(`Saving benchmark to ${outDir}/${fileName}`, jsonData);
+
     const jsonString = JSON.stringify(jsonData, null, 2);
 
     await fs.mkdir(outDir, { recursive: true });
@@ -42,9 +46,4 @@ export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
   } catch (err) {
     console.log('Error saving benchmark:', err);
   }
-};
-
-// Pretty print a number like 100000 to 100,000
-export const formatNumber = (no: number) => {
-  return new Intl.NumberFormat().format(no);
 };

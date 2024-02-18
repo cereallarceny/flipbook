@@ -1,7 +1,7 @@
 {
-  "Task Name": "Generate QrCode Gif from 100 char string",
-  "ops/sec": "6",
-  "Average Time (ns)": 143473700.10000002,
-  "Margin": "±4.40%",
-  "Samples": 10
+  "Task Name": "Flipbook (writer) with 100 char string",
+  "ops/sec": "357",
+  "Average Time (ns)": 2797025.8379888297,
+  "Margin": "±31.27%",
+  "Samples": 179
 }

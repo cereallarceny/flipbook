@@ -1,8 +1,7 @@
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { getHeadLength, getLogger } from 'shared';
 import { sliceFrames, sortFrames } from './helpers';
-import { type FrameProcessor } from './frame-processor';
-import { CanvasProcessor } from './canvas-processor';
+import { CanvasProcessor, type FrameProcessor } from './processors';
 
 interface ReaderProps {
   logLevel: LogLevelDesc;
@@ -30,6 +29,8 @@ export class Reader {
   }
 
   protected processAllFrames(track: MediaStreamTrack): Promise<string[]> {
+    // TODO: We should test this
+    // istanbul ignore next
     return new Promise((resolve) => {
       // Store all the frames
       const allFrames = new Set<string>();

@@ -4,7 +4,10 @@
   <h1 style="text-align: center; margin-top: 10px;">Flipbook</h1>
 </p>
 
-![Build Status](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg)
+[![Status](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml)
+[![License](https://badgen.net/npm/license/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)
+[![Writer Downloads/Month](https://badgen.net/npm/dm/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbook/reader)](https://npmjs.com/package/@flipbook/reader)
+[![Reader Downloads/Month](https://badgen.net/npm/dm/@flipbook/reader)](https://npmjs.com/package/@flipbook/reader)
 
 ## Getting Started
 

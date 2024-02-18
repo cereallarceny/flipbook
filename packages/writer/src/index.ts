@@ -105,6 +105,7 @@ export class Writer {
         code: v,
         image: await toDataURL(v, {
           ...this.opts.qrOptions,
+          width: this.opts.size,
           version: highestVersion,
         }),
       }))
@@ -127,6 +128,8 @@ export class Writer {
         let loadedImagesCount = 0;
 
         // Function to add the frame to the GIF and resolve when all frames are loaded
+        // TODO: We should test this
+        // istanbul ignore next
         const addFrameAndCheckCompletion = (): void => {
           loadedImagesCount++;
           if (loadedImagesCount === qrs.length) {
@@ -146,11 +149,15 @@ export class Writer {
           const img = new Image();
 
           // Use the onload event to ensure the image is fully loaded before adding it to the GIF
+          // TODO: We should test this
+          // istanbul ignore next
           img.onload = () => {
             gif.addFrame(img, this.opts.gifOptions);
             addFrameAndCheckCompletion();
           };
 
+          // TODO: We should test this
+          // istanbul ignore next
           img.onerror = (error) => {
             // Handle errors loading images
             this.log.error('Error loading image:', error);

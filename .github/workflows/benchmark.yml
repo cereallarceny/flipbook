@@ -45,7 +45,8 @@ jobs:
         run: pnpm install
 
       - name: 📊 Run benchmark
-        run: xvfb-run -- pnpm benchmark
+        working-directory: packages/e2e
+        run: xvfb-run -- npm run benchmark
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
 

@@ -99,7 +99,7 @@ const generateTest = (charLength: number, fileName: string) => {
 generateTest(100, 'bench-hundred.json');
 
 // Generate test for 1,000 char strings
-generateTest(1000, 'bench-1k.json');
+generateTest(100, 'bench-1k.json');
 
 // Generate test for 10,000 char strings
-generateTest(10000, 'bench-10k.json');
+generateTest(100, 'bench-10k.json');

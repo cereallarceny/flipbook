@@ -66,13 +66,21 @@ const generateTest = (charLength: number, fileName: string) => {
     // Reset the benchmark
     bench.reset();
 
+    console.log('Bench reset');
+
     // Click the Read Flipbook button
     await page.locator('#read-qr').click();
 
+    console.log('Clicked read qr');
+
     // Benchmark it
     bench.add(`Flipbook (reader) with ${charLength} char string`, async () => {
+      console.log('Waiting for read result');
+
       // Wait for the result to be loaded
       await page.waitForSelector('#read-result');
+
+      console.log('Read result loaded');
     });
 
     // Run the benchmark

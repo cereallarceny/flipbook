@@ -43,6 +43,8 @@ export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
 
     await fs.mkdir(outDir, { recursive: true });
     await fs.writeFile(`${outDir}/${fileName}`, jsonString, 'utf-8');
+
+    console.log('Benchmark saved');
   } catch (err) {
     console.log('Error saving benchmark:', err);
   }

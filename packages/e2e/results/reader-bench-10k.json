@@ -1,7 +1,7 @@
 {
   "Task Name": "Flipbook (writer) with 10000 char string",
-  "ops/sec": "58",
-  "Average Time (ns)": 17106670.249999903,
-  "Margin": "±74.92%",
+  "ops/sec": "71",
+  "Average Time (ns)": 13889268.472222133,
+  "Margin": "±69.90%",
   "Samples": 36
 }

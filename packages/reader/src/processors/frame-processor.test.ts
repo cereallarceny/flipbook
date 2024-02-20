@@ -17,6 +17,14 @@ describe('FrameProcessor', () => {
       destroy(): void {
         // Do nothing
       }
+
+      processAllFrames(): Promise<string[]> {
+        return Promise.resolve(['', '']);
+      }
+
+      read(): Promise<string> {
+        return Promise.resolve('');
+      }
     }
 
     fp = new FrameProcessorImpl();
@@ -37,6 +45,20 @@ describe('FrameProcessor', () => {
   describe('destroy', () => {
     it('should run without errors', () => {
       fp.destroy();
+    });
+  });
+
+  describe('processAllFrames', () => {
+    it('should return an array of strings', async () => {
+      const result = await fp.processAllFrames();
+      expect(result).toEqual(['', '']);
+    });
+  });
+
+  describe('read', () => {
+    it('should return an empty string', async () => {
+      const result = await fp.read();
+      expect(result).toBe('');
     });
   });
 });

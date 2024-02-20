@@ -12,6 +12,10 @@ class TestableCanvasProcessor extends CanvasProcessor {
   public getCanvas(): HTMLCanvasElement {
     return this._canvas;
   }
+
+  public processAllFrames(): Promise<string[]> {
+    return this.processAllFrames();
+  }
 }
 
 beforeEach(() => {
@@ -21,6 +25,30 @@ beforeEach(() => {
 
 describe('CanvasProcessor', () => {
   let cp: TestableCanvasProcessor;
+
+  beforeAll(() => {
+    class MediaStreamTrackMock {
+      stop = jest.fn();
+    }
+
+    const mockGetDisplayMediaMock = jest.fn(async () => {
+      return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
+        (resolve) => {
+          resolve({
+            getVideoTracks: () => {
+              return [new MediaStreamTrackMock()];
+            },
+          });
+        }
+      );
+    });
+
+    Object.defineProperty(global.navigator, 'mediaDevices', {
+      value: {
+        getDisplayMedia: mockGetDisplayMediaMock,
+      },
+    });
+  });
 
   beforeEach(() => {
     jest.restoreAllMocks();
@@ -87,6 +115,35 @@ describe('CanvasProcessor', () => {
       cp.destroy();
 
       expect(canvas.remove).toHaveBeenCalled();
+    });
+  });
+
+  describe('processAllFrames and read', () => {
+    it('should read frames', async () => {
+      const mockedData = ['A', 'B', 'C'];
+      const mockedDataPromise = new Promise((resolve) => {
+        resolve(mockedData);
+      });
+
+      jest
+        .spyOn(cp, 'processAllFrames')
+        .mockReturnValueOnce(mockedDataPromise as Promise<string[]>);
+
+      const result = await cp.read();
+
+      expect(result).toBe('ABC');
+    });
+
+    it('should throw an error', async () => {
+      const ERROR_MESSAGE = 'Simulated error';
+
+      try {
+        jest.spyOn(cp, 'processAllFrames').mockRejectedValueOnce(ERROR_MESSAGE);
+
+        await cp.read();
+      } catch (error) {
+        expect(error).toBe(ERROR_MESSAGE);
+      }
     });
   });
 });

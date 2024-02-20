@@ -26,30 +26,6 @@ beforeEach(() => {
 describe('CanvasProcessor', () => {
   let cp: TestableCanvasProcessor;
 
-  beforeAll(() => {
-    class MediaStreamTrackMock {
-      stop = jest.fn();
-    }
-
-    const mockGetDisplayMediaMock = jest.fn(async () => {
-      return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
-        (resolve) => {
-          resolve({
-            getVideoTracks: () => {
-              return [new MediaStreamTrackMock()];
-            },
-          });
-        }
-      );
-    });
-
-    Object.defineProperty(global.navigator, 'mediaDevices', {
-      value: {
-        getDisplayMedia: mockGetDisplayMediaMock,
-      },
-    });
-  });
-
   beforeEach(() => {
     jest.restoreAllMocks();
     cp = new TestableCanvasProcessor();
@@ -119,11 +95,58 @@ describe('CanvasProcessor', () => {
   });
 
   describe('processAllFrames and read', () => {
+    beforeAll(() => {
+      class MediaStreamTrackMock {
+        stop = jest.fn();
+      }
+
+      const mockGetDisplayMediaMock = jest.fn(async () => {
+        return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
+          (resolve) => {
+            resolve({
+              getVideoTracks: () => {
+                return [new MediaStreamTrackMock()];
+              },
+            });
+          }
+        );
+      });
+
+      Object.defineProperty(global.navigator, 'mediaDevices', {
+        value: {
+          getDisplayMedia: mockGetDisplayMediaMock,
+        },
+      });
+    });
+
     it('should read frames', async () => {
       const mockedData = ['A', 'B', 'C'];
       const mockedDataPromise = new Promise((resolve) => {
         resolve(mockedData);
       });
+
+      class MediaStreamTrackMock {
+        stop = jest.fn();
+      }
+
+      const mockGetDisplayMediaMock = jest.fn(async () => {
+        return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
+          (resolve) => {
+            resolve({
+              getVideoTracks: () => {
+                return [new MediaStreamTrackMock()];
+              },
+            });
+          }
+        );
+      });
+
+      jest
+        .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
+        .mockImplementation(
+          (_options) =>
+            mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
+        );
 
       jest
         .spyOn(cp, 'processAllFrames')
@@ -138,6 +161,29 @@ describe('CanvasProcessor', () => {
       const ERROR_MESSAGE = 'Simulated error';
 
       try {
+        const mockGetDisplayMediaMock = jest.fn(async () => {
+          class MediaStreamTrackMock {
+            stop = jest.fn();
+          }
+
+          return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
+            (resolve) => {
+              resolve({
+                getVideoTracks: () => {
+                  return [new MediaStreamTrackMock()];
+                },
+              });
+            }
+          );
+        });
+
+        jest
+          .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
+          .mockImplementation(
+            (_options) =>
+              mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
+          );
+
         jest.spyOn(cp, 'processAllFrames').mockRejectedValueOnce(ERROR_MESSAGE);
 
         await cp.read();

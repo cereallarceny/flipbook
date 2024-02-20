@@ -4,7 +4,6 @@ import Hero from './hero';
 import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
-// TODO: Create a "install" version of the reader
 // TODO: Create homepage to advertise the reader
 // TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
 // TODO: Create a series of "help wanted" issues for people to contribute to based on contributing.md
@@ -26,7 +25,7 @@ export default function Page(): JSX.Element {
           {
             id: 'star',
             children: (
-              <div className="-mb-1">
+              <div className="-mb-4 sm:-mb-1">
                 <Star />
               </div>
             ),
@@ -34,7 +33,7 @@ export default function Page(): JSX.Element {
           {
             id: 'sponsor',
             children: (
-              <div className="-mb-1">
+              <div className="-mb-4 sm:-mb-1">
                 <Sponsor />
               </div>
             ),

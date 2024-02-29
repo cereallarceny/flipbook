@@ -1,8 +1,7 @@
 import { Bench } from 'tinybench';
 import { test, expect } from '@playwright/test';
-import { FLIPBOOK_APP_URL } from './constants';
 import path from 'node:path';
-import { saveBenchMark } from './helpers';
+import { saveBenchMark, FLIPBOOK_APP_URL } from './helpers';
 
 const generateTest = (
   charLength: number,

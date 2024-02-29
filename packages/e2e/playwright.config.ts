@@ -5,6 +5,6 @@ export default defineConfig({
   timeout: 10 * 60 * 1000, // 10 minutes
   workers: process.env.CI ? 1 : undefined,
   use: {
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL ?? 'http://localhost:3000',
   },
 });

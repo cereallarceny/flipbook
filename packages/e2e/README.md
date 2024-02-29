@@ -6,19 +6,19 @@
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 100 char string | 371 | 2690967.962365589 | ±32.40% | 186 |
+| Flipbook (writer) with 100 char string | 1 | 876243861.8943095 | ±25.26% | 10 |
 
 #### For 1,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 1000 char string | 329 | 3031993.115151512 | ±73.27% | 165 |
+| Flipbook (writer) with 1000 char string | 0 | 4017574768.8010335 | ±9.25% | 10 |
 
 #### For 10,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 10000 char string | 7 | 133566112.40000021 | ±219.05% | 10 |
+| Flipbook (writer) with 10000 char string | 0 | 28061555902.397633 | ±22.50% | 10 |
 
 ### Reader
 
@@ -26,16 +26,16 @@
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 100 char string | 387 | 2580212.3659793893 | ±35.97% | 194 |
+| Reading Qr Gif of length 100 chars | 3 | 305343040.39776325 | ±39.83% | 10 |
 
 #### For 1,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 1000 char string | 87 | 11440065.318181785 | ±68.05% | 44 |
+| Reading Qr Gif of length 1000 chars | 1 | 677717689.7972822 | ±17.44% | 10 |
 
 #### For 10,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 10000 char string | 71 | 13889268.472222133 | ±69.90% | 36 |
+| Reading Qr Gif of length 10000 chars | 0 | 1427278360.6007695 | ±23.04% | 10 |

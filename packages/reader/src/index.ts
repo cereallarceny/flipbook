@@ -1,6 +1,6 @@
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { getLogger } from 'shared';
-import { CanvasProcessor, type FrameProcessor } from './processors';
+import { WebRTCProcessor, type FrameProcessor } from './processors';
 
 interface ReaderProps {
   logLevel: LogLevelDesc;
@@ -15,7 +15,7 @@ export class Reader {
     // Set up the default options
     const DEFAULT_READER_PROPS: ReaderProps = {
       logLevel: 'silent',
-      frameProcessor: new CanvasProcessor(),
+      frameProcessor: new WebRTCProcessor(),
     };
 
     // Merge the options with the defaults

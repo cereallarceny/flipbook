@@ -6,6 +6,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/unbound-method': 'off',
         'jest/unbound-method': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
       },
     },
   ],

@@ -1,5 +1,5 @@
 import { type QRCode } from 'jsqr';
-import { FrameProcessor } from './frame-processor';
+import { FrameProcessor } from './index';
 
 describe('FrameProcessor', () => {
   let fp: FrameProcessor;

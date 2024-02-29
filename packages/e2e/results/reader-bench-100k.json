@@ -1,7 +1,7 @@
 {
-  "Task Name": "Flipbook (writer) with 100000 char string",
-  "ops/sec": "81",
-  "Average Time (ns)": 12231388.243902672,
-  "Margin": "±68.86%",
-  "Samples": 41
+  "Task Name": "Reading Qr Gif of length 100000 chars",
+  "ops/sec": "0",
+  "Average Time (ns)": 3803528671.6997623,
+  "Margin": "±14.27%",
+  "Samples": 10
 }

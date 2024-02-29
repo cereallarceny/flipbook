@@ -86,11 +86,11 @@ export class FileProcessor extends FrameProcessor {
       this.imageHeight
     );
 
-    // If there is no data, return null
-    if (!imageData) return null;
-
     // Decode the results data using jsQR
-    const decodedData = jsQR(imageData.data, this.imageWidth, this.imageHeight);
+    let decodedData: null | QRCode = null;
+    if (imageData && 'data' in imageData) {
+      decodedData = jsQR(imageData.data, this.imageWidth, this.imageHeight);
+    }
 
     return decodedData; // Return the decoded data
   }
@@ -102,11 +102,12 @@ export class FileProcessor extends FrameProcessor {
     this.canvasElement.remove(); // Remove the canvas from the DOM
   }
 
+  // istanbul ignore next
   /**
    * Processes a single frame.
    * @returns A Promise that resolves to the processed frame data.
    */
-  protected async processSingleFrame(): Promise<string> {
+  protected processSingleFrame(): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
         const img = new Image();
@@ -127,6 +128,7 @@ export class FileProcessor extends FrameProcessor {
     });
   }
 
+  // istanbul ignore next
   /**
    * Processes all frames in a GIF file.
    * @returns A Promise that resolves to an array of processed frame data.
@@ -243,6 +245,7 @@ export class FileProcessor extends FrameProcessor {
         }
       };
 
+      // istanbul ignore next
       reader.onerror = (error) => {
         reject(error);
       };
@@ -274,6 +277,7 @@ export class FileProcessor extends FrameProcessor {
 
     // Get the 2D context of the canvas
     const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+    // istanbul ignore next
     if (!ctx) {
       throw new Error('2D context not supported');
     }

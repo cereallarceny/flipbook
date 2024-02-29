@@ -24,6 +24,7 @@ module.exports = {
     `${rootDir}/coverage`,
     `${rootDir}/dist`,
     `${rootDir}/build`,
+    `${rootDir}/typings`,
   ],
   collectCoverageFrom: ['**/*.ts', '!**/node_modules/**'],
   collectCoverage: true,

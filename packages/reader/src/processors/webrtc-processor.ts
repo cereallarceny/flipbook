@@ -4,7 +4,7 @@ import type { Logger } from 'loglevel';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
 
-export class CanvasProcessor extends FrameProcessor {
+export class WebRTCProcessor extends FrameProcessor {
   protected _ctx: CanvasRenderingContext2D | null;
   protected _canvas: HTMLCanvasElement;
   protected _width: number;
@@ -74,7 +74,7 @@ export class CanvasProcessor extends FrameProcessor {
     this._track = undefined;
   }
 
-  async processAllFrames(): Promise<string[]> {
+  processAllFrames(): Promise<string[]> {
     // TODO: We should test this
     // istanbul ignore next
     return new Promise((resolve) => {
@@ -189,14 +189,6 @@ export class CanvasProcessor extends FrameProcessor {
       // Return the code when it's found
       return result;
     } catch (e) {
-      this.log.error('Error reading:', e);
-
-      // Stop the track and destroy the frameProcessor
-      if (track) {
-        track.stop();
-        this.destroy();
-      }
-
       return Promise.reject(e);
     }
   }

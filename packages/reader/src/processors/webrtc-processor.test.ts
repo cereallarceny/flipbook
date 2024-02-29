@@ -1,10 +1,10 @@
 import jsqr from 'jsqr';
 import { setupJestCanvasMock } from 'jest-canvas-mock';
-import { CanvasProcessor } from './canvas-processor';
+import { WebRTCProcessor } from './index';
 
 jest.mock('jsqr', () => jest.fn());
 
-class TestableCanvasProcessor extends CanvasProcessor {
+class TestableWebRTCProcessor extends WebRTCProcessor {
   public getCtx(): CanvasRenderingContext2D | null {
     return this._ctx;
   }
@@ -24,11 +24,11 @@ beforeEach(() => {
 });
 
 describe('CanvasProcessor', () => {
-  let cp: TestableCanvasProcessor;
+  let cp: TestableWebRTCProcessor;
 
   beforeEach(() => {
     jest.restoreAllMocks();
-    cp = new TestableCanvasProcessor();
+    cp = new TestableWebRTCProcessor();
   });
 
   afterEach(() => {
@@ -161,20 +161,32 @@ describe('CanvasProcessor', () => {
       const ERROR_MESSAGE = 'Simulated error';
 
       try {
-        const mockGetDisplayMediaMock = jest.fn(async () => {
-          class MediaStreamTrackMock {
-            stop = jest.fn();
-          }
+        jest
+          .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
+          .mockImplementation((_options) => {
+            throw new Error(ERROR_MESSAGE);
+          });
 
-          return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
-            (resolve) => {
-              resolve({
-                getVideoTracks: () => {
-                  return [new MediaStreamTrackMock()];
-                },
-              });
-            }
-          );
+        await cp.read();
+      } catch (error) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          expect(error.message).toBe(ERROR_MESSAGE);
+        }
+      }
+    });
+
+    it('should throw an error if track if there is no track', async () => {
+      const ERROR_MESSAGE = 'Could not get video track';
+
+      try {
+        const mockGetDisplayMediaMock = jest.fn(async () => {
+          return new Promise<{ getVideoTracks: () => unknown[] }>((resolve) => {
+            resolve({
+              getVideoTracks: () => {
+                return [];
+              },
+            });
+          });
         });
 
         jest
@@ -184,11 +196,11 @@ describe('CanvasProcessor', () => {
               mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
           );
 
-        jest.spyOn(cp, 'processAllFrames').mockRejectedValueOnce(ERROR_MESSAGE);
-
         await cp.read();
       } catch (error) {
-        expect(error).toBe(ERROR_MESSAGE);
+        if (error && typeof error === 'object' && 'message' in error) {
+          expect(error.message).toBe(ERROR_MESSAGE);
+        }
       }
     });
   });

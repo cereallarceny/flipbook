@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.41.1-jammy
+      image: mcr.microsoft.com/playwright:v1.42.0-jammy
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: 📊 Run benchmark
         working-directory: packages/e2e
-        run: xvfb-run -- npm run benchmark
+        run: pnpm benchmark
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
 

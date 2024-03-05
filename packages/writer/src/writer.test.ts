@@ -1,6 +1,6 @@
 import GIF from 'gif.js';
 import qrcode, { create } from 'qrcode';
-import { Writer } from './index';
+import { Writer } from './writer';
 
 jest.mock('gif.js', () => {
   return jest.fn().mockImplementation(() => ({

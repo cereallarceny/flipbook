@@ -3,7 +3,6 @@
 We welcome contributions from the community and are happy to have them! The top priorities for contribution at the moment are as follows:
 
 - **Rust Bindings:** We'd like to have Rust bindings for both the writer and reader libraries so that they may be used in native mobile applications.
-- **File Upload:** Currently the reader library only supports reading the QR codes visible on the screen. We'd like to add support for reading a Flipbook from a file upload.
 
 And in general, we're always looking for help with:
 

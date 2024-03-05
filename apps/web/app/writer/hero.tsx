@@ -32,7 +32,7 @@ export default function Hero({
                 <p className="mt-6 text-xl leading-8 text-gray-600">
                   {description}
                 </p>
-                <div className="mt-10 flex items-center gap-x-6">
+                <div className="mt-10 flex items-center gap-x-6 gap-y-6 flex-col sm:flex-row sm:gap-y-0">
                   {buttons.map((button) => (
                     <div key={button.id}>{button.children}</div>
                   ))}

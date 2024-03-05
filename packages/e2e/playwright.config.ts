@@ -1,10 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testMatch: '*src/**/*.test.ts',
+  testMatch: '*src/**/*.spec.ts',
   timeout: 10 * 60 * 1000, // 10 minutes
-  workers: 4,
+  workers: process.env.CI ? 1 : undefined,
   use: {
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL ?? 'http://localhost:3000',
   },
 });

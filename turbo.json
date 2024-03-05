@@ -7,25 +7,15 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "format": {
-      "dependsOn": ["^format"]
-    },
-    "format:fix": {
-      "dependsOn": ["^format:fix"]
-    },
-    "test": {
-      "dependsOn": ["^test"]
-    },
-    "test:watch": {
-      "dependsOn": ["^test:watch"]
-    },
-    "benchmark": {
-      "dependsOn": ["^benchmark"]
-    }
+    "lint": {},
+    "format": {},
+    "format:fix": {},
+    "test": {},
+    "test:watch": {},
+    "benchmark": {}
   }
 }

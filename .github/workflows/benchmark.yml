@@ -16,7 +16,7 @@ jobs:
       preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
     steps:
       - name: Wait for Vercel preview deployment to be ready
-        uses: patrickedqvist/wait-for-vercel-preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
         id: waitForVercelPreviewDeployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,6 +26,8 @@ jobs:
     needs: test_setup
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.42.0-jammy
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +45,7 @@ jobs:
         run: pnpm install
 
       - name: 📊 Run benchmark
+        working-directory: packages/e2e
         run: pnpm benchmark
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}

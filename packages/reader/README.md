@@ -36,7 +36,19 @@ const result = await reader.read();
 
 The `result` is a is the original payload that was encoded into the series of QR codes.
 
-**Please note:** The default configuration of the reader is to read the QR codes visible on the screen using WebRTC's `getUserMedia` API. This means that the reader will ask for permission to view the user's screen. _Currently the only method of reading is using `getUserMedia`, if you'd like to add file upload option, or some other mechanism, please feel free to submit a pull request!_
+**Please note:** The default configuration of the reader is to read the QR codes visible on the screen using WebRTC's `getUserMedia` API. This means that the reader will ask for permission to view the user's screen. You may want to use a different `frameProcessor` if you want to read the QR codes from a different source, such as a file. You can change the `frameProcessor` like this:
+
+```ts
+import { Reader, FileProcessor } from '@flipbook/reader';
+
+const file = // some file
+
+const reader = new Reader({
+  frameProcessor: new FileProcessor(file)
+});
+
+const result = await reader.read()
+```
 
 ## Configuration
 
@@ -45,6 +57,6 @@ The `Writer` class accepts an optional configuration object that can be used to 
 ```typescript
 {
   logLevel: 'silent' | 'trace' | 'debug' | 'info' | 'warn' | 'error', // Default: 'silent'
-  frameProcessor: FrameProcessor, // Default: new CanvasProcessor()
+  frameProcessor: FrameProcessor, // Default: new WebRTCProcessor()
 }
 ```

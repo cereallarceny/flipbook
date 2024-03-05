@@ -1,5 +1,5 @@
 import { type FrameProcessor } from './processors';
-import { Reader } from './index';
+import { Reader } from './reader';
 
 const mockFrameProcessor: FrameProcessor = {
   setFrame: jest.fn(),

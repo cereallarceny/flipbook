@@ -1,11 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import type { FormEventHandler, JSX } from 'react';
 import { Writer } from '@flipbook/writer';
-import { Reader } from '@flipbook/reader';
-import { FileProcessor } from '@flipbook/reader/src/processors/file-processor';
+import { Reader, FileProcessor } from '@flipbook/reader';
 
 export default function File(): JSX.Element {
   const [decoded, setDecoded] = useState<string | null>(null);
@@ -44,16 +43,6 @@ export default function File(): JSX.Element {
     }
   };
 
-  const buttonStyles = useMemo(
-    () => ({
-      background: 'blue',
-      color: 'white',
-      padding: '8px 12px',
-      borderRadius: 8,
-    }),
-    []
-  );
-
   return (
     <>
       <textarea
@@ -65,12 +54,7 @@ export default function File(): JSX.Element {
         value={text}
       />
       <br />
-      <button
-        id="generate"
-        onClick={() => void generate()}
-        style={{ ...buttonStyles }}
-        type="button"
-      >
+      <button id="generate" onClick={() => void generate()} type="button">
         Generate Flipbook
       </button>
       <br />
@@ -80,28 +64,21 @@ export default function File(): JSX.Element {
         </div>
       ) : null}
 
-      <br />
-      <br />
-      <hr />
-      <br />
-      <br />
+      <hr style={{ marginTop: 20, marginBottom: 20 }} />
 
       <form
         onSubmit={handleSubmit as unknown as FormEventHandler<HTMLFormElement>}
       >
         <input id="upload" name="inputFile" required type="file" />
-        <button style={{ ...buttonStyles }} type="submit" id="decode">
+        <br />
+        <button id="decode" type="submit">
           Decode Flipbook
         </button>
-
         <br />
         {decoded && !isDecoding ? (
           <pre>
-            <code>{decoded}</code>
+            <code id="decoded">{decoded}</code>
           </pre>
-        ) : null}
-        {isDecoding ? (
-          <span id="in-progress-decoding">Decoding Flipbook...</span>
         ) : null}
       </form>
     </>

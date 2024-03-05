@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testMatch: '*src/**/*.test.ts',
+  testMatch: '*src/**/*.spec.ts',
   timeout: 10 * 60 * 1000, // 10 minutes
   workers: process.env.CI ? 1 : undefined,
   use: {

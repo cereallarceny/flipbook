@@ -23,7 +23,7 @@ beforeEach(() => {
   setupJestCanvasMock();
 });
 
-describe('CanvasProcessor', () => {
+describe('WebRTCProcessor', () => {
   let cp: TestableWebRTCProcessor;
 
   beforeEach(() => {

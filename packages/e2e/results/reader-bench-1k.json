@@ -1,7 +1,7 @@
 {
-  "Task Name": "Reading Qr Gif of length 1000 chars",
-  "ops/sec": "1",
-  "Average Time (ns)": 677717689.7972822,
-  "Margin": "±17.44%",
+  "Task Name": "Flipbook (reader) with 1000 char string",
+  "ops/sec": "3",
+  "Average Time (ns)": 266798203.8999995,
+  "Margin": "±1.82%",
   "Samples": 10
 }

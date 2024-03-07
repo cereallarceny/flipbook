@@ -76,7 +76,7 @@ export default function Output({
               </pre>
             </div>
           )}
-          <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             <Button onClick={() => void readQR()} type="button">
               Read QR
             </Button>

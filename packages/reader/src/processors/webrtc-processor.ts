@@ -4,15 +4,20 @@ import type { Logger } from 'loglevel';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
 
+type MediaType = 'display' | 'camera';
+type MediaOptions = DisplayMediaStreamOptions | MediaStreamConstraints;
+
 export class WebRTCProcessor extends FrameProcessor {
   protected _ctx: CanvasRenderingContext2D | null;
   protected _canvas: HTMLCanvasElement;
   protected _width: number;
   protected _height: number;
   protected _track: MediaStreamTrack | undefined;
+  protected _mediaType: MediaType;
+  protected _mediaOptions: MediaOptions;
   protected log: Logger;
 
-  constructor() {
+  constructor(mediaType?: MediaType, options?: MediaOptions) {
     super();
 
     this.log = getLogger();
@@ -32,6 +37,15 @@ export class WebRTCProcessor extends FrameProcessor {
 
     // Store the track
     this._track = undefined;
+
+    // Store the media options
+    this._mediaType = mediaType || 'display';
+    this._mediaOptions = options || {
+      video: {
+        displaySurface: 'window',
+      },
+      audio: false,
+    };
   }
 
   setFrame(frame: ImageBitmap): void {
@@ -149,12 +163,17 @@ export class WebRTCProcessor extends FrameProcessor {
 
   async read(): Promise<string> {
     // Get the display media
-    const captureStream = await navigator.mediaDevices.getDisplayMedia({
-      video: {
-        displaySurface: 'window',
-      },
-      audio: false,
-    });
+    let captureStream: MediaStream;
+
+    if (this._mediaType === 'display') {
+      captureStream = await navigator.mediaDevices.getDisplayMedia(
+        this._mediaOptions
+      );
+    } else {
+      captureStream = await navigator.mediaDevices.getUserMedia(
+        this._mediaOptions
+      );
+    }
 
     this.log.debug('Got capture stream', captureStream);
 

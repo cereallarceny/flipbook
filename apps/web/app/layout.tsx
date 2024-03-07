@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { title, description, url, logotype } from './content';
-
+import { meta } from './content';
+import Navbar from './components/navbar';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
       ? 'https://flipbook.codes'
       : 'http://localhost:3000'
   ),
-  title,
-  description,
+  title: meta.title,
+  description: meta.description,
   icons: [
     {
       url: '/apple-touch-icon.png',
@@ -42,17 +42,17 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
-    url,
-    title,
-    description,
-    images: [logotype],
+    url: meta.url,
+    title: meta.title,
+    description: meta.description,
+    images: [meta.logotype],
   },
   twitter: {
     card: 'summary_large_image',
-    site: url,
-    title,
-    description,
-    images: [logotype],
+    site: meta.url,
+    title: meta.title,
+    description: meta.description,
+    images: [meta.logotype],
   },
 };
 
@@ -63,7 +63,10 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

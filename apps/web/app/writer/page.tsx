@@ -1,13 +1,8 @@
 import { Button } from '../components/button';
-import { description, titleWithoutName } from '../content';
+import { meta, writer } from '../content';
 import Hero from './hero';
 import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
-
-// TODO: Create homepage to advertise the reader
-// TODO: Release reader and writer as separate packages to NPM: @flipbook/reader and @flipbook/writer
-// TODO: Create a series of "help wanted" issues for people to contribute to based on contributing.md
-// TODO: Post to HN
 
 export default function Page(): JSX.Element {
   return (
@@ -18,7 +13,7 @@ export default function Page(): JSX.Element {
             id: 'github',
             children: (
               <Button as="a" href="https://github.com/cereallarceny/flipbook">
-                View on Github
+                {writer.github}
               </Button>
             ),
           },
@@ -39,8 +34,8 @@ export default function Page(): JSX.Element {
             ),
           },
         ]}
-        description={description}
-        title={titleWithoutName}
+        description={meta.description}
+        title={meta.titleWithoutName}
       >
         <Playground />
       </Hero>

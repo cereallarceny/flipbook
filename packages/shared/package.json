@@ -22,7 +22,6 @@
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "jest-config": "workspace:*",
-    "tsconfig": "workspace:*",
-    "tsup-config": "workspace:*"
+    "tsconfig": "workspace:*"
   }
 }

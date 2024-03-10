@@ -30,7 +30,6 @@
     "@types/qrcode": "^1.5.5",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "jest-config": "workspace:*",
-    "tsup-config": "workspace:*"
+    "jest-config": "workspace:*"
   }
 }

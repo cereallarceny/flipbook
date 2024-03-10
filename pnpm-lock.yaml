@@ -181,9 +181,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tsup-config:
-        specifier: workspace:*
-        version: link:../tsup-config
 
   packages/shared:
     devDependencies:
@@ -196,13 +193,8 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tsup-config:
-        specifier: workspace:*
-        version: link:../tsup-config
 
   packages/tsconfig: {}
-
-  packages/tsup-config: {}
 
   packages/writer:
     dependencies:
@@ -234,9 +226,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tsup-config:
-        specifier: workspace:*
-        version: link:../tsup-config
 
 packages:
 

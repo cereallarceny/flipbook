@@ -28,7 +28,6 @@
     "eslint-config-custom": "workspace:*",
     "jest-canvas-mock": "^2.5.2",
     "jest-config": "workspace:*",
-    "tsconfig": "workspace:*",
-    "tsup-config": "workspace:*"
+    "tsconfig": "workspace:*"
   }
 }

@@ -1,10 +1,18 @@
 {
   "name": "@flipbook/writer",
   "version": "0.0.0",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "license": "MIT",
   "scripts": {
+    "build": "tsup",
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
@@ -12,16 +20,17 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@flipbook/shared": "workspace:*",
     "canvas-capture": "^2.1.1",
     "gif.js": "^0.2.0",
-    "qrcode": "^1.5.3",
-    "shared": "workspace:*"
+    "qrcode": "^1.5.3"
   },
   "devDependencies": {
     "@types/gif.js": "^0.2.5",
     "@types/qrcode": "^1.5.5",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "jest-config": "workspace:*"
+    "jest-config": "workspace:*",
+    "tsup-config": "workspace:*"
   }
 }

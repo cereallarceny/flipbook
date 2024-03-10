@@ -18,12 +18,14 @@
     "format": "turbo run format",
     "format:fix": "turbo run format:fix",
     "pre:commit": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "changeset"
   },
   "dependencies": {
     "loglevel": "^1.8.1"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
     "@types/jest": "^29.5.11",

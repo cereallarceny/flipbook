@@ -161,14 +161,18 @@ export class Writer {
           img.onerror = (error) => {
             // Handle errors loading images
             this.log.error('Error loading image:', error);
-            reject(error);
+            reject(
+              new Error(
+                typeof error === 'string' ? error : 'Error loading image'
+              )
+            );
           };
 
           img.src = qr.image;
         }
       } catch (e) {
         this.log.error(e);
-        reject(e);
+        reject(new Error(e as string));
       }
     });
   }

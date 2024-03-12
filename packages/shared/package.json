@@ -11,6 +11,9 @@
     "./package.json": "./package.json"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",

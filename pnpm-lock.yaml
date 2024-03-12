@@ -159,6 +159,9 @@ importers:
 
   packages/reader:
     dependencies:
+      '@flipbook/shared':
+        specifier: workspace:*
+        version: link:../shared
       gifuct-js:
         specifier: ^2.1.2
         version: 2.1.2
@@ -166,9 +169,6 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
-      '@flipbook/shared':
-        specifier: workspace:*
-        version: link:../shared
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom

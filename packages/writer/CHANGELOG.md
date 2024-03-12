@@ -1,5 +1,13 @@
 # @flipbook/writer
 
+## 0.1.1
+
+### Patch Changes
+
+- 33db75b: Changing publish access
+- Updated dependencies [33db75b]
+  - @flipbook/shared@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,5 +1,5 @@
 import { create, toDataURL, type QRCodeToDataURLOptions } from 'qrcode';
-import { createHeadTag, createIndexTag, getLogger } from 'shared';
+import { createHeadTag, createIndexTag, getLogger } from '@flipbook/shared';
 import GIF, { type AddFrameOptions } from 'gif.js';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { workerBlob } from './gif-worker';
@@ -161,14 +161,18 @@ export class Writer {
           img.onerror = (error) => {
             // Handle errors loading images
             this.log.error('Error loading image:', error);
-            reject(error);
+            reject(
+              new Error(
+                typeof error === 'string' ? error : 'Error loading image'
+              )
+            );
           };
 
           img.src = qr.image;
         }
       } catch (e) {
         this.log.error(e);
-        reject(e);
+        reject(new Error(e as string));
       }
     });
   }

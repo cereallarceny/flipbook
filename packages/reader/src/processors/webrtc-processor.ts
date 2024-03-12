@@ -1,5 +1,5 @@
 import jsQR, { type QRCode } from 'jsqr';
-import { getHeadLength, getLogger } from 'shared';
+import { getHeadLength, getLogger } from '@flipbook/shared';
 import type { Logger } from 'loglevel';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
@@ -208,7 +208,7 @@ export class WebRTCProcessor extends FrameProcessor {
       // Return the code when it's found
       return result;
     } catch (e) {
-      return Promise.reject(e);
+      return Promise.reject(new Error('Failed to read frames'));
     }
   }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Inter } from 'next/font/google';
 import { meta } from './content';
 import Navbar from './components/navbar';
@@ -64,7 +65,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
+        <Suspense fallback={null}>
+          <Navbar />
+        </Suspense>
+
         {children}
       </body>
     </html>

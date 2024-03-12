@@ -14,7 +14,9 @@
     "lint": {},
     "format": {},
     "format:fix": {},
-    "test": {},
+    "test": {
+      "dependsOn": ["@flipbook/shared#build"]
+    },
     "test:watch": {},
     "benchmark": {}
   }

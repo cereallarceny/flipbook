@@ -40,3 +40,6 @@ test-results/
 
 # benchmarks
 benchmarks.md
+
+# builds
+dist

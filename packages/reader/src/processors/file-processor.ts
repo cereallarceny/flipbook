@@ -123,7 +123,7 @@ export class FileProcessor extends FrameProcessor {
         img.onerror = reject;
         img.src = URL.createObjectURL(this.file);
       } catch (error) {
-        reject(error); // Reject with error if an error occurs
+        reject(new Error('Failed to process frame'));
       }
     });
   }
@@ -163,7 +163,7 @@ export class FileProcessor extends FrameProcessor {
             this.setFrame(img);
             const frameData = this.getFrameData();
             if (frameData && 'data' in frameData) {
-              resolve(`${frameData.data}`); // Resolve with frame data if available
+              resolve(frameData.data); // Resolve with frame data if available
             } else {
               resolve(''); // Otherwise, resolve with an empty string
             }
@@ -171,7 +171,7 @@ export class FileProcessor extends FrameProcessor {
           img.onerror = reject;
           img.src = URL.createObjectURL(file);
         } catch (error) {
-          reject(error); // Reject with error if an error occurs
+          reject(new Error('Failed to Extract Data from File')); // Reject with error if an error occurs
         }
       });
 
@@ -246,8 +246,8 @@ export class FileProcessor extends FrameProcessor {
       };
 
       // istanbul ignore next
-      reader.onerror = (error) => {
-        reject(error);
+      reader.onerror = (_error) => {
+        reject(new Error('Failed to read File'));
       };
 
       reader.readAsArrayBuffer(file);

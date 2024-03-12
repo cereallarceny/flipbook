@@ -176,7 +176,7 @@ describe('WebRTCProcessor', () => {
     });
 
     it('should throw an error if track if there is no track', async () => {
-      const ERROR_MESSAGE = 'Could not get video track';
+      const ERROR_MESSAGE = 'Failed to read frames';
 
       try {
         const mockGetDisplayMediaMock = jest.fn(async () => {

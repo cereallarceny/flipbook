@@ -208,7 +208,7 @@ export class WebRTCProcessor extends FrameProcessor {
       // Return the code when it's found
       return result;
     } catch (e) {
-      return Promise.reject(e);
+      return Promise.reject(new Error('Failed to read frames'));
     }
   }
 }

@@ -1,4 +1,4 @@
-# @flipbook/shared
+# @flipbookqr/shared
 
 ## 0.1.1
 

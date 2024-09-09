@@ -1,4 +1,4 @@
-import shared from '@flipbook/shared';
+import shared from '@flipbookqr/shared';
 import { sortFrames, sliceFrames } from './helpers';
 
 describe('Helpers', () => {

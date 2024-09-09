@@ -1,5 +1,5 @@
 {
-  "name": "@flipbook/reader",
+  "name": "@flipbookqr/reader",
   "version": "0.1.1",
   "type": "module",
   "exports": {
@@ -23,12 +23,12 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@flipbook/shared": "workspace:*",
+    "@flipbookqr/shared": "workspace:*",
     "jsqr": "^1.4.0",
     "gifuct-js": "^2.1.2"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "jest-canvas-mock": "^2.5.2",
     "jest-config": "workspace:*",
     "tsconfig": "workspace:*"

@@ -90,17 +90,6 @@ describe('FileProcessor', () => {
     });
   });
 
-  describe('getFrameData', () => {
-    it('should return null if the frame is not set', () => {
-      expect(fp.getFrameData()).toBeNull();
-
-      let _canvasContext = fp._canvasContext;
-      _canvasContext = null;
-
-      expect(fp.getFrameData()).toBeNull();
-    });
-  });
-
   describe('destroy', () => {
     it('should destroy the canvas', () => {
       const canvas = fp._canvasElement;

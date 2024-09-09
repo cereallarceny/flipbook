@@ -1,4 +1,4 @@
-import pkg from '@flipbook/writer/package.json';
+import pkg from '@flipbookqr/writer/package.json';
 
 const titleWithoutName = 'QR Codes of infinite size';
 const title = `Flipbook - ${titleWithoutName}`;
@@ -21,7 +21,7 @@ export const meta = {
 export const homepage = {
   title: 'Scan a Flipbook QR Code',
   description:
-    '"Flipbooks" are a superset of QR codes in the form of an animated GIF. This allows for digital information of any size to betransferred without the need for an internet connection. Flipbooks can be used to download apps, music, movies, rich-text, and more.',
+    '"Flipbooks" are a superset of QR codes in the form of an animated GIF. This allows for digital information of any size to be transferred without the need for an internet connection. Flipbooks can be used to download apps, music, movies, rich-text, and more.',
   version: `Beta Release v${pkg.version}`,
   camera: 'Scan with Camera',
   upload: 'Upload File',

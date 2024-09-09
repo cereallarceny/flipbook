@@ -1,5 +1,5 @@
 import { create, toDataURL, type QRCodeToDataURLOptions } from 'qrcode';
-import { createHeadTag, createIndexTag, getLogger } from '@flipbook/shared';
+import { createHeadTag, createIndexTag, getLogger } from '@flipbookqr/shared';
 import GIF, { type AddFrameOptions } from 'gif.js';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { workerBlob } from './gif-worker';

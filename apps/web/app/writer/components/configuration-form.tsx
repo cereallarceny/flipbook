@@ -1,4 +1,4 @@
-import type { WriterProps } from '@flipbook/writer';
+import type { WriterProps } from '@flipbookqr/writer';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../components/button';
 import InputGroup from '../../components/input-group';

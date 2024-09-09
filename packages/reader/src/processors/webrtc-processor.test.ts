@@ -144,8 +144,7 @@ describe('WebRTCProcessor', () => {
       jest
         .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
         .mockImplementation(
-          (_options) =>
-            mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
+          () => mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
         );
 
       jest
@@ -163,7 +162,7 @@ describe('WebRTCProcessor', () => {
       try {
         jest
           .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
-          .mockImplementation((_options) => {
+          .mockImplementation(() => {
             throw new Error(ERROR_MESSAGE);
           });
 
@@ -192,8 +191,7 @@ describe('WebRTCProcessor', () => {
         jest
           .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
           .mockImplementation(
-            (_options) =>
-              mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
+            () => mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
           );
 
         await cp.read();

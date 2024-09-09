@@ -21,8 +21,14 @@ const generateTest = (charLength: number, fileName: string) => {
     const results: string[] = [];
 
     // Create the benchmark instances
-    const writerBench = new Bench();
-    const readerBench = new Bench();
+    const writerBench = new Bench({
+      warmupIterations: 0,
+      iterations: 10,
+    });
+    const readerBench = new Bench({
+      warmupIterations: 0,
+      iterations: 10,
+    });
 
     // If the assets directory does not exist, create it
     if (!fs.existsSync(assetsDir)) {
@@ -31,6 +37,10 @@ const generateTest = (charLength: number, fileName: string) => {
 
     // Navigate to the Flipbook app
     await page.goto(FLIPBOOK_APP_URL);
+
+    // Initialize the counter for writer and reader
+    let writeI = 0;
+    let readI = 0;
 
     // Benchmark it
     writerBench.add(
@@ -43,7 +53,7 @@ const generateTest = (charLength: number, fileName: string) => {
         await page.waitForSelector('#image');
       },
       {
-        async beforeEach() {
+        beforeEach: async function () {
           // Generate charLength string
           const text = generateRandomString(charLength);
 
@@ -53,7 +63,7 @@ const generateTest = (charLength: number, fileName: string) => {
           // Fill the textarea with the generated string
           await page.locator('#textarea').fill(text);
         },
-        async afterEach() {
+        afterEach: async function () {
           // Get the data of the QR code image
           const imgSrc = await page.locator('#image').getAttribute('src');
           const response = await page.goto(imgSrc || '');
@@ -62,7 +72,7 @@ const generateTest = (charLength: number, fileName: string) => {
           // Store the QR code image at the following path
           const qrFilePath = path.resolve(
             assetsDir,
-            `${fileName.split('.json')[0]}-${this.runs}.gif`
+            `${fileName.split('.json')[0]}-${writeI}.gif`
           );
 
           // Save the image to a file
@@ -73,6 +83,9 @@ const generateTest = (charLength: number, fileName: string) => {
 
           // Navigate back to the benchmark page
           await page.goto(FLIPBOOK_APP_URL);
+
+          // Increment the counter
+          writeI++;
         },
       }
     );
@@ -94,11 +107,14 @@ const generateTest = (charLength: number, fileName: string) => {
         await page.locator('#decoded').waitFor({ state: 'visible' });
       },
       {
-        async beforeEach() {
+        beforeEach: async function () {
           // Upload the QR code image
-          await page.locator('#upload').setInputFiles(urls[this.runs] || '');
+          await page.locator('#upload').setInputFiles(urls[readI] || '');
+
+          // Increment the counter
+          readI++;
         },
-        async afterEach() {
+        afterEach: async function () {
           // Get the decoded text
           const value = await page.locator('#decoded').innerHTML();
 

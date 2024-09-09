@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Writer, type WriterProps } from '@flipbook/writer';
+import { Writer, type WriterProps } from '@flipbookqr/writer';
 import { CogIcon } from '@heroicons/react/24/solid';
 import { Button, IconButton } from '../../components/button';
 import DialogBox from '../../components/dialog';
@@ -37,6 +37,7 @@ export default function Generate({
       // Set the QR code
       setQR(result);
     } catch (e) {
+      // eslint-disable-next-line no-console -- Intentional
       console.error(e);
     }
   }, [code, setQR, configuration]);

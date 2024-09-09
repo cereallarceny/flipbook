@@ -1,5 +1,5 @@
 import jsQR, { type QRCode } from 'jsqr';
-import { getLogger } from '@flipbook/shared';
+import { getLogger } from '@flipbookqr/shared';
 import { type Logger } from 'loglevel';
 import { parseGIF, decompressFrames } from 'gifuct-js';
 import { sliceFrames, sortFrames } from '../helpers';
@@ -246,7 +246,7 @@ export class FileProcessor extends FrameProcessor {
       };
 
       // istanbul ignore next
-      reader.onerror = (_error) => {
+      reader.onerror = () => {
         reject(new Error('Failed to read File'));
       };
 

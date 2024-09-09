@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { FileProcessor, Reader, WebRTCProcessor } from '@flipbook/reader';
+import { FileProcessor, Reader, WebRTCProcessor } from '@flipbookqr/reader';
 import { Button } from './components/button';
 
 interface MethodButtonProps {

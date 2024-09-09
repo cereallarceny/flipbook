@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { useState, useCallback } from 'react';
 import type { FormEventHandler, JSX } from 'react';
-import { Writer } from '@flipbook/writer';
-import { Reader, FileProcessor } from '@flipbook/reader';
+import { Writer } from '@flipbookqr/writer';
+import { Reader, FileProcessor } from '@flipbookqr/reader';
 
 export default function File(): JSX.Element {
   const [decoded, setDecoded] = useState<string | null>(null);
@@ -37,6 +37,7 @@ export default function File(): JSX.Element {
 
       setDecoded(decodedData);
     } catch (error) {
+      // eslint-disable-next-line no-console -- Intentional
       console.error('Error reading QR code:', error);
     } finally {
       setIsDecoding(false);
@@ -44,7 +45,7 @@ export default function File(): JSX.Element {
   };
 
   return (
-    <>
+    <div className="pt-24 mx-auto max-w-7xl px-6 lg:px-8">
       <textarea
         id="textarea"
         onChange={(e) => {
@@ -81,6 +82,6 @@ export default function File(): JSX.Element {
           </pre>
         ) : null}
       </form>
-    </>
+    </div>
   );
 }

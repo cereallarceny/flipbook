@@ -1,5 +1,5 @@
 import jsQR, { type QRCode } from 'jsqr';
-import { getHeadLength, getLogger } from '@flipbook/shared';
+import { getHeadLength, getLogger } from '@flipbookqr/shared';
 import type { Logger } from 'loglevel';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';

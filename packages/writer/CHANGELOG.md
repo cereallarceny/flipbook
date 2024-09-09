@@ -1,5 +1,13 @@
 # @flipbookqr/writer
 
+## 0.1.3
+
+### Patch Changes
+
+- 88468e3: Adding video and fixing readmes
+- Updated dependencies [88468e3]
+  - @flipbookqr/shared@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes

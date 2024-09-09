@@ -5,9 +5,9 @@
 </p>
 
 [![Status](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml)
-[![License](https://badgen.net/npm/license/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)
-[![Writer Downloads/Month](https://badgen.net/npm/dm/@flipbook/writer)](https://npmjs.com/package/@flipbook/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbook/reader)](https://npmjs.com/package/@flipbook/reader)
-[![Reader Downloads/Month](https://badgen.net/npm/dm/@flipbook/reader)](https://npmjs.com/package/@flipbook/reader)
+[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)
+[![Writer Downloads/Month](https://badgen.net/npm/dm/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
+[![Reader Downloads/Month](https://badgen.net/npm/dm/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
 
 ## Getting Started
 
@@ -31,8 +31,8 @@ Anything! Books... movies... music... software... anything that can be represent
 
 ## Libraries
 
-- Writer (Typescript): [Documentation](./packages/writer) | [NPM Package](https://www.npmjs.com/package/@flipbook/writer)
-- Reader (Typescript): [Documentation](./packages/reader) | [NPM Package](https://www.npmjs.com/package/@flipbook/reader)
+- Writer (Typescript): [Documentation](./packages/writer) | [NPM Package](https://www.npmjs.com/package/@flipbookqr/writer)
+- Reader (Typescript): [Documentation](./packages/reader) | [NPM Package](https://www.npmjs.com/package/@flipbookqr/reader)
 - Writer (Rust): *Coming soon...*
 - Reader (Rust): *Coming soon...*
 

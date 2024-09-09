@@ -1,11 +1,11 @@
 'use client';
 
-import { Reader } from '@flipbook/reader';
+import { Reader } from '@flipbookqr/reader';
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
-import type { WriterProps } from '@flipbook/writer';
+import type { WriterProps } from '@flipbookqr/writer';
 import { Button, IconButton } from '../../components/button';
 
 interface OutputProps {

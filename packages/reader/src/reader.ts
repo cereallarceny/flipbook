@@ -1,5 +1,5 @@
 import type { Logger, LogLevelDesc } from 'loglevel';
-import { getLogger } from '@flipbook/shared';
+import { getLogger } from '@flipbookqr/shared';
 import { WebRTCProcessor, type FrameProcessor } from './processors';
 
 interface ReaderProps {

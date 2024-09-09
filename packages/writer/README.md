@@ -1,4 +1,4 @@
-# @flipbook/writer
+# @flipbookqr/writer
 
 The Flipbook writer is responsible for creating "flipbooks" that are a series of QR codes that are stitched together into an animated GIF. This GIF can then be scanned by the [reader library](../reader) and subsequently reassembled into the original payload.
 
@@ -7,25 +7,31 @@ The Flipbook writer is responsible for creating "flipbooks" that are a series of
 NPM:
 
 ```bash
-npm install @flipbook/writer
+npm install @flipbookqr/writer
 ```
 
 Yarn:
 
 ```bash
-yarn add @flipbook/writer
+yarn add @flipbookqr/writer
 ```
 
 PNPM:
 
 ```bash
-pnpm add @flipbook/writer
+pnpm add @flipbookqr/writer
+```
+
+Bun:
+
+```bash
+bun add @flipbookqr/writer
 ```
 
 ## Usage
 
 ```typescript
-import { Writer } from '@flipbook/writer';
+import { Writer } from '@flipbookqr/writer';
 
 // Define the payload to be encoded
 const payload = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';

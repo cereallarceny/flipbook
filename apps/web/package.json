@@ -11,8 +11,8 @@
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@flipbook/reader": "workspace:*",
-    "@flipbook/writer": "workspace:*",
+    "@flipbookqr/reader": "workspace:*",
+    "@flipbookqr/writer": "workspace:*",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@monaco-editor/react": "^4.6.0",

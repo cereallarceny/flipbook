@@ -1,5 +1,5 @@
 {
-  "name": "@flipbook/writer",
+  "name": "@flipbookqr/writer",
   "version": "0.1.1",
   "type": "module",
   "exports": {
@@ -23,7 +23,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@flipbook/shared": "workspace:*",
+    "@flipbookqr/shared": "workspace:*",
     "canvas-capture": "^2.1.1",
     "gif.js": "^0.2.0",
     "qrcode": "^1.5.3"

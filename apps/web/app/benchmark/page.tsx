@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { useState, useCallback } from 'react';
 import type { FormEventHandler, JSX } from 'react';
-import { Writer } from '@flipbook/writer';
-import { Reader, FileProcessor } from '@flipbook/reader';
+import { Writer } from '@flipbookqr/writer';
+import { Reader, FileProcessor } from '@flipbookqr/reader';
 
 export default function File(): JSX.Element {
   const [decoded, setDecoded] = useState<string | null>(null);

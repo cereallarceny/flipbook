@@ -1,4 +1,4 @@
-# @flipbook/reader
+# @flipbookqr/reader
 
 ## 0.1.1
 
@@ -6,7 +6,7 @@
 
 - 33db75b: Changing publish access
 - Updated dependencies [33db75b]
-  - @flipbook/shared@0.1.1
+  - @flipbookqr/shared@0.1.1
 
 ## 0.1.0
 
@@ -17,4 +17,4 @@
 ### Patch Changes
 
 - Updated dependencies [0b18eef]
-  - @flipbook/shared@0.1.0
+  - @flipbookqr/shared@0.1.0

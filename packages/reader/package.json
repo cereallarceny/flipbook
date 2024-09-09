@@ -1,5 +1,5 @@
 {
-  "name": "@flipbook/reader",
+  "name": "@flipbookqr/reader",
   "version": "0.1.1",
   "type": "module",
   "exports": {
@@ -23,7 +23,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@flipbook/shared": "workspace:*",
+    "@flipbookqr/shared": "workspace:*",
     "jsqr": "^1.4.0",
     "gifuct-js": "^2.1.2"
   },

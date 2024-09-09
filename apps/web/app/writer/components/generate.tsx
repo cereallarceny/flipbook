@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Writer, type WriterProps } from '@flipbook/writer';
+import { Writer, type WriterProps } from '@flipbookqr/writer';
 import { CogIcon } from '@heroicons/react/24/solid';
 import { Button, IconButton } from '../../components/button';
 import DialogBox from '../../components/dialog';

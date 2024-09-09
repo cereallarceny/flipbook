@@ -19,16 +19,10 @@ export function generateRandomString(length: number) {
   return result;
 }
 
-// Tinybench's output type
-type TBenchOutput = ({
-  'Task Name': string;
-  'ops/sec': string;
-  'Average Time (ns)': string | number;
-  Margin: string;
-  Samples: string | number;
-} | null)[];
-
-export const saveBenchMark = async (fileName: string, value: TBenchOutput) => {
+export const saveBenchMark = async (
+  fileName: string,
+  value: (Record<string, string | number> | null)[]
+) => {
   try {
     const jsonData = {
       'Task Name': value[0]?.['Task Name'] || null,

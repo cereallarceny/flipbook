@@ -44,7 +44,7 @@ export default function File(): JSX.Element {
   };
 
   return (
-    <>
+    <div className="pt-24 mx-auto max-w-7xl px-6 lg:px-8">
       <textarea
         id="textarea"
         onChange={(e) => {
@@ -81,6 +81,6 @@ export default function File(): JSX.Element {
           </pre>
         ) : null}
       </form>
-    </>
+    </div>
   );
 }

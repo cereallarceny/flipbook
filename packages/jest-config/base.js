@@ -26,7 +26,7 @@ module.exports = {
     `${rootDir}/build`,
     `${rootDir}/typings`,
   ],
-  collectCoverageFrom: ['**/*.ts', '!**/node_modules/**'],
+  collectCoverageFrom: ['**/*.ts', '!**/node_modules/**', '!**/*.config.ts'],
   collectCoverage: true,
   coverageDirectory: `${rootDir}/coverage`,
   coveragePathIgnorePatterns: [

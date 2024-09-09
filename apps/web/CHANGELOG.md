@@ -1,5 +1,13 @@
 # web
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [6c93146]
+  - @flipbookqr/reader@0.1.2
+  - @flipbookqr/writer@0.1.2
+
 ## 0.0.1
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @flipbookqr/writer
 
+## 0.1.2
+
+### Patch Changes
+
+- 6c93146: Adding release documentation to test everything out
+- Updated dependencies [6c93146]
+  - @flipbookqr/shared@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

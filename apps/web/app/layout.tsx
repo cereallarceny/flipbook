@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 import { meta } from './content';
 import Navbar from './components/navbar';
 import './globals.css';
@@ -70,6 +71,8 @@ export default function RootLayout({
         </Suspense>
 
         {children}
+
+        <Analytics />
       </body>
     </html>
   );

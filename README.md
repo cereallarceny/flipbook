@@ -44,6 +44,17 @@ If you want to write a Flipbook binding for a language that isn't listed here, f
 
 If you'd like to contribute to Flipbook, please read our [contributing guide](./CONTRIBUTING.md) to learn how to get started.
 
+### Releasing
+
+To release a new version of Flipbook, do the following:
+
+1. Do your work on your own branch, and open a pull request to `main` when you're ready.
+   1. On this PR, make sure you have run `pnpm changeset` to generate a new changeset.
+2. Once the PR is merged, owner(s) can run (from the `main` branch):
+   1. `pnpm release`
+   2. `git push --follow-tags`
+3. [On Github](https://github.com/cereallarceny/flipbook/releases/new), owner(s) can create a release for each package using the pushed tags
+
 ## License
 
 Flipbook is licensed under the [MIT License](./LICENSE). Go nuts!

@@ -5,9 +5,7 @@
 </p>
 
 [![Status](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml)
-[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)
-[![Writer Downloads/Month](https://badgen.net/npm/dm/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
-[![Reader Downloads/Month](https://badgen.net/npm/dm/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
+[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
 
 ## Getting Started
 
@@ -18,6 +16,8 @@ Flipbook is a series of libraries that you can use in any web, mobile, or deskto
 **[Download Reader](https://flipbook.codes)**
 
 ### Why?
+
+[![Youtube Video](https://img.youtube.com/vi/D4QD9DaISEs/0.jpg)](https://www.youtube.com/watch?v=D4QD9DaISEs)
 
 The ubiquity of QR codes in daily life has made them a popular tool for sharing information. But the medium is inherently limited to payloads of small sizes. While larger payloads can be supported (to a point), the resulting QR code becomes too difficult to scan reliably.
 

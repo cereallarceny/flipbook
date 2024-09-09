@@ -1,6 +1,6 @@
 # @flipbookqr/reader
 
-The Flipbook reader is responsible for reading "flipbooks" created by the [Flipbook writer](../writer). It can be used to decode a series of QR codes into a single payload.
+The Flipbook reader is responsible for reading "flipbooks" created by the [Flipbook writer](https://github.com/cereallarceny/flipbook/tree/main/packages/writer). It can be used to decode a series of QR codes into a single payload.
 
 ## Installation
 

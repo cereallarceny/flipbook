@@ -1,6 +1,6 @@
 # @flipbookqr/writer
 
-The Flipbook writer is responsible for creating "flipbooks" that are a series of QR codes that are stitched together into an animated GIF. This GIF can then be scanned by the [reader library](../reader) and subsequently reassembled into the original payload.
+The Flipbook writer is responsible for creating "flipbooks" that are a series of QR codes that are stitched together into an animated GIF. This GIF can then be scanned by the [reader library](https://github.com/cereallarceny/flipbook/tree/main/packages/reader) and subsequently reassembled into the original payload.
 
 ## Installation
 

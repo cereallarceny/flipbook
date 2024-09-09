@@ -29,9 +29,9 @@
     "qrcode": "1.5.3"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
     "@types/gif.js": "^0.2.5",
     "@types/qrcode": "^1.5.5",
-    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "jest-config": "workspace:*"
   }

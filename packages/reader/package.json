@@ -28,7 +28,7 @@
     "gifuct-js": "^2.1.2"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "jest-canvas-mock": "^2.5.2",
     "jest-config": "workspace:*",
     "tsconfig": "workspace:*"

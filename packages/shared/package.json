@@ -23,7 +23,7 @@
     "test:watch": "jest --watch"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "jest-config": "workspace:*",
     "tsconfig": "workspace:*"
   }

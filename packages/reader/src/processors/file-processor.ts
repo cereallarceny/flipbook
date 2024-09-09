@@ -246,7 +246,7 @@ export class FileProcessor extends FrameProcessor {
       };
 
       // istanbul ignore next
-      reader.onerror = (_error) => {
+      reader.onerror = () => {
         reject(new Error('Failed to read File'));
       };
 

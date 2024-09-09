@@ -6,7 +6,7 @@ describe('FrameProcessor', () => {
 
   beforeEach(() => {
     class FrameProcessorImpl extends FrameProcessor {
-      setFrame(_frame: ImageBitmap): void {
+      setFrame(): void {
         // Do nothing
       }
 

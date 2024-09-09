@@ -55,7 +55,7 @@ describe('Writer', () => {
       //  Mock the URL.createObjectURL
       global.URL.createObjectURL = jest.fn(() => MOCKED_URL);
 
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      // Call the compose method
       writer.compose(qrs);
 
       // Verify that the GIF module was called with the correct options

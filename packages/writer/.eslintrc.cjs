@@ -1,17 +1,11 @@
+/** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ['custom/library'],
-  overrides: [
-    {
-      files: ['**/*.test.ts'],
-      plugins: ['jest'],
-      extends: ['plugin:jest/recommended'],
-      rules: {
-        'jest/prefer-expect-assertions': 'off',
-        'eslint-comments/require-description': [
-          'error',
-          { ignore: ['eslint-disable-next-line'] },
-        ],
-      },
-    },
-  ],
+  extends: ['@repo/eslint-config/index.js'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: true,
+  },
+  env: {
+    jest: true,
+  },
 };

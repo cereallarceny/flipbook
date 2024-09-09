@@ -37,6 +37,7 @@ export default function Generate({
       // Set the QR code
       setQR(result);
     } catch (e) {
+      // eslint-disable-next-line no-console -- Intentional
       console.error(e);
     }
   }, [code, setQR, configuration]);

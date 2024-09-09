@@ -6,19 +6,19 @@
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 100 char string | 6 | 165159262.20000002 | ±6.92% | 10 |
+| Flipbook (writer) with 100 char string | 6 | 166432620.7999996 | ±9.14% | 10 |
 
 #### For 1,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 1000 char string | 1 | 616732187.5 | ±1.26% | 10 |
+| Flipbook (writer) with 1000 char string | 1 | 597150516.7000005 | ±0.99% | 10 |
 
 #### For 10,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (writer) with 10000 char string | 0 | 5022255762.699999 | ±0.39% | 10 |
+| Flipbook (writer) with 10000 char string | 0 | 4966372033.2 | ±0.25% | 10 |
 
 ### Reader
 
@@ -26,16 +26,16 @@
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (reader) with 100 char string | 10 | 95530504.19999972 | ±9.56% | 10 |
+| Flipbook (reader) with 100 char string | 10 | 95136383.39999998 | ±7.87% | 10 |
 
 #### For 1,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (reader) with 1000 char string | 3 | 262665237.49999905 | ±2.63% | 10 |
+| Flipbook (reader) with 1000 char string | 3 | 268014191.79999974 | ±2.51% | 10 |
 
 #### For 10,000 char string
 
 | Task Name | ops/sec | Average Time (ns) | Margin | Samples |
 | --- | --- | --- | --- | --- |
-| Flipbook (reader) with 10000 char string | 0 | 1899574024.900001 | ±1.67% | 10 |
+| Flipbook (reader) with 10000 char string | 0 | 1849772500.2000005 | ±0.71% | 10 |

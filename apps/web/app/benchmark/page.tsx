@@ -37,6 +37,7 @@ export default function File(): JSX.Element {
 
       setDecoded(decodedData);
     } catch (error) {
+      // eslint-disable-next-line no-console -- Intentional
       console.error('Error reading QR code:', error);
     } finally {
       setIsDecoding(false);

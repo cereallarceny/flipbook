@@ -1,5 +1,11 @@
 # @flipbookqr/shared
 
+## 0.1.3
+
+### Patch Changes
+
+- 88468e3: Adding video and fixing readmes
+
 ## 0.1.2
 
 ### Patch Changes

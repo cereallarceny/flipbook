@@ -50,10 +50,11 @@ To release a new version of Flipbook, do the following:
 
 1. Do your work on your own branch, and open a pull request to `main` when you're ready.
    1. On this PR, make sure you have run `pnpm changeset` to generate a new changeset.
-2. Once the PR is merged, owner(s) can run (from the `main` branch):
+2. Once the PR is merged, it will create a new PR to version all changes and all changesets. The owner(s) can review this PR and merge it.
+3. Once the second PR is merged, owner(s) can run (locally, from the `main` branch):
    1. `pnpm release`
    2. `git push --follow-tags`
-3. [On Github](https://github.com/cereallarceny/flipbook/releases/new), owner(s) can create a release for each package using the pushed tags
+4. [On Github](https://github.com/cereallarceny/flipbook/releases/new), owner(s) can create a release for each package using the pushed tags
 
 ## License
 

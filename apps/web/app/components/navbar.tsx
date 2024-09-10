@@ -54,7 +54,7 @@ export default function Navbar(): JSX.Element | null {
   return (
     <Disclosure
       as="nav"
-      className="fixed top-0 left-0 z-50 w-full bg-white shadow"
+      className="fixed top-0 left-0 z-20 w-full bg-white shadow"
     >
       {({ open }) => (
         <>

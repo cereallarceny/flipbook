@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileProcessor, Reader, WebRTCProcessor } from '@flipbookqr/reader';
 import { Button } from './components/button';
+import DialogBox from './components/dialog';
 
 interface MethodButtonProps {
   setResults: (results: string) => void;
@@ -13,18 +14,67 @@ export function CameraScan({
   setResults,
   children,
 }: MethodButtonProps): JSX.Element {
-  // When clicking the button, we want to trigger a camera capture
-  const onClick = useCallback(async () => {
-    const reader = new Reader({
-      frameProcessor: new WebRTCProcessor('camera', {
-        audio: false,
-        video: true,
+  // Create the reader
+  const reader = useMemo(
+    () =>
+      new Reader({
+        frameProcessor: new WebRTCProcessor('camera', {
+          audio: false,
+          video: true,
+        }),
       }),
-    });
-    setResults(await reader.read());
-  }, [setResults]);
+    []
+  );
 
-  return <Button onClick={onClick}>{children}</Button>;
+  // Store the dialog state
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Store the tracks in state
+  const [tracks, setTracks] = useState<MediaStreamTrack[]>([]);
+
+  // When clicking the button, we want to trigger camera selection
+  const onGetCameraTracks = useCallback(async () => {
+    if (reader.opts.frameProcessor instanceof WebRTCProcessor) {
+      const streamTracks = await reader.opts.frameProcessor.getStreamTracks();
+      setTracks(streamTracks);
+      setIsOpen(true);
+    }
+  }, [reader]);
+
+  // When clicking the track, we want to set the track in the processor and read
+  const onTrackClick = useCallback(
+    async (track: MediaStreamTrack) => {
+      if (reader.opts.frameProcessor instanceof WebRTCProcessor) {
+        setIsOpen(false);
+        reader.opts.frameProcessor.setStreamTrack(track);
+        setResults(await reader.read());
+      }
+    },
+    [reader, setResults]
+  );
+
+  return (
+    <>
+      <Button onClick={onGetCameraTracks}>{children}</Button>
+      <DialogBox isOpen={isOpen} setIsOpen={setIsOpen}>
+        <div>
+          <strong>Select a source:</strong>
+          <div className="mt-4 flex flex-col gap-4">
+            {tracks.map((track) => (
+              <button
+                className="w-full p-4 border-2 border-gray-300 bg-gray-100 hover:bg-gray-300 rounded-md transition-colors"
+                key={track.id}
+                onClick={() => void onTrackClick(track)}
+                type="button"
+              >
+                {track.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </DialogBox>
+    </>
+  );
 }
 
 export function Upload({

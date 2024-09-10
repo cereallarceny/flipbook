@@ -1,8 +1,15 @@
 {
   "name": "@flipbookqr/writer",
   "version": "0.1.4",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
     "./package.json": "./package.json"
   },
   "license": "MIT",
@@ -10,11 +17,11 @@
     "access": "public"
   },
   "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest --coverage"
   },
   "jest": {
     "preset": "@repo/jest-presets/browser"

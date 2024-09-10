@@ -22,6 +22,7 @@ export class Writer {
   opts: WriterProps;
 
   constructor(opts: Partial<WriterProps> = {}) {
+    console.log('pat');
     // Set up the default options
     const DEFAULT_WRITER_PROPS: WriterProps = {
       logLevel: 'silent',

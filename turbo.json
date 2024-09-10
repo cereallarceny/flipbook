@@ -5,21 +5,19 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": ["dist", ".next/**", "!.next/cache/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "lint": {
-      "cache": false
-    },
+    "lint": {},
     "format": {},
     "format:fix": {},
     "test": {
-      "dependsOn": ["@flipbookqr/shared#build"]
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
     },
-    "test:watch": {},
     "benchmark": {}
   }
 }

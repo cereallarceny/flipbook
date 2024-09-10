@@ -1,12 +1,14 @@
 {
   "name": "@flipbookqr/writer",
   "version": "0.1.4",
-  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -15,12 +17,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest --coverage"
+  },
+  "jest": {
+    "preset": "@repo/jest-presets/browser"
   },
   "dependencies": {
     "@flipbookqr/shared": "workspace:*",
@@ -29,9 +33,7 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@types/gif.js": "^0.2.5",
-    "@types/qrcode": "^1.5.5",
-    "tsconfig": "workspace:*",
-    "jest-config": "workspace:*"
+    "@repo/jest-presets": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
   }
 }

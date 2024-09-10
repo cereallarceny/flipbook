@@ -1,12 +1,11 @@
 {
   "name": "@flipbookqr/reader",
   "version": "0.1.4",
-  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -15,12 +14,17 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "lint": "eslint .",
     "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest --coverage"
+  },
+  "jest": {
+    "preset": "@repo/jest-presets/browser",
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   },
   "dependencies": {
     "@flipbookqr/shared": "workspace:*",
@@ -29,8 +33,8 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "jest-canvas-mock": "^2.5.2",
-    "jest-config": "workspace:*",
-    "tsconfig": "workspace:*"
+    "@repo/jest-presets": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "jest-canvas-mock": "^2.5.2"
   }
 }

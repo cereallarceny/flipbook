@@ -9,9 +9,9 @@
     "generate:readme": "node ./scripts/add-benchmarks-to-markdown.js",
     "postinstall": "pnpm playwright install"
   },
-  "dependencies": {},
   "devDependencies": {
-    "tinybench": "^2.9.0",
-    "@playwright/test": "^1.47.0"
+    "@playwright/test": "^1.47.0",
+    "@repo/typescript-config": "workspace:*",
+    "tinybench": "^2.9.0"
   }
 }

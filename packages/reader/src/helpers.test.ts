@@ -1,5 +1,12 @@
-import shared from '@flipbookqr/shared';
+import * as shared from '@flipbookqr/shared';
 import { sortFrames, sliceFrames } from './helpers';
+
+jest.mock('@flipbookqr/shared', () => {
+  return {
+    __esModule: true,
+    ...jest.requireActual('@flipbookqr/shared'),
+  };
+});
 
 describe('Helpers', () => {
   describe('sortFrames', () => {

@@ -26,8 +26,8 @@ export class WebRTCProcessor extends FrameProcessor {
     const canvas = document.createElement('canvas');
 
     // Set default width and height
-    this._width = 0;
-    this._height = 0;
+    this._width = 1920;
+    this._height = 1080;
 
     // Store the canvas temperorily
     this._canvas = canvas;

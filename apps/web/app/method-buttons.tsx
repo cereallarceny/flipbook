@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FileProcessor, Reader, WebRTCProcessor } from '@flipbookqr/reader';
 import { Button } from './components/button';
 import DialogBox from './components/dialog';
@@ -14,17 +14,8 @@ export function CameraScan({
   setResults,
   children,
 }: MethodButtonProps): JSX.Element {
-  // Create the reader
-  const reader = useMemo(
-    () =>
-      new Reader({
-        frameProcessor: new WebRTCProcessor('camera', {
-          audio: false,
-          video: true,
-        }),
-      }),
-    []
-  );
+  // Store the reader
+  const [reader, setReader] = useState<Reader>();
 
   // Store the dialog state
   const [isOpen, setIsOpen] = useState(false);
@@ -34,17 +25,27 @@ export function CameraScan({
 
   // When clicking the button, we want to trigger camera selection
   const onGetCameraTracks = useCallback(async () => {
-    if (reader.opts.frameProcessor instanceof WebRTCProcessor) {
-      const streamTracks = await reader.opts.frameProcessor.getStreamTracks();
+    // Create a new reader instance
+    const readerInstance = new Reader({
+      frameProcessor: new WebRTCProcessor('camera', {
+        audio: false,
+        video: true,
+      }),
+    });
+
+    if (readerInstance.opts.frameProcessor instanceof WebRTCProcessor) {
+      const streamTracks =
+        await readerInstance.opts.frameProcessor.getStreamTracks();
       setTracks(streamTracks);
+      setReader(readerInstance);
       setIsOpen(true);
     }
-  }, [reader]);
+  }, []);
 
   // When clicking the track, we want to set the track in the processor and read
   const onTrackClick = useCallback(
     async (track: MediaStreamTrack) => {
-      if (reader.opts.frameProcessor instanceof WebRTCProcessor) {
+      if (reader && reader.opts.frameProcessor instanceof WebRTCProcessor) {
         setIsOpen(false);
         reader.opts.frameProcessor.setStreamTrack(track);
         setResults(await reader.read());

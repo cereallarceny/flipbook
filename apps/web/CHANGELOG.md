@@ -1,5 +1,15 @@
 # web
 
+## 0.0.5
+
+### Patch Changes
+
+- e7642eb: Redid internal infrastructure of repo
+- Updated dependencies [e7642eb]
+  - @flipbookqr/reader@0.1.5
+  - @flipbookqr/shared@0.1.5
+  - @flipbookqr/writer@0.1.5
+
 ## 0.0.4
 
 ### Patch Changes

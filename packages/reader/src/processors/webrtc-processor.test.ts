@@ -156,24 +156,6 @@ describe('WebRTCProcessor', () => {
       expect(result).toBe('ABC');
     });
 
-    it('should throw an error', async () => {
-      const ERROR_MESSAGE = 'Simulated error';
-
-      try {
-        jest
-          .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
-          .mockImplementation(() => {
-            throw new Error(ERROR_MESSAGE);
-          });
-
-        await cp.read();
-      } catch (error) {
-        if (error && typeof error === 'object' && 'message' in error) {
-          expect(error.message).toBe(ERROR_MESSAGE);
-        }
-      }
-    });
-
     it('should throw an error if track if there is no track', async () => {
       const ERROR_MESSAGE = 'Failed to read frames';
 

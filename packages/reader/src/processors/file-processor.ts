@@ -6,48 +6,49 @@ import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
 
 /**
- * Class for processing a file, inherits from FrameProcessor.
+ * Class for processing image or GIF files to extract QR code data.
+ *
+ * @extends FrameProcessor
  */
 export class FileProcessor extends FrameProcessor {
-  protected canvasContext: CanvasRenderingContext2D | null;
-  protected canvasElement: HTMLCanvasElement;
-  protected imageWidth: number;
-  protected imageHeight: number;
-  protected logger: Logger;
-  protected file: File;
+  protected _ctx: CanvasRenderingContext2D | null;
+  protected _canvas: HTMLCanvasElement;
+  protected _width: number;
+  protected _height: number;
+  protected _log: Logger;
+  protected _file: File;
 
   /**
    * Constructs a new FileProcessor instance.
-   * @param file - The file to be processed (could be an image file or a GIF).
+   *
+   * @param {File} file - The file to be processed (e.g., an image file or a GIF).
    */
   constructor(file: File) {
     super();
 
-    this.logger = getLogger();
-    this.file = file; // Store the file for future processing
+    this._log = getLogger();
+    this._file = file;
 
     // Create canvas element
     const canvas = document.createElement('canvas');
 
-    // Set default width and height
-    this.imageWidth = 1920;
-    this.imageHeight = 1080;
+    // Set default canvas dimensions
+    this._width = 1920;
+    this._height = 1080;
 
-    // Store the canvas temporarily
-    this.canvasElement = canvas;
-
-    // Store canvas context
-    this.canvasContext = canvas.getContext('2d');
+    this._canvas = canvas;
+    this._ctx = canvas.getContext('2d');
   }
 
   /**
-   * Sets the frame on the canvas.
-   * @param frame - The frame to be set.
+   * Sets the specified frame on the canvas.
+   *
+   * @param {HTMLImageElement | ImageBitmap} frame - The frame to draw on the canvas.
+   * @throws Will throw an error if an unsupported frame type is provided.
    */
-  setFrame(frame: HTMLImageElement | ImageBitmap): void {
+  protected setFrame(frame: HTMLImageElement | ImageBitmap): void {
     let width, height;
 
-    // Determine width and height based on the type of frame
     if (frame instanceof HTMLImageElement || frame instanceof ImageBitmap) {
       width = frame.width;
       height = frame.height;
@@ -55,57 +56,42 @@ export class FileProcessor extends FrameProcessor {
       throw new Error('Unsupported frame type');
     }
 
-    // Set width and height
-    this.imageWidth = width;
-    this.imageHeight = height;
+    this._width = width;
+    this._height = height;
 
-    // Set width and height of the canvas
-    this.canvasElement.width = width;
-    this.canvasElement.height = height;
+    this._canvas.width = width;
+    this._canvas.height = height;
 
-    // Draw the frame onto the canvas
-    this.canvasContext?.drawImage(
-      frame,
-      0,
-      0,
-      this.imageWidth,
-      this.imageHeight
-    );
+    this._ctx?.drawImage(frame, 0, 0, this._width, this._height);
   }
 
   /**
-   * Retrieves frame data from the canvas.
-   * @returns The QR code data found in the frame, or null if no data is found.
+   * Retrieves QR code data from the current canvas frame.
+   *
+   * @returns {QRCode | null} The decoded QR code data, or null if no data is found.
    */
-  getFrameData(): QRCode | null {
-    // Get the data from the canvas
-    const imageData = this.canvasContext?.getImageData(
-      0,
-      0,
-      this.imageWidth,
-      this.imageHeight
-    );
+  protected getFrameData(): QRCode | null {
+    const imageData = this._ctx?.getImageData(0, 0, this._width, this._height);
 
-    // Decode the results data using jsQR
     let decodedData: null | QRCode = null;
     if (imageData && 'data' in imageData) {
-      decodedData = jsQR(imageData.data, this.imageWidth, this.imageHeight);
+      decodedData = jsQR(imageData.data, this._width, this._height);
     }
 
-    return decodedData; // Return the decoded data
+    return decodedData;
   }
 
   /**
-   * Destroys the temporary canvas.
+   * Cleans up by removing the canvas element from the DOM.
    */
-  destroy(): void {
-    this.canvasElement.remove(); // Remove the canvas from the DOM
+  protected destroy(): void {
+    this._canvas.remove();
   }
 
-  // istanbul ignore next
   /**
-   * Processes a single frame.
-   * @returns A Promise that resolves to the processed frame data.
+   * Processes a single image frame and extracts QR code data.
+   *
+   * @returns {Promise<string>} A promise that resolves to the extracted QR code data, or an empty string if no data is found.
    */
   protected processSingleFrame(): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -114,155 +100,97 @@ export class FileProcessor extends FrameProcessor {
         img.onload = () => {
           this.setFrame(img);
           const frameData = this.getFrameData();
-          if (frameData && 'data' in frameData) {
-            resolve(frameData.data); // Resolve with frame data if available
-          } else {
-            resolve(''); // Otherwise, resolve with an empty string
-          }
+          resolve(frameData?.data || '');
         };
         img.onerror = reject;
-        img.src = URL.createObjectURL(this.file);
+        img.src = URL.createObjectURL(this._file);
       } catch (error) {
         reject(new Error('Failed to process frame'));
       }
     });
   }
 
-  // istanbul ignore next
   /**
-   * Processes all frames in a GIF file.
-   * @returns A Promise that resolves to an array of processed frame data.
+   * Processes all frames in a GIF file and extracts QR code data from each frame.
+   *
+   * @returns {Promise<string[]>} A promise that resolves to an array of QR code data from each frame.
    */
-  async processAllFrames(): Promise<string[]> {
-    // Convert the file to a buffer
-    const buffer = await this.convertFileToBuffer(this.file);
-    // Parse the GIF file and decompress frames
+  protected async processAllFrames(): Promise<string[]> {
+    const buffer = await this.convertFileToBuffer(this._file);
     const parsed = parseGIF(buffer);
     const frames = decompressFrames(parsed, true);
 
-    const files: File[] = [];
-    // Convert each frame to a File object and store them in an array
-    frames.forEach((frame) => {
-      const frameFile = this.convertUnit8ClampedArrayToFile(
+    const files: File[] = frames.map((frame) =>
+      this.convertUnit8ClampedArrayToFile(
         frame.patch,
         frame.dims.width,
         frame.dims.height,
         `${Date.now()}.png`
-      );
-      files.push(frameFile);
-    });
+      )
+    );
 
-    const dataPromise: Promise<string>[] = [];
+    const dataPromises: Promise<string>[] = files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          try {
+            const img = new Image();
+            img.onload = () => {
+              this.setFrame(img);
+              const frameData = this.getFrameData();
+              resolve(frameData?.data || '');
+            };
+            img.onerror = reject;
+            img.src = URL.createObjectURL(file);
+          } catch (error) {
+            reject(new Error('Failed to extract data from file'));
+          }
+        })
+    );
 
-    // Process each frame asynchronously
-    files.forEach((file: File) => {
-      const promise = new Promise((resolve, reject) => {
-        try {
-          const img = new Image();
-          img.onload = () => {
-            this.setFrame(img);
-            const frameData = this.getFrameData();
-            if (frameData && 'data' in frameData) {
-              resolve(frameData.data); // Resolve with frame data if available
-            } else {
-              resolve(''); // Otherwise, resolve with an empty string
-            }
-          };
-          img.onerror = reject;
-          img.src = URL.createObjectURL(file);
-        } catch (error) {
-          reject(new Error('Failed to Extract Data from File')); // Reject with error if an error occurs
-        }
-      });
-
-      dataPromise.push(promise as Promise<string>); // Push the promise to the array
-    });
-
-    const result: string[] = await Promise.all(dataPromise); // Wait for all promises to resolve
-
-    return result; // Return the processed frame data
+    return await Promise.all(dataPromises);
   }
 
   /**
-   * Reads the file and processes it accordingly.
-   * @returns A Promise that resolves to the processed data.
-   */
-  async read(): Promise<string> {
-    let result: Promise<string>;
-    // If the file is a GIF, process all frames
-    if (this.isGIF(this.file)) {
-      const allFrames = await this.processAllFrames();
-
-      result = new Promise((resolve, reject) => {
-        const data = allFrames.sort(sortFrames).map(sliceFrames).join('');
-
-        if (data) {
-          resolve(data); // Resolve with the processed data
-        }
-
-        reject(new Error('Failed to parse frame data')); // Reject with an error if failed to parse data
-      });
-    } else {
-      result = this.processSingleFrame(); // Otherwise, process a single frame
-    }
-
-    return result; // Return the processed result
-  }
-
-  /**
-   * Checks if the file is a GIF image.
-   * @param file - The file to check.
-   * @returns True if the file is a GIF image, false otherwise.
+   * Determines whether the provided file is a GIF image.
+   *
+   * @param {File} file - The file to check.
+   * @returns {boolean} True if the file is a GIF, false otherwise.
    */
   protected isGIF(file: File): boolean {
-    // Get the file extension
     const extension = file.name.split('.').pop()?.toLowerCase();
-
-    // Check if the extension is 'gif'
-    if (extension === 'gif') {
-      return true;
-    }
-
-    // Alternatively, we can check the MIME type
-    // MIME types for GIF images usually start with 'image/gif'
-    return file.type.startsWith('image/gif');
+    return extension === 'gif' || file.type.startsWith('image/gif');
   }
 
   /**
-   * Converts a File object to a buffer.
-   * @param file - The File object to convert.
-   * @returns A Promise that resolves to an ArrayBuffer.
+   * Converts a File object to an ArrayBuffer.
+   *
+   * @param {File} file - The file to convert.
+   * @returns {Promise<ArrayBuffer>} A promise that resolves to the file's ArrayBuffer.
    */
   protected convertFileToBuffer(file: File): Promise<ArrayBuffer> {
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = (event) => {
         const arrayBuffer = event.target?.result;
         if (arrayBuffer) {
-          const buffer = Buffer.from(arrayBuffer as string);
-          resolve(buffer);
+          resolve(arrayBuffer as ArrayBuffer);
         }
       };
 
-      // istanbul ignore next
-      reader.onerror = () => {
-        reject(new Error('Failed to read File'));
-      };
-
+      reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsArrayBuffer(file);
     });
-
-    return promise as unknown as Promise<ArrayBuffer>;
   }
 
   /**
    * Converts an Uint8ClampedArray to a File object.
-   * @param imageData - The Uint8ClampedArray representing image data.
-   * @param width - The width of the image.
-   * @param height - The height of the image.
-   * @param fileName - The name of the file to create.
-   * @returns The created File object.
+   *
+   * @param {Uint8ClampedArray} imageData - The image data array.
+   * @param {number} width - The width of the image.
+   * @param {number} height - The height of the image.
+   * @param {string} fileName - The name of the file to create.
+   * @returns {File} The created File object.
    */
   protected convertUnit8ClampedArrayToFile(
     imageData: Uint8ClampedArray,
@@ -270,46 +198,34 @@ export class FileProcessor extends FrameProcessor {
     height: number,
     fileName: string
   ): File {
-    // Create a new canvas element
-    const canvas: HTMLCanvasElement = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
 
-    // Get the 2D context of the canvas
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-    // istanbul ignore next
+    const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error('2D context not supported');
     }
 
-    // Create an ImageData object from the Uint8ClampedArray
-    const imageDataObj: ImageData = new ImageData(imageData, width, height);
-
-    // Put the ImageData onto the canvas
+    const imageDataObj = new ImageData(imageData, width, height);
     ctx.putImageData(imageDataObj, 0, 0);
 
-    // Convert the canvas to a data URL
-    const dataURL: string = canvas.toDataURL();
-
-    // Convert data URL to Blob
+    const dataURL = canvas.toDataURL();
     const blob = this.dataURLtoBlob(dataURL);
 
-    // Create a File object from the Blob
-    const file = new File([blob], fileName, { type: blob.type });
-
-    return file;
+    return new File([blob], fileName, { type: blob.type });
   }
 
   /**
    * Converts a data URL to a Blob object.
-   * @param dataURL - The data URL to convert.
-   * @returns The Blob object created from the data URL.
+   *
+   * @param {string} dataURL - The data URL to convert.
+   * @returns {Blob} The Blob object created from the data URL.
    */
   protected dataURLtoBlob(dataURL: string): Blob {
     const parts = dataURL.split(';base64,');
-
     const contentType = parts[0]?.split(':')[1];
-    const raw = window.atob(parts[1] as unknown as string);
+    const raw = window.atob(parts[1]!);
     const rawLength = raw.length;
     const uInt8Array = new Uint8Array(rawLength);
 
@@ -318,5 +234,19 @@ export class FileProcessor extends FrameProcessor {
     }
 
     return new Blob([uInt8Array], { type: contentType });
+  }
+
+  /**
+   * Reads and processes the file (either single frame or GIF) to extract QR code data.
+   *
+   * @returns {Promise<string>} A promise that resolves to the processed QR code data as a string.
+   */
+  async read(): Promise<string> {
+    if (this.isGIF(this._file)) {
+      const allFrames = await this.processAllFrames();
+      return allFrames.sort(sortFrames).map(sliceFrames).join('');
+    } else {
+      return await this.processSingleFrame();
+    }
   }
 }

@@ -1,9 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { FileProcessor, Reader, WebRTCProcessor } from '@flipbookqr/reader';
 import { Button } from './components/button';
 import DialogBox from './components/dialog';
+import useNavigatorSupport from './components/support';
 
 interface MethodButtonProps {
   setResults: (results: string) => void;
@@ -14,6 +15,9 @@ export function CameraScan({
   setResults,
   children,
 }: MethodButtonProps): JSX.Element {
+  // Get the navigator support
+  const supports = useNavigatorSupport();
+
   // Store the reader
   const [reader, setReader] = useState<Reader>();
 
@@ -53,6 +57,11 @@ export function CameraScan({
     },
     [reader, setResults]
   );
+
+  // If the browser does not support user media, return an empty fragment
+  if (!supports.getUserMedia) {
+    return <Fragment />;
+  }
 
   return (
     <>
@@ -129,11 +138,19 @@ export function ScreenScan({
   setResults,
   children,
 }: MethodButtonProps): JSX.Element {
+  // Get the navigator support
+  const supports = useNavigatorSupport();
+
   // When clicking the button, we want to trigger a screen capture
   const onClick = useCallback(async () => {
     const reader = new Reader();
     setResults(await reader.read());
   }, [setResults]);
+
+  // If the browser does not support display media, return an empty fragment
+  if (!supports.getDisplayMedia) {
+    return <Fragment />;
+  }
 
   return <Button onClick={onClick}>{children}</Button>;
 }

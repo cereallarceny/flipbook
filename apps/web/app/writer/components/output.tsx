@@ -2,11 +2,12 @@
 
 import { Reader } from '@flipbookqr/reader';
 import Image from 'next/image';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import type { WriterProps } from '@flipbookqr/writer';
 import { Button, IconButton } from '../../components/button';
+import useNavigatorSupport from '../../components/support';
 
 interface OutputProps {
   qr: string;
@@ -21,6 +22,9 @@ export default function Output({
   setQR,
   configuration,
 }: OutputProps): JSX.Element {
+  // Get the navigator support
+  const supports = useNavigatorSupport();
+
   // Store the read output
   const [output, setOutput] = useState<string>('');
 
@@ -63,12 +67,6 @@ export default function Output({
     setQR('');
   }, [setQR]);
 
-  // A function to check whether or not we support the getDisplayMedia API
-  const supportsGetDisplayMedia = useMemo(
-    () => !!navigator?.mediaDevices?.getDisplayMedia,
-    []
-  );
-
   return (
     <div>
       {qr !== '' && (
@@ -83,7 +81,7 @@ export default function Output({
             </div>
           )}
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            {supportsGetDisplayMedia && (
+            {supports.getDisplayMedia && (
               <Button onClick={() => void readQR()} type="button">
                 Read QR
               </Button>

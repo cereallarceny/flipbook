@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@flipbookqr/shared": "workspace:*",
-    "canvas-capture": "^2.1.1",
     "gif.js": "^0.2.0",
     "qrcode": "1.5.3"
   },

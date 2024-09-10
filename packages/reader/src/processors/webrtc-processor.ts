@@ -41,9 +41,7 @@ export class WebRTCProcessor extends FrameProcessor {
     // Store the media options
     this._mediaType = mediaType || 'display';
     this._mediaOptions = options || {
-      video: {
-        displaySurface: 'window',
-      },
+      video: true,
       audio: false,
     };
   }
@@ -161,7 +159,7 @@ export class WebRTCProcessor extends FrameProcessor {
     });
   }
 
-  async read(): Promise<string> {
+  async getStreamTracks(): Promise<MediaStreamTrack[]> {
     // Get the display media
     let captureStream: MediaStream;
 
@@ -177,21 +175,31 @@ export class WebRTCProcessor extends FrameProcessor {
 
     this.log.debug('Got capture stream', captureStream);
 
-    // Get the video track and store it
-    const track = captureStream.getVideoTracks()[0];
+    // Return the video tracks
+    return captureStream.getVideoTracks();
+  }
+
+  setStreamTrack(track: MediaStreamTrack): void {
+    // Set the track
     this._track = track;
+  }
 
+  async read(): Promise<string> {
     try {
-      // If there is no track, throw an error
-      if (!track) throw new Error('Could not get video track');
+      // If there is no track, set the first one
+      if (!this._track) {
+        const tracks = await this.getStreamTracks();
 
-      this.log.debug('Got video track', track);
+        this.setStreamTrack(tracks[0]!);
+      }
+
+      this.log.debug('Got video track', this._track);
 
       // Process all the frames
       const allFrames = await this.processAllFrames();
 
       // Stop the track
-      track.stop();
+      this._track!.stop();
 
       this.log.debug('Stopped track');
 

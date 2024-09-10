@@ -1,5 +1,11 @@
 # @flipbookqr/shared
 
+## 0.1.5
+
+### Patch Changes
+
+- e7642eb: Redid internal infrastructure of repo
+
 ## 0.1.4
 
 ### Patch Changes

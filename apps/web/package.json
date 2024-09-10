@@ -31,10 +31,7 @@
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^14.2.9",
     "@repo/eslint-config": "workspace:*",
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
-    "tsconfig": "workspace:*"
+    "@repo/typescript-config": "workspace:*"
   }
 }

@@ -2,12 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": ["NODE_ENV"],
+  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
@@ -16,9 +18,7 @@
     },
     "format": {},
     "format:fix": {},
-    "test": {
-      "dependsOn": ["@flipbookqr/shared#build"]
-    },
+    "test": {},
     "test:watch": {},
     "benchmark": {}
   }

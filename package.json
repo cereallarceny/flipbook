@@ -8,6 +8,9 @@
   },
   "private": true,
   "packageManager": "pnpm@9.0.6",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -29,19 +32,17 @@
     "@changesets/cli": "^2.27.8",
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
+    "@types/gif.js": "^0.2.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.16.5",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
     "@types/w3c-image-capture": "^1.0.10",
-    "eslint": "^8.57.0",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
-    "ts-jest": "^29.2.5",
-    "tsconfig": "workspace:*",
-    "tsup": "^8.2.4",
-    "turbo": "latest",
-    "typescript": "^5.5.4"
+    "turbo": "^2.1.1"
   }
 }

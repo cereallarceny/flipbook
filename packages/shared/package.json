@@ -1,13 +1,8 @@
 {
   "name": "@flipbookqr/shared",
   "version": "0.1.4",
-  "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
+    ".": "./src/index.ts",
     "./package.json": "./package.json"
   },
   "license": "MIT",
@@ -15,16 +10,18 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
-    "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
-    "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "eslint .",
+    "format:fix": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --list-different \"**/*.{ts,tsx,md}\"",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
+  "jest": {
+    "preset": "@repo/jest-presets/browser"
+  },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "jest-config": "workspace:*",
-    "tsconfig": "workspace:*"
+    "@repo/jest-presets": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
   }
 }

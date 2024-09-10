@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@flipbookqr/reader": "workspace:*",
+    "@flipbookqr/shared": "workspace:*",
     "@flipbookqr/writer": "workspace:*",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.1.5",

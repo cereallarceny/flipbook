@@ -1,5 +1,13 @@
 # @flipbookqr/reader
 
+## 0.1.4
+
+### Patch Changes
+
+- 3a25452: Allow for camera selection and potentially fixing mobile issues
+- Updated dependencies [3a25452]
+  - @flipbookqr/shared@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes

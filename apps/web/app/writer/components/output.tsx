@@ -2,7 +2,7 @@
 
 import { Reader } from '@flipbookqr/reader';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import type { WriterProps } from '@flipbookqr/writer';
@@ -63,6 +63,12 @@ export default function Output({
     setQR('');
   }, [setQR]);
 
+  // A function to check whether or not we support the getDisplayMedia API
+  const supportsGetDisplayMedia = useMemo(
+    () => !!navigator?.mediaDevices?.getDisplayMedia,
+    []
+  );
+
   return (
     <div>
       {qr !== '' && (
@@ -77,9 +83,11 @@ export default function Output({
             </div>
           )}
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Button onClick={() => void readQR()} type="button">
-              Read QR
-            </Button>
+            {supportsGetDisplayMedia && (
+              <Button onClick={() => void readQR()} type="button">
+                Read QR
+              </Button>
+            )}
             <Button
               onClick={() => {
                 downloadQR();

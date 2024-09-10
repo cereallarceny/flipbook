@@ -12,7 +12,7 @@ export class WebRTCProcessor extends FrameProcessor {
   protected _canvas: HTMLCanvasElement;
   protected _width: number;
   protected _height: number;
-  protected _track: MediaStreamTrack | undefined;
+  protected _video: HTMLVideoElement | undefined;
   protected _mediaType: MediaType;
   protected _mediaOptions: MediaOptions;
   protected log: Logger;
@@ -29,14 +29,14 @@ export class WebRTCProcessor extends FrameProcessor {
     this._width = 1920;
     this._height = 1080;
 
-    // Store the canvas temperorily
+    // Store the canvas temporarily
     this._canvas = canvas;
 
     // Store canvas context
     this._ctx = canvas.getContext('2d');
 
-    // Store the track
-    this._track = undefined;
+    // Store the video element for media stream rendering
+    this._video = undefined;
 
     // Store the media options
     this._mediaType = mediaType || 'display';
@@ -46,26 +46,27 @@ export class WebRTCProcessor extends FrameProcessor {
     };
   }
 
-  setFrame(frame: ImageBitmap): void {
-    const { width, height } = frame;
+  setFrame(): void {
+    if (this._video && this._ctx) {
+      const { videoWidth, videoHeight } = this._video;
 
-    // Set width and height
-    this._width = width;
-    this._height = height;
+      // Set canvas dimensions to match the video dimensions
+      this._canvas.width = videoWidth;
+      this._canvas.height = videoHeight;
 
-    // Set width and height of the canvas
-    this._canvas.width = width;
-    this._canvas.height = height;
-
-    this.log.debug('Drawing frame', frame);
-
-    // Draw the frame to the context
-    this._ctx?.drawImage(frame, 0, 0, this._width, this._height);
+      // Draw the current video frame onto the canvas
+      this._ctx.drawImage(this._video, 0, 0, videoWidth, videoHeight);
+    }
   }
 
   getFrameData(): QRCode | null {
     // Get the data from the canvas
-    const results = this._ctx?.getImageData(0, 0, this._width, this._height);
+    const results = this._ctx?.getImageData(
+      0,
+      0,
+      this._canvas.width,
+      this._canvas.height
+    );
 
     // If there is no data, return null
     if (!results) return null;
@@ -73,78 +74,53 @@ export class WebRTCProcessor extends FrameProcessor {
     this.log.debug('Got frame data', results);
 
     // Decode the results data
-    const decodedData = jsQR(results.data, this._width, this._height);
+    const decodedData = jsQR(
+      results.data,
+      this._canvas.width,
+      this._canvas.height
+    );
 
     this.log.debug('Decoded frame data', decodedData);
 
     return decodedData;
   }
 
-  // Destroy the temporary canvas
+  // Destroy the temporary canvas and video element
   destroy(): void {
     this._canvas.remove();
-    this._track = undefined;
+    if (this._video) this._video.remove();
   }
 
   processAllFrames(): Promise<string[]> {
-    // TODO: We should test this
-    // istanbul ignore next
     return new Promise((resolve) => {
-      // Store all the frames
       const allFrames = new Set<string>();
-
-      // Store the expected number of frames
       let numExpectedFrames: number;
 
       this.log.debug('Processing all frames');
 
-      // If there is no track, log an error and return an empty array
-      if (!this._track) {
-        this.log.error('No track to process');
+      if (!this._video) {
+        this.log.error('No video element to process');
         resolve([]);
         return;
       }
 
-      // Create an image capture
-      const imageCapture = new ImageCapture(this._track);
-
-      // Process the next frame
-      const processFrame = async (): Promise<void> => {
+      const processFrame = (): void => {
         try {
-          // Grab the next frame
-          const frame: ImageBitmap = await imageCapture.grabFrame();
+          this.setFrame();
 
-          this.log.debug('Processed frame', frame);
-
-          // Give frame to the frameProcessor
-          this.setFrame(frame);
-
-          // Get the data from the frameProcessor
           const result = this.getFrameData();
-
-          this.log.debug('Got frame data result', result);
-
-          // Get the code from the result
           const code = result && 'data' in result ? result.data : '';
 
-          this.log.debug('Got code', code);
-
-          // If the code is not empty and we haven't seen it before, add it to the list
           if (code !== '' && !allFrames.has(code)) {
             allFrames.add(code);
 
-            this.log.debug("That code didn't exist yet, adding frame to list");
-
-            // If the code is the head frame, get the number of frames
             if (getHeadLength(code) !== -1) {
-              this.log.debug('Got head frame', code);
               numExpectedFrames = getHeadLength(code);
             }
           }
 
-          // If we haven't seen all the frames, continue processing
           if (allFrames.size !== numExpectedFrames) {
-            requestAnimationFrame(processFrame as () => void);
+            requestAnimationFrame(processFrame);
           } else {
             this.log.debug('All frames processed');
             resolve(Array.from(allFrames));
@@ -154,13 +130,11 @@ export class WebRTCProcessor extends FrameProcessor {
         }
       };
 
-      // Kick off the first frame processing
-      requestAnimationFrame(processFrame as () => void);
+      requestAnimationFrame(processFrame);
     });
   }
 
   async getStreamTracks(): Promise<MediaStreamTrack[]> {
-    // Get the display media
     let captureStream: MediaStream;
 
     if (this._mediaType === 'display') {
@@ -179,41 +153,44 @@ export class WebRTCProcessor extends FrameProcessor {
     return captureStream.getVideoTracks();
   }
 
-  setStreamTrack(track: MediaStreamTrack): void {
-    // Set the track
-    this._track = track;
+  async startVideo(): Promise<void> {
+    const tracks = await this.getStreamTracks();
+    const mediaStream = new MediaStream(tracks);
+
+    const video = document.createElement('video');
+    video.srcObject = mediaStream;
+    video.style.display = 'none'; // Hide the video element
+    document.body.appendChild(video);
+
+    this._video = video;
+
+    await video.play(); // Ensure the video starts playing before processing frames
   }
 
   async read(): Promise<string> {
     try {
-      // If there is no track, set the first one
-      if (!this._track) {
-        const tracks = await this.getStreamTracks();
-
-        this.setStreamTrack(tracks[0]!);
+      if (!this._video) {
+        await this.startVideo();
       }
 
-      this.log.debug('Got video track', this._track);
+      this.log.debug('Got video element', this._video);
 
-      // Process all the frames
       const allFrames = await this.processAllFrames();
 
-      // Stop the track
-      this._track!.stop();
+      if (this._video) {
+        (this._video.srcObject as MediaStream)
+          ?.getTracks()
+          .forEach((track) => track.stop());
+      }
 
-      this.log.debug('Stopped track');
+      this.log.debug('Stopped video stream');
 
-      // Remove listeners etc, setup by frameProcessor after the process is completed.
       this.destroy();
 
-      this.log.debug('Destroyed frame processor');
-
-      // Sort the frames, slice their tags off, and join them into a single string
       const result = allFrames.sort(sortFrames).map(sliceFrames).join('');
 
       this.log.debug('Sorted frames', result);
 
-      // Return the code when it's found
       return result;
     } catch (e) {
       return Promise.reject(new Error('Failed to read frames'));

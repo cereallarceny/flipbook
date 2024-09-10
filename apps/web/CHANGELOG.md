@@ -1,5 +1,15 @@
 # web
 
+## 0.0.4
+
+### Patch Changes
+
+- 3a25452: Allow for camera selection and potentially fixing mobile issues
+- Updated dependencies [3a25452]
+  - @flipbookqr/reader@0.1.4
+  - @flipbookqr/writer@0.1.4
+  - @flipbookqr/shared@0.1.4
+
 ## 0.0.3
 
 ### Patch Changes

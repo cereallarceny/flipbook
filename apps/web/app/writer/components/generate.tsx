@@ -24,15 +24,15 @@ export default function Generate({
   const [isOpen, setIsOpen] = useState(false);
 
   // A function to create the QR code
-  const createQR = useCallback(async (): Promise<void> => {
+  const createQR = useCallback(() => {
     try {
       // Resetting whatever QR code was there before
       setQR('');
 
       // Write the QR code
       const writer = new Writer(configuration);
-      const qrs = await writer.write(code);
-      const result = await writer.compose(qrs);
+      const qrs = writer.write(code);
+      const result = writer.compose(qrs);
 
       // Set the QR code
       setQR(result);

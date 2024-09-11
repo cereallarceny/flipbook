@@ -27,8 +27,7 @@
     ]
   },
   "dependencies": {
-    "@flipbookqr/shared": "workspace:*",
-    "gifuct-js": "^2.1.2"
+    "@flipbookqr/shared": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

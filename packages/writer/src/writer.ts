@@ -1,12 +1,11 @@
 import { createHeadTag, createIndexTag, getLogger } from '@flipbookqr/shared';
-import GIF from 'gif.js';
 import { Encoder, ErrorCorrectionLevel } from '@nuintun/qrcode';
+import { GifWriter } from 'omggif';
 import type { Logger, LogLevelDesc } from 'loglevel';
-import { workerBlob } from './gif-worker';
 
 interface WriterResult {
   code: string;
-  image: string;
+  image: Encoder;
 }
 
 export interface WriterProps {
@@ -27,6 +26,7 @@ export interface WriterProps {
 export class Writer {
   private log: Logger;
   opts: WriterProps;
+  private size?: number;
 
   /**
    * Creates a new Writer instance with the provided options or defaults.
@@ -117,13 +117,74 @@ export class Writer {
   }
 
   /**
+   * Converts raw encoder data into a 2d binary array
+   *
+   * @
+   */
+  private encoderTo2dBinaryArray(encoder: Encoder): number[][] {
+    // If there is no size, throw an error
+    if (!this.size) {
+      throw new Error('Cannot encode 2d binary array if size is unset');
+    }
+
+    function isDark(matrix: boolean[][], row: number, col: number): boolean {
+      if (matrix[row]![col] !== null) {
+        return matrix[row]![col]!;
+      } else {
+        return false;
+      }
+    }
+
+    // Get the 2d boolean matrix from the encoder
+    const matrix = encoder.getMatrix();
+
+    // Store the matrix
+    const finalMatrix: number[][] = [];
+
+    // For each row
+    for (let y = 0; y < this.size; y++) {
+      // Create an array
+      const row: number[] = [];
+
+      // For each column
+      for (let x = 0; x < this.size; x++) {
+        // Check if the value is black and within the margins, push a 0
+        if (
+          this.opts.margin <= x &&
+          x < this.size - this.opts.margin &&
+          this.opts.margin <= y &&
+          y < this.size - this.opts.margin &&
+          isDark(
+            matrix,
+            ((y - this.opts.margin) / this.opts.moduleSize) >> 0,
+            ((x - this.opts.margin) / this.opts.moduleSize) >> 0
+          )
+        ) {
+          row.push(0);
+        }
+
+        // Otherwise it's white, push a 1
+        else {
+          row.push(1);
+        }
+      }
+
+      // Push the row on the final matrix
+      finalMatrix.push(row);
+    }
+
+    // Return the final matrix
+    return finalMatrix;
+  }
+
+  /**
    * Generates QR codes from the given string.
    * The string is split into multiple parts if it exceeds the split length.
    *
    * @param {string} code - The input string to encode into QR codes.
-   * @returns {Promise<WriterResult[]>} A promise that resolves with an array of WriterResult objects, each containing a QR code and its corresponding image.
+   * @returns {WriterResult[]} An array of WriterResult objects, each containing a string segment and its corresponding QR code image.
    */
-  async write(code: string): Promise<WriterResult[]> {
+  write(code: string): WriterResult[] {
     this.log.debug('Writing code', code);
 
     // Split the input string into multiple segments
@@ -138,99 +199,90 @@ export class Writer {
     const highestVersion = firstEncoder.getVersion();
     encoders.push(firstEncoder);
 
+    // Set the size of the QR code
+    this.size =
+      this.opts.moduleSize * firstEncoder.getMatrixSize() +
+      this.opts.margin * 2;
+
+    this.log.debug('Size set', this.size);
+
     // Encode the remaining segments
     for (let i = 1; i < codes.length; i++) {
       const encoder = this.createEncoder(codes[i]!, highestVersion);
       encoders.push(encoder);
     }
 
+    this.log.debug('Encoded all qr codes', encoders);
+
     // Convert QR codes to data URLs
-    return Promise.all(
-      codes.map(async (code, i) => {
-        // Get the encoder for the current segment
-        const encoder = encoders[i];
+    return codes.map((code, i) => {
+      // Get the encoder for the current segment
+      const encoder = encoders[i];
 
-        // If the encoder is not found, throw an error
-        if (!encoder) {
-          throw new Error('Encoder not found');
-        }
+      // If the encoder is not found, throw an error
+      if (!encoder) {
+        throw new Error('Encoder not found');
+      }
 
-        // Return the segment and its corresponding encoder
-        return {
-          code,
-          image: encoder.toDataURL(this.opts.moduleSize, this.opts.margin),
-        };
-      })
-    );
+      // Return the segment and its corresponding encoder
+      return {
+        code,
+        image: encoder,
+      };
+    });
   }
 
   /**
    * Composes multiple QR code frames into a GIF.
    *
    * @param {WriterResult[]} qrs - An array of QR code images to compose into a GIF.
-   * @returns {Promise<string>} A promise that resolves to a URL pointing to the created GIF.
+   * @returns {string} A URL pointing to the created GIF.
    */
-  async compose(qrs: WriterResult[]): Promise<string> {
-    return new Promise((resolve, reject) => {
-      try {
-        // Create a new GIF instance
-        const gif = new GIF({
-          repeat: 0,
-          workers: 4,
-          quality: 10,
-          workerScript: URL.createObjectURL(workerBlob),
-          debug:
-            this.opts.logLevel === 'trace' || this.opts.logLevel === 'debug',
-          // width: this.opts.size,
-          // height: this.opts.size,
-        });
+  compose(qrs: WriterResult[]): string {
+    // If there's no size, throw an error
+    if (!this.size) {
+      throw new Error('Run writer.write() before writer.compose()');
+    }
 
-        // Keep track of the number of loaded images
-        let loadedImagesCount = 0;
+    // Create a buffer big enough to contain the image
+    const buf = new Uint8Array(this.size * this.size * qrs.length * 4);
 
-        // Add each QR code frame to the GIF
-        const addFrameAndCheckCompletion = (): void => {
-          loadedImagesCount++;
-          if (loadedImagesCount === qrs.length) {
-            // When all images are loaded, resolve with the GIF
-            gif.on('finished', (blob) => {
-              this.log.debug('Created blob', blob);
-              resolve(URL.createObjectURL(blob));
-            });
-
-            // Add each frame to the GIF
-            gif.render();
-          }
-        };
-
-        // Load each QR code image and add it to the GIF
-        for (const qr of qrs) {
-          // Create a new image element
-          const img = new Image();
-
-          // When the image is loaded, add it to the GIF
-          img.onload = () => {
-            gif.addFrame(img, { delay: this.opts.delay });
-            addFrameAndCheckCompletion();
-          };
-
-          // When an error occurs, reject the promise
-          img.onerror = (error) => {
-            this.log.error('Error loading image:', error);
-            reject(
-              new Error(
-                typeof error === 'string' ? error : 'Error loading image'
-              )
-            );
-          };
-
-          // Set the image source to the QR code data URL
-          img.src = qr.image;
-        }
-      } catch (e) {
-        this.log.error(e);
-        reject(new Error(e as string));
-      }
+    // Create the writer instance
+    const writer = new GifWriter(buf, this.size, this.size, {
+      palette: [0x000000, 0xffffff],
+      loop: 0,
+      background: 1,
     });
+
+    this.log.debug('Created new GIF writer', writer);
+
+    // For each qr code, add a frame to the gif
+    for (let i = 0; i < qrs.length; i++) {
+      // Get the QR code
+      const qr = qrs[i];
+
+      // If the QR code is not found, throw an error
+      if (!qr) {
+        throw new Error('QR code not found');
+      }
+
+      // Convert the matrix into a 2d binary array
+      const matrix = this.encoderTo2dBinaryArray(qr.image);
+
+      this.log.debug('Added frame to QR', matrix);
+
+      // Add the frame to the GIF
+      writer.addFrame(0, 0, this.size, this.size, matrix.flat(), {
+        delay: 100 / this.opts.delay,
+      });
+    }
+
+    // Create the GIF from the first frame to the last
+    const qr = buf.slice(0, writer.end());
+
+    this.log.debug('Final QR buffer', qr);
+
+    // Return the GIF URL
+    return URL.createObjectURL(new Blob([qr]));
   }
 }

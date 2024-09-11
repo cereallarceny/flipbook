@@ -91,3 +91,5 @@ export const getHeadLength = (str: string): number => {
   logger.debug('Returning head length', result);
   return result;
 };
+
+export * from './utils';

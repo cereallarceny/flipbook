@@ -27,8 +27,7 @@
     "preset": "@repo/jest-presets/browser"
   },
   "dependencies": {
-    "@flipbookqr/shared": "workspace:*",
-    "gif.js": "^0.2.0"
+    "@flipbookqr/shared": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

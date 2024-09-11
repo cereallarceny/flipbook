@@ -1,14 +1,4 @@
-import GIF from 'gif.js';
-import qrcode, { create } from 'qrcode';
 import { Writer } from './writer';
-
-jest.mock('gif.js', () => {
-  return jest.fn().mockImplementation(() => ({
-    addFrame: jest.fn(),
-    on: jest.fn(),
-    render: jest.fn(),
-  }));
-});
 
 let writer: Writer;
 
@@ -22,7 +12,7 @@ describe('Writer', () => {
   });
 
   describe('write', () => {
-    it('should generate QR Codes from text input', async () => {
+    it('should generate QR Codes from text input', () => {
       const TEST_CODE =
         'TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE_TEST_CODE';
 
@@ -30,7 +20,7 @@ describe('Writer', () => {
       jest.spyOn(qrcode, 'create');
 
       // Call the write method
-      const result = await writer.write(TEST_CODE);
+      const result = writer.write(TEST_CODE);
 
       // Verify that the create method was called with the correct arguments
       expect(create).toHaveBeenCalled();
@@ -44,31 +34,6 @@ describe('Writer', () => {
   });
 
   describe('compose', () => {
-    it('should use the mocked gif.js module', () => {
-      const MOCKED_URL = 'mocked url data';
-
-      const qrs = [
-        { code: 'code1', image: 'image1' },
-        { code: 'code2', image: 'image2' },
-      ];
-
-      //  Mock the URL.createObjectURL
-      global.URL.createObjectURL = jest.fn(() => MOCKED_URL);
-
-      // Call the compose method
-      writer.compose(qrs);
-
-      // Verify that the GIF module was called with the correct options
-      expect(GIF).toHaveBeenCalled();
-      expect(GIF).toHaveBeenCalledWith({
-        debug: false,
-        quality: 10,
-        repeat: 0,
-        workerScript: 'mocked url data',
-        workers: 4,
-      });
-    });
-
     it('should reject with an error when an exception occurs during GIF rendering', async () => {
       const ERROR_MESSAGE = 'Failed to create object URL';
       const qrs = [

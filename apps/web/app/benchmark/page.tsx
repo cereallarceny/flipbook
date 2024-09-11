@@ -12,11 +12,11 @@ export default function File(): JSX.Element {
   const [text, setText] = useState('');
   const [qr, setQr] = useState('');
 
-  const generate = useCallback(async () => {
+  const generate = useCallback(() => {
     setQr('');
     const writer = new Writer();
-    const qrs = await writer.write(text);
-    const result = await writer.compose(qrs);
+    const qrs = writer.write(text);
+    const result = writer.compose(qrs);
 
     setQr(result);
   }, [text]);

@@ -53,7 +53,7 @@ export default function DialogBox({
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-10 w-screen overflow-hidden">
+        <div className="fixed inset-0 z-10 w-screen overflow-hidden overflow-y-auto">
           <div
             className={twMerge(
               'min-h-full w-full mx-auto px-6 sm:px-0',
@@ -69,7 +69,7 @@ export default function DialogBox({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg p-8 my-8 bg-white shadow-xl transition-all">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg px-4 py-8 my-8 bg-white shadow-xl transition-all">
                 {children}
               </Dialog.Panel>
             </Transition.Child>

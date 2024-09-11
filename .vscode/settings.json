@@ -5,5 +5,5 @@
     }
   ],
   "css.customData": [".vscode/tailwind.json"],
-  "files.autoSave": "afterDelay"
+  "files.autoSave": "off"
 }

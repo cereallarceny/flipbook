@@ -1,6 +1,6 @@
 import { createHeadTag, createIndexTag, getLogger } from '@flipbookqr/shared';
-import GIF, { type AddFrameOptions } from 'gif.js';
-import { Encoder } from '@nuintun/qrcode';
+import GIF from 'gif.js';
+import { Encoder, ErrorCorrectionLevel } from '@nuintun/qrcode';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { workerBlob } from './gif-worker';
 
@@ -11,8 +11,12 @@ interface WriterResult {
 
 export interface WriterProps {
   logLevel: LogLevelDesc;
-  gifOptions: AddFrameOptions;
-  size: number;
+  errorCorrectionLevel: ErrorCorrectionLevel;
+  encodingHint: boolean;
+  version?: number;
+  moduleSize: number;
+  margin: number;
+  delay: number;
   splitLength: number;
 }
 
@@ -33,10 +37,12 @@ export class Writer {
     // Default options
     const DEFAULT_WRITER_PROPS: WriterProps = {
       logLevel: 'silent',
-      gifOptions: {
-        delay: 300,
-      },
-      size: 512,
+      errorCorrectionLevel: ErrorCorrectionLevel.M,
+      encodingHint: true,
+      version: undefined,
+      moduleSize: 4,
+      margin: 8,
+      delay: 100,
       splitLength: 100,
     };
 
@@ -87,6 +93,30 @@ export class Writer {
   }
 
   /**
+   * Creates a new QR code encoder with the specified content and version.
+   *
+   * @param {string} content - The content to encode into a QR code.
+   * @param {number} [version] - The version of the QR code to generate.
+   * @returns {Encoder} A new QR code encoder instance.
+   */
+  private createEncoder(content: string, version?: number): Encoder {
+    // Create the encoder instance
+    const encoder = new Encoder();
+
+    // Set the version, encoding hint, and error correction level
+    if (version) encoder.setVersion(version);
+    encoder.setEncodingHint(this.opts.encodingHint);
+    encoder.setErrorCorrectionLevel(this.opts.errorCorrectionLevel);
+
+    // Write the content and generate the QR code
+    encoder.write(content);
+    encoder.make();
+
+    // Return the encoder instance
+    return encoder;
+  }
+
+  /**
    * Generates QR codes from the given string.
    * The string is split into multiple parts if it exceeds the split length.
    *
@@ -100,30 +130,35 @@ export class Writer {
     const codes = this.split(code, this.opts);
     this.log.debug('Split codes', codes);
 
-    // TODO: See if there's a way to have consistent versions without generating QR codes twice
-    // TODO: Try to figure out how to make the data url's the same as this.opts.size
-    // TODO: Allow for options to be specified
-    // TODO: Move on to replacing the gif library next
+    // Store all the encoders
+    const encoders: Encoder[] = [];
 
-    // Generate temporary QR codes to determine the highest version
-    const highestVersion = codes.reduce((acc, v) => {
-      const encoder = new Encoder();
-      encoder.write(v);
-      encoder.make();
-      return encoder.getVersion() > acc ? encoder.getVersion() : acc;
-    }, 0);
+    // Encode the first segment to determine the highest version
+    const firstEncoder = this.createEncoder(codes[0]!, this.opts.version);
+    const highestVersion = firstEncoder.getVersion();
+    encoders.push(firstEncoder);
+
+    // Encode the remaining segments
+    for (let i = 1; i < codes.length; i++) {
+      const encoder = this.createEncoder(codes[i]!, highestVersion);
+      encoders.push(encoder);
+    }
 
     // Convert QR codes to data URLs
     return Promise.all(
-      codes.map(async (code) => {
-        const encoder = new Encoder();
-        encoder.setVersion(highestVersion);
-        encoder.write(code);
-        encoder.make();
+      codes.map(async (code, i) => {
+        // Get the encoder for the current segment
+        const encoder = encoders[i];
 
+        // If the encoder is not found, throw an error
+        if (!encoder) {
+          throw new Error('Encoder not found');
+        }
+
+        // Return the segment and its corresponding encoder
         return {
           code,
-          image: encoder.toDataURL(this.opts.size / 49),
+          image: encoder.toDataURL(this.opts.moduleSize, this.opts.margin),
         };
       })
     );
@@ -146,6 +181,8 @@ export class Writer {
           workerScript: URL.createObjectURL(workerBlob),
           debug:
             this.opts.logLevel === 'trace' || this.opts.logLevel === 'debug',
+          // width: this.opts.size,
+          // height: this.opts.size,
         });
 
         // Keep track of the number of loaded images
@@ -173,7 +210,7 @@ export class Writer {
 
           // When the image is loaded, add it to the GIF
           img.onload = () => {
-            gif.addFrame(img, this.opts.gifOptions);
+            gif.addFrame(img, { delay: this.opts.delay });
             addFrameAndCheckCompletion();
           };
 

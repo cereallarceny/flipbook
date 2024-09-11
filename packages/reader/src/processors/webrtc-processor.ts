@@ -1,6 +1,4 @@
-import jsQR, { type QRCode } from 'jsqr';
-import { getHeadLength, getLogger } from '@flipbookqr/shared';
-import type { Logger } from 'loglevel';
+import { getHeadLength } from '@flipbookqr/shared';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
 
@@ -14,15 +12,10 @@ type MediaOptions = DisplayMediaStreamOptions | MediaStreamConstraints;
  * @extends FrameProcessor
  */
 export class WebRTCProcessor extends FrameProcessor {
-  protected _ctx: CanvasRenderingContext2D | null;
-  protected _canvas: HTMLCanvasElement;
-  protected _width: number;
-  protected _height: number;
   protected _video: HTMLVideoElement | undefined;
   protected _track: MediaStreamTrack | undefined;
   protected _mediaType: MediaType;
   protected _mediaOptions: MediaOptions;
-  protected _log: Logger;
 
   /**
    * Creates an instance of WebRTCProcessor.
@@ -34,16 +27,6 @@ export class WebRTCProcessor extends FrameProcessor {
     // Initialize the processor
     super();
 
-    // Set up logger
-    this._log = getLogger();
-
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    this._width = 1920;
-    this._height = 1080;
-    this._canvas = canvas;
-    this._ctx = canvas.getContext('2d');
-
     // Initialize video and track
     this._video = undefined;
     this._track = undefined;
@@ -54,57 +37,6 @@ export class WebRTCProcessor extends FrameProcessor {
       video: true,
       audio: false,
     };
-  }
-
-  /**
-   * Sets the current video frame onto the canvas.
-   * If the video element is present, it draws the video frame onto the canvas.
-   */
-  protected setFrame(): void {
-    // If the video and context are available, draw the video frame onto the canvas
-    if (this._video && this._ctx) {
-      // Get the video dimensions
-      const { videoWidth, videoHeight } = this._video;
-
-      // Set the canvas dimensions
-      this._canvas.width = videoWidth;
-      this._canvas.height = videoHeight;
-
-      // Draw the video frame onto the canvas
-      this._ctx.drawImage(this._video, 0, 0, videoWidth, videoHeight);
-    }
-  }
-
-  /**
-   * Retrieves QR code data from the current frame.
-   *
-   * @returns {QRCode | null} The decoded QR code data, or null if no data was found.
-   */
-  protected getFrameData(): QRCode | null {
-    // Get the frame data from the canvas
-    const results = this._ctx?.getImageData(
-      0,
-      0,
-      this._canvas.width,
-      this._canvas.height
-    );
-
-    // If no data is found, return null
-    if (!results) return null;
-
-    this._log.debug('Got frame data', results);
-
-    // Decode the frame data using a QR code reader
-    const decodedData = jsQR(
-      results.data,
-      this._canvas.width,
-      this._canvas.height
-    );
-
-    this._log.debug('Decoded frame data', decodedData);
-
-    // Return the decoded data
-    return decodedData;
   }
 
   /**
@@ -140,7 +72,7 @@ export class WebRTCProcessor extends FrameProcessor {
       const processFrame = (): void => {
         try {
           // Set the current frame onto the canvas
-          this.setFrame();
+          this.setFrame(this._video!);
 
           // Get the QR code data from the frame
           const result = this.getFrameData();

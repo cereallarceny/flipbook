@@ -1,6 +1,3 @@
-import jsQR, { type QRCode } from 'jsqr';
-import { getLogger } from '@flipbookqr/shared';
-import { type Logger } from 'loglevel';
 import { parseGIF, decompressFrames } from 'gifuct-js';
 import { sliceFrames, sortFrames } from '../helpers';
 import { FrameProcessor } from './frame-processor';
@@ -11,11 +8,6 @@ import { FrameProcessor } from './frame-processor';
  * @extends FrameProcessor
  */
 export class FileProcessor extends FrameProcessor {
-  protected _ctx: CanvasRenderingContext2D | null;
-  protected _canvas: HTMLCanvasElement;
-  protected _width: number;
-  protected _height: number;
-  protected _log: Logger;
   protected _file: File;
 
   /**
@@ -27,65 +19,8 @@ export class FileProcessor extends FrameProcessor {
     // Initialize the processor
     super();
 
-    // Set up logger
-    this._log = getLogger();
-
     // Set the file to process
     this._file = file;
-
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    this._width = 1920;
-    this._height = 1080;
-    this._canvas = canvas;
-    this._ctx = canvas.getContext('2d');
-  }
-
-  /**
-   * Sets the specified frame on the canvas.
-   *
-   * @param {HTMLImageElement | ImageBitmap} frame - The frame to draw on the canvas.
-   * @throws Will throw an error if an unsupported frame type is provided.
-   */
-  protected setFrame(frame: HTMLImageElement | ImageBitmap): void {
-    // Store the frame dimensions
-    let width, height;
-
-    // Get the frame dimensions
-    if (frame instanceof HTMLImageElement || frame instanceof ImageBitmap) {
-      width = frame.width;
-      height = frame.height;
-    } else {
-      throw new Error('Unsupported frame type');
-    }
-
-    // Update the canvas dimensions
-    this._width = width;
-    this._height = height;
-    this._canvas.width = width;
-    this._canvas.height = height;
-
-    // Draw the frame on the canvas
-    this._ctx?.drawImage(frame, 0, 0, this._width, this._height);
-  }
-
-  /**
-   * Retrieves QR code data from the current canvas frame.
-   *
-   * @returns {QRCode | null} The decoded QR code data, or null if no data is found.
-   */
-  protected getFrameData(): QRCode | null {
-    // Get the image data from the canvas
-    const imageData = this._ctx?.getImageData(0, 0, this._width, this._height);
-
-    // Decode the image data to extract QR code data
-    let decodedData: null | QRCode = null;
-    if (imageData && 'data' in imageData) {
-      decodedData = jsQR(imageData.data, this._width, this._height);
-    }
-
-    // Return the decoded data
-    return decodedData;
   }
 
   /**

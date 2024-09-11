@@ -1,6 +1,6 @@
-import { create, toDataURL, type QRCodeToDataURLOptions } from 'qrcode';
 import { createHeadTag, createIndexTag, getLogger } from '@flipbookqr/shared';
 import GIF, { type AddFrameOptions } from 'gif.js';
+import { Encoder } from '@nuintun/qrcode';
 import type { Logger, LogLevelDesc } from 'loglevel';
 import { workerBlob } from './gif-worker';
 
@@ -11,7 +11,6 @@ interface WriterResult {
 
 export interface WriterProps {
   logLevel: LogLevelDesc;
-  qrOptions: QRCodeToDataURLOptions;
   gifOptions: AddFrameOptions;
   size: number;
   splitLength: number;
@@ -34,10 +33,6 @@ export class Writer {
     // Default options
     const DEFAULT_WRITER_PROPS: WriterProps = {
       logLevel: 'silent',
-      qrOptions: {
-        errorCorrectionLevel: 'M',
-        type: 'image/png',
-      },
       gifOptions: {
         delay: 300,
       },
@@ -105,29 +100,32 @@ export class Writer {
     const codes = this.split(code, this.opts);
     this.log.debug('Split codes', codes);
 
-    // Generate QR codes for each segment
-    const allQrs = await Promise.all(
-      codes.map((v) => create(v, this.opts.qrOptions))
-    );
-    this.log.debug('Generated QR codes', allQrs);
+    // TODO: See if there's a way to have consistent versions without generating QR codes twice
+    // TODO: Try to figure out how to make the data url's the same as this.opts.size
+    // TODO: Allow for options to be specified
+    // TODO: Move on to replacing the gif library next
 
-    // Find the highest version among all QR codes
-    const highestVersion = allQrs.reduce(
-      (acc, v) => (v.version > acc ? v.version : acc),
-      0
-    );
-    this.log.debug('Highest version', highestVersion);
+    // Generate temporary QR codes to determine the highest version
+    const highestVersion = codes.reduce((acc, v) => {
+      const encoder = new Encoder();
+      encoder.write(v);
+      encoder.make();
+      return encoder.getVersion() > acc ? encoder.getVersion() : acc;
+    }, 0);
 
     // Convert QR codes to data URLs
     return Promise.all(
-      codes.map(async (v) => ({
-        code: v,
-        image: await toDataURL(v, {
-          ...this.opts.qrOptions,
-          width: this.opts.size,
-          version: highestVersion,
-        }),
-      }))
+      codes.map(async (code) => {
+        const encoder = new Encoder();
+        encoder.setVersion(highestVersion);
+        encoder.write(code);
+        encoder.make();
+
+        return {
+          code,
+          image: encoder.toDataURL(this.opts.size / 49),
+        };
+      })
     );
   }
 

@@ -1,5 +1,5 @@
 import { getLogger } from '@flipbookqr/shared';
-import jsQR, { type QRCode } from 'jsqr';
+import { Decoder } from '@nuintun/qrcode';
 import type { Logger } from 'loglevel';
 
 export abstract class FrameProcessor {
@@ -59,31 +59,32 @@ export abstract class FrameProcessor {
    *
    * @returns {QRCode | null} The decoded QR code data, or null if no data was found.
    */
-  protected getFrameData(): QRCode | null {
+  protected getFrameData(): ReturnType<Decoder['decode']> | null {
     // Get the frame data from the canvas
-    const results = this._ctx?.getImageData(
+    const imageData = this._ctx?.getImageData(
       0,
       0,
       this._canvas.width,
       this._canvas.height
     );
 
-    // If no data is found, return null
-    if (!results) return null;
+    // If no frame data is available, return null
+    if (!imageData) {
+      return null;
+    }
 
-    this._log.debug('Got frame data', results);
+    // Create a new QR code decoder
+    const qrcode = new Decoder();
 
-    // Decode the frame data using a QR code reader
-    const decodedData = jsQR(
-      results.data,
-      this._canvas.width,
-      this._canvas.height
+    // Decode the QR code data
+    const results = qrcode.decode(
+      imageData.data,
+      imageData.width,
+      imageData.height
     );
-
-    this._log.debug('Decoded frame data', decodedData);
 
     // Return the decoded data
-    return decodedData;
+    return results;
   }
 
   abstract read(): Promise<string>;

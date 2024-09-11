@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "@flipbookqr/shared": "workspace:*",
-    "jsqr": "^1.4.0",
     "gifuct-js": "^2.1.2"
   },
   "devDependencies": {

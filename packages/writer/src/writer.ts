@@ -17,12 +17,21 @@ export interface WriterProps {
   splitLength: number;
 }
 
+/**
+ * The Writer class is responsible for generating QR codes from a given string,
+ * splitting long strings into multiple QR codes, and optionally composing them into a GIF.
+ */
 export class Writer {
   private log: Logger;
   opts: WriterProps;
 
+  /**
+   * Creates a new Writer instance with the provided options or defaults.
+   *
+   * @param {Partial<WriterProps>} [opts={}] - Configuration options for the writer, including logging level, QR options, GIF options, size, and split length.
+   */
   constructor(opts: Partial<WriterProps> = {}) {
-    // Set up the default options
+    // Default options
     const DEFAULT_WRITER_PROPS: WriterProps = {
       logLevel: 'silent',
       qrOptions: {
@@ -36,70 +45,80 @@ export class Writer {
       splitLength: 100,
     };
 
-    // Merge the options with the defaults
+    // Merge default and custom options
     this.opts = { ...DEFAULT_WRITER_PROPS, ...opts };
 
-    // Set up the logger
+    // Set up logger
     const logger = getLogger();
     logger.setLevel(this.opts.logLevel);
     this.log = logger;
   }
 
-  // Split an input string into multiple string of a certain length
+  /**
+   * Splits a string into multiple segments based on the specified split length.
+   * Each segment is tagged with an index and the total number of segments.
+   *
+   * @param {string} code - The string to be split.
+   * @param {WriterProps} opts - The options specifying the split length.
+   * @returns {string[]} An array of strings representing the split and tagged segments.
+   */
   private split(code: string, opts: WriterProps): string[] {
-    // Get the split length from the options
+    // Destructure split length from options
     const { splitLength } = opts;
     this.log.debug('Split length', splitLength);
 
-    // Store all the codes and the length of the input string
+    // Store each segment in an array and get the length of the input string
     const codes: string[] = [];
     const length = code.length;
 
-    // Loop through the input string
+    // Split the string into segments based on the split length
     let i = 0;
     while (i < length) {
-      // Get a slice and push it into the codes array and move onto the next
       codes.push(code.slice(i, i + splitLength));
       this.log.debug('Creating slice', i, i + splitLength);
       i += splitLength;
     }
 
-    // Add the index to each of the codes
+    // Add index and total count tags to each segment
     const indexedCodes = codes.map((v, idx) => `${createIndexTag(idx)} ${v}`);
     this.log.debug('Indexed codes', indexedCodes);
 
-    // Add the head tag to the first code with the number of codes
-    indexedCodes[0] = `${createHeadTag(indexedCodes.length)} ${
-      indexedCodes[0]
-    }`;
+    // Add head tag to the first segment
+    indexedCodes[0] = `${createHeadTag(indexedCodes.length)} ${indexedCodes[0]}`;
     this.log.debug('Indexing head', [indexedCodes[0]]);
 
-    // Return the indexedCodes array
+    // Return the tagged segments
     return indexedCodes;
   }
 
-  // Write a string of code to a series of QR code frames
+  /**
+   * Generates QR codes from the given string.
+   * The string is split into multiple parts if it exceeds the split length.
+   *
+   * @param {string} code - The input string to encode into QR codes.
+   * @returns {Promise<WriterResult[]>} A promise that resolves with an array of WriterResult objects, each containing a QR code and its corresponding image.
+   */
   async write(code: string): Promise<WriterResult[]> {
     this.log.debug('Writing code', code);
 
-    // Split the code into multiple strings
+    // Split the input string into multiple segments
     const codes = this.split(code, this.opts);
     this.log.debug('Split codes', codes);
 
-    // Generate all the QR codes
+    // Generate QR codes for each segment
     const allQrs = await Promise.all(
       codes.map((v) => create(v, this.opts.qrOptions))
     );
     this.log.debug('Generated QR codes', allQrs);
 
-    // Find the highest version of all the QR codes
-    const highestVersion = allQrs.reduce((acc, v) => {
-      if (v.version > acc) return v.version;
-      return acc;
-    }, 0);
+    // Find the highest version among all QR codes
+    const highestVersion = allQrs.reduce(
+      (acc, v) => (v.version > acc ? v.version : acc),
+      0
+    );
     this.log.debug('Highest version', highestVersion);
 
-    // Regenerate each frame again with the highest version
+    // Convert QR codes to data URLs
     return Promise.all(
       codes.map(async (v) => ({
         code: v,
@@ -112,9 +131,16 @@ export class Writer {
     );
   }
 
+  /**
+   * Composes multiple QR code frames into a GIF.
+   *
+   * @param {WriterResult[]} qrs - An array of QR code images to compose into a GIF.
+   * @returns {Promise<string>} A promise that resolves to a URL pointing to the created GIF.
+   */
   async compose(qrs: WriterResult[]): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
+        // Create a new GIF instance
         const gif = new GIF({
           repeat: 0,
           workers: 4,
@@ -124,42 +150,37 @@ export class Writer {
             this.opts.logLevel === 'trace' || this.opts.logLevel === 'debug',
         });
 
-        // Counter to keep track of the loaded images
+        // Keep track of the number of loaded images
         let loadedImagesCount = 0;
 
-        // Function to add the frame to the GIF and resolve when all frames are loaded
-        // TODO: We should test this
-        // istanbul ignore next
+        // Add each QR code frame to the GIF
         const addFrameAndCheckCompletion = (): void => {
           loadedImagesCount++;
           if (loadedImagesCount === qrs.length) {
-            // All images are loaded, resolve the promise
+            // When all images are loaded, resolve with the GIF
             gif.on('finished', (blob) => {
               this.log.debug('Created blob', blob);
               resolve(URL.createObjectURL(blob));
             });
 
-            // Render the GIF
+            // Add each frame to the GIF
             gif.render();
           }
         };
 
-        // Get the images from the QR codes and add them to the GIF
+        // Load each QR code image and add it to the GIF
         for (const qr of qrs) {
+          // Create a new image element
           const img = new Image();
 
-          // Use the onload event to ensure the image is fully loaded before adding it to the GIF
-          // TODO: We should test this
-          // istanbul ignore next
+          // When the image is loaded, add it to the GIF
           img.onload = () => {
             gif.addFrame(img, this.opts.gifOptions);
             addFrameAndCheckCompletion();
           };
 
-          // TODO: We should test this
-          // istanbul ignore next
+          // When an error occurs, reject the promise
           img.onerror = (error) => {
-            // Handle errors loading images
             this.log.error('Error loading image:', error);
             reject(
               new Error(
@@ -168,6 +189,7 @@ export class Writer {
             );
           };
 
+          // Set the image source to the QR code data URL
           img.src = qr.image;
         }
       } catch (e) {

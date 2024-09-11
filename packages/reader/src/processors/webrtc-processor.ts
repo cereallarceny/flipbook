@@ -31,22 +31,29 @@ export class WebRTCProcessor extends FrameProcessor {
    * @param {MediaOptions} [options={ video: true, audio: false }] - Media stream options for capturing video/audio.
    */
   constructor(mediaType?: MediaType, options?: MediaOptions) {
+    // Initialize the processor
     super();
 
+    // Set up logger
     this._log = getLogger();
 
+    // Create canvas element
     const canvas = document.createElement('canvas');
     this._width = 1920;
     this._height = 1080;
     this._canvas = canvas;
     this._ctx = canvas.getContext('2d');
+
+    // Initialize video and track
     this._video = undefined;
+    this._track = undefined;
+
+    // Set media type and options
     this._mediaType = mediaType || 'display';
     this._mediaOptions = options || {
       video: true,
       audio: false,
     };
-    this._track = undefined;
   }
 
   /**
@@ -54,12 +61,16 @@ export class WebRTCProcessor extends FrameProcessor {
    * If the video element is present, it draws the video frame onto the canvas.
    */
   protected setFrame(): void {
+    // If the video and context are available, draw the video frame onto the canvas
     if (this._video && this._ctx) {
+      // Get the video dimensions
       const { videoWidth, videoHeight } = this._video;
 
+      // Set the canvas dimensions
       this._canvas.width = videoWidth;
       this._canvas.height = videoHeight;
 
+      // Draw the video frame onto the canvas
       this._ctx.drawImage(this._video, 0, 0, videoWidth, videoHeight);
     }
   }
@@ -70,6 +81,7 @@ export class WebRTCProcessor extends FrameProcessor {
    * @returns {QRCode | null} The decoded QR code data, or null if no data was found.
    */
   protected getFrameData(): QRCode | null {
+    // Get the frame data from the canvas
     const results = this._ctx?.getImageData(
       0,
       0,
@@ -77,10 +89,12 @@ export class WebRTCProcessor extends FrameProcessor {
       this._canvas.height
     );
 
+    // If no data is found, return null
     if (!results) return null;
 
     this._log.debug('Got frame data', results);
 
+    // Decode the frame data using a QR code reader
     const decodedData = jsQR(
       results.data,
       this._canvas.width,
@@ -89,6 +103,7 @@ export class WebRTCProcessor extends FrameProcessor {
 
     this._log.debug('Decoded frame data', decodedData);
 
+    // Return the decoded data
     return decodedData;
   }
 
@@ -96,6 +111,7 @@ export class WebRTCProcessor extends FrameProcessor {
    * Cleans up by removing the canvas and video elements.
    */
   protected destroy(): void {
+    // Remove the canvas and video elements
     this._canvas.remove();
     if (this._video) this._video.remove();
   }
@@ -107,35 +123,46 @@ export class WebRTCProcessor extends FrameProcessor {
    */
   protected processAllFrames(): Promise<string[]> {
     return new Promise((resolve) => {
+      // Create a Set to store all frames and a variable to store the number of expected frames
       const allFrames = new Set<string>();
       let numExpectedFrames: number;
 
       this._log.debug('Processing all frames');
 
+      // If no video element is present, log an error and resolve with an empty array
       if (!this._video) {
         this._log.error('No video element to process');
         resolve([]);
         return;
       }
 
+      // Process each frame
       const processFrame = (): void => {
         try {
+          // Set the current frame onto the canvas
           this.setFrame();
 
+          // Get the QR code data from the frame
           const result = this.getFrameData();
           const code = result && 'data' in result ? result.data : '';
 
+          // Add the QR code data to the set if it is not already present
           if (code !== '' && !allFrames.has(code)) {
             allFrames.add(code);
 
+            // If the head length is found, update the number of expected frames
             if (getHeadLength(code) !== -1) {
               numExpectedFrames = getHeadLength(code);
             }
           }
 
+          // If we still need more frames, wait for the next frame
           if (allFrames.size !== numExpectedFrames) {
             requestAnimationFrame(processFrame);
-          } else {
+          }
+
+          // Otherwise, resolve with the array of frames
+          else {
             this._log.debug('All frames processed');
             resolve(Array.from(allFrames));
           }
@@ -144,6 +171,7 @@ export class WebRTCProcessor extends FrameProcessor {
         }
       };
 
+      // Start processing the first frame
       requestAnimationFrame(processFrame);
     });
   }
@@ -155,20 +183,25 @@ export class WebRTCProcessor extends FrameProcessor {
    * @returns {Promise<void>} A promise that resolves when the video starts playing.
    */
   protected async startVideo(): Promise<void> {
+    // If no track is set, get the tracks from the stream and set the first track
     if (!this._track) {
       const tracks = await this.getStreamTracks();
       this.setStreamTrack(tracks[0]!);
     }
 
+    // Create a new media stream with the track
     const mediaStream = new MediaStream([this._track!]);
 
+    // Create a new video element and set the media stream
     const video = document.createElement('video');
     video.srcObject = mediaStream;
     video.style.display = 'none'; // Hide the video element
     document.body.appendChild(video);
 
+    // Set the video element
     this._video = video;
 
+    // Play the video
     await video.play();
   }
 
@@ -178,13 +211,18 @@ export class WebRTCProcessor extends FrameProcessor {
    * @returns {Promise<MediaStreamTrack[]>} A promise that resolves with the video tracks.
    */
   async getStreamTracks(): Promise<MediaStreamTrack[]> {
+    // Store the capture stream
     let captureStream: MediaStream;
 
+    // If the media type is 'display', get the display media stream
     if (this._mediaType === 'display') {
       captureStream = await navigator.mediaDevices.getDisplayMedia(
         this._mediaOptions
       );
-    } else {
+    }
+
+    // Otherwise, get the user media stream
+    else {
       captureStream = await navigator.mediaDevices.getUserMedia(
         this._mediaOptions
       );
@@ -192,6 +230,7 @@ export class WebRTCProcessor extends FrameProcessor {
 
     this._log.debug('Got capture stream', captureStream);
 
+    // Return the video tracks from the capture stream
     return captureStream.getVideoTracks();
   }
 
@@ -211,26 +250,32 @@ export class WebRTCProcessor extends FrameProcessor {
    */
   async read(): Promise<string> {
     try {
+      // If no video or track is present, start the video
       if (!this._track || !this._video) {
         await this.startVideo();
       }
 
       this._log.debug('Got video element', this._video);
 
+      // Process all frames and return the sorted frames as a single string
       const allFrames = await this.processAllFrames();
 
+      // Stop the video track
       if (this._track) {
         this._track.stop();
       }
 
       this._log.debug('Stopped video track');
 
+      // Destroy the processor
       this.destroy();
 
+      // Sort and slice the frames
       const result = allFrames.sort(sortFrames).map(sliceFrames).join('');
 
       this._log.debug('Sorted frames', result);
 
+      // Return the processed QR code data
       return result;
     } catch (e) {
       return Promise.reject(e);

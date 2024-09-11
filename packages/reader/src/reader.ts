@@ -7,10 +7,18 @@ interface ReaderProps {
   frameProcessor: FrameProcessor;
 }
 
+/**
+ * Class representing a Reader.
+ */
 export class Reader {
   private log: Logger;
   opts: ReaderProps;
 
+  /**
+   * Creates an instance of Reader.
+   *
+   * @param {Partial<ReaderProps>} [opts={}] - The options for the Reader.
+   */
   constructor(opts: Partial<ReaderProps> = {}) {
     // Set up the default options
     const DEFAULT_READER_PROPS: ReaderProps = {
@@ -27,6 +35,11 @@ export class Reader {
     this.log = logger;
   }
 
+  /**
+   * Reads a frame using the frame processor.
+   *
+   * @returns {Promise<string>} - A promise that resolves to the read frame.
+   */
   async read(): Promise<string> {
     return this.opts.frameProcessor.read();
   }

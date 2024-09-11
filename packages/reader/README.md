@@ -55,7 +55,7 @@ import { Reader, WebRTCProcessor } from '@flipbookqr/reader';
 
 // Create a new instance of the Flipbook reader
 const reader = new Reader({
-  frameProcessor: new WebRTCProcessor('camera')
+  frameProcessor: new WebRTCProcessor('camera'),
 });
 
 // Get a list of all available camera sources
@@ -82,7 +82,7 @@ import { Reader, FileProcessor } from '@flipbookqr/reader';
 const file = new File(); // some file
 
 const reader = new Reader({
-  frameProcessor: new FileProcessor(file)
+  frameProcessor: new FileProcessor(file),
 });
 
 const result = await reader.read();

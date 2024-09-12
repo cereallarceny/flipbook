@@ -42,11 +42,15 @@ const writer = new Writer(optionalConfig);
 // Write the payload to a series of QR codes
 const qrs = writer.write(payload);
 
-// Compose a series of QR codes into a GIF
-const result = writer.compose(qrs);
-```
+// Create a new canvas element
+const canvas = document.createElement('canvas');
 
-The `result` is a is a string containing a data URL of the animated GIF which can be rendered in a browser or saved to disk as a `.gif` file.
+// Compose a series of QR codes to a canvas element
+writer.toCanvas(qrs, canvas);
+
+// Or, compose a series of QR codes to a GIF
+writer.toGif(qrs);
+```
 
 ## Configuration
 

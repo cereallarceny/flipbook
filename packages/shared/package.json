@@ -1,6 +1,6 @@
 {
   "name": "@flipbookqr/shared",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

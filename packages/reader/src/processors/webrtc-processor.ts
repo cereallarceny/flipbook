@@ -16,6 +16,8 @@ export class WebRTCProcessor extends FrameProcessor {
   protected _track: MediaStreamTrack | undefined;
   protected _mediaType: MediaType;
   protected _mediaOptions: MediaOptions;
+  protected _allFrames: Set<string> = new Set();
+  protected _numExpectedFrames: number | undefined;
 
   /**
    * Creates an instance of WebRTCProcessor.
@@ -33,10 +35,7 @@ export class WebRTCProcessor extends FrameProcessor {
 
     // Set media type and options
     this._mediaType = mediaType || 'display';
-    this._mediaOptions = options || {
-      video: true,
-      audio: false,
-    };
+    this._mediaOptions = options || { video: true, audio: false };
   }
 
   /**
@@ -56,9 +55,6 @@ export class WebRTCProcessor extends FrameProcessor {
   protected processAllFrames(): Promise<string[]> {
     return new Promise((resolve) => {
       // Create a Set to store all frames and a variable to store the number of expected frames
-      const allFrames = new Set<string>();
-      let numExpectedFrames: number;
-
       this._log.debug('Processing all frames');
 
       // If no video element is present, log an error and resolve with an empty array
@@ -68,44 +64,56 @@ export class WebRTCProcessor extends FrameProcessor {
         return;
       }
 
-      // Process each frame
-      const processFrame = (): void => {
-        try {
-          // Set the current frame onto the canvas
-          this.setFrame(this._video!);
+      // Start processing frames using requestAnimationFrame
+      const processFrames = (): void => {
+        // Call the method to process a single frame
+        this.processSingleFrame();
 
-          // Get the QR code data from the frame
-          const result = this.getFrameData();
-          const code = result && 'data' in result ? result.data : '';
+        // If we still need more frames, wait for the next frame
+        if (
+          this._numExpectedFrames === undefined ||
+          this._allFrames.size !== this._numExpectedFrames
+        ) {
+          requestAnimationFrame(processFrames);
+        }
 
-          // Add the QR code data to the set if it is not already present
-          if (code !== '' && !allFrames.has(code)) {
-            allFrames.add(code);
-
-            // If the head length is found, update the number of expected frames
-            if (getHeadLength(code) !== -1) {
-              numExpectedFrames = getHeadLength(code);
-            }
-          }
-
-          // If we still need more frames, wait for the next frame
-          if (allFrames.size !== numExpectedFrames) {
-            requestAnimationFrame(processFrame);
-          }
-
-          // Otherwise, resolve with the array of frames
-          else {
-            this._log.debug('All frames processed');
-            resolve(Array.from(allFrames));
-          }
-        } catch (error) {
-          this._log.error('Error processing frame:', error);
+        // Otherwise, resolve with the array of frames
+        else {
+          this._log.debug('All frames processed');
+          resolve(Array.from(this._allFrames));
         }
       };
 
       // Start processing the first frame
-      requestAnimationFrame(processFrame);
+      requestAnimationFrame(processFrames);
     });
+  }
+
+  /**
+   * Processes a single frame, decodes it, and updates the QR code data set.
+   */
+  protected processSingleFrame(): void {
+    try {
+      // Set the current frame onto the canvas
+      this.setFrame(this._video!);
+
+      // Get the QR code data from the frame
+      const result = this.getFrameData();
+      const code = result && 'data' in result ? result.data : '';
+
+      // Add the QR code data to the set if it is not already present
+      if (code !== '' && !this._allFrames.has(code)) {
+        this._allFrames.add(code);
+
+        // If the head length is found, update the number of expected frames
+        const headLength = getHeadLength(code);
+        if (headLength !== -1) {
+          this._numExpectedFrames = headLength;
+        }
+      }
+    } catch (error) {
+      this._log.error('Error processing frame:', error);
+    }
   }
 
   /**
@@ -132,6 +140,8 @@ export class WebRTCProcessor extends FrameProcessor {
 
     // Set the video element
     this._video = video;
+
+    this._log.debug('Got video element', video);
 
     // Play the video
     await video.play();

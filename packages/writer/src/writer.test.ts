@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ErrorCorrectionLevel } from '@nuintun/qrcode';
 import { DEFAULT_HEAD_TAG, DEFAULT_IDX_TAG } from '@flipbookqr/shared';
 import { Writer } from './writer'; // Assuming this is the file path
@@ -63,14 +65,12 @@ describe('Writer', () => {
 
   describe('split', () => {
     it('should split the input string into segments', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const splitResult = (writer as any).split(sampleString, writer.opts);
       expect(splitResult).toHaveLength(2);
       expect(splitResult[0]).toContain(DEFAULT_HEAD_TAG);
     });
 
     it('should add index and head tags to the segments', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const splitResult = (writer as any).split(sampleString, {
         ...writer.opts,
         splitLength: 10,
@@ -83,7 +83,6 @@ describe('Writer', () => {
 
   describe('createEncoder', () => {
     it('should create and configure an Encoder', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const encoder = (writer as any).createEncoder('test content');
       expect(encoder.setVersion).not.toHaveBeenCalled();
       expect(encoder.setEncodingHint).toHaveBeenCalledWith(true);
@@ -95,7 +94,6 @@ describe('Writer', () => {
     });
 
     it('should set the QR code version if provided', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const encoder = (writer as any).createEncoder('test content', 7);
       expect(encoder.setVersion).toHaveBeenCalledWith(7);
     });

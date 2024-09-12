@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { getLogger } from '@flipbookqr/shared';
 import { Decoder } from '@nuintun/qrcode';
 import { FrameProcessor } from './frame-processor';
@@ -22,9 +24,9 @@ class TestFrameProcessor extends FrameProcessor {
 
 describe('FrameProcessor', () => {
   let frameProcessor: TestFrameProcessor;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   let mockLogger: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   let mockDecoder: any;
 
   beforeEach(() => {
@@ -51,15 +53,15 @@ describe('FrameProcessor', () => {
   describe('constructor', () => {
     it('should set up logger and canvas correctly', () => {
       expect(getLogger).toHaveBeenCalled();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._log).toBe(mockLogger);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._canvas).toBeInstanceOf(HTMLCanvasElement);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._width).toBe(1920);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._height).toBe(1080);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._ctx).not.toBeNull();
     });
   });
@@ -70,18 +72,16 @@ describe('FrameProcessor', () => {
       imgElement.width = 800;
       imgElement.height = 600;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (frameProcessor as any).setFrame(imgElement);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((frameProcessor as any)._width).toBe(800);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._height).toBe(600);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._canvas.width).toBe(800);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._canvas.height).toBe(600);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._ctx?.drawImage).toHaveBeenCalledWith(
         imgElement,
         0,
@@ -96,18 +96,16 @@ describe('FrameProcessor', () => {
       Object.defineProperty(videoElement, 'videoWidth', { value: 1280 });
       Object.defineProperty(videoElement, 'videoHeight', { value: 720 });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (frameProcessor as any).setFrame(videoElement);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((frameProcessor as any)._width).toBe(1280);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._height).toBe(720);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._canvas.width).toBe(1280);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._canvas.height).toBe(720);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((frameProcessor as any)._ctx?.drawImage).toHaveBeenCalledWith(
         videoElement,
         0,
@@ -121,7 +119,6 @@ describe('FrameProcessor', () => {
       const invalidSource = document.createElement('div'); // Invalid frame type
 
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (frameProcessor as any).setFrame(invalidSource as any);
       }).toThrow('Unsupported frame type');
     });
@@ -129,13 +126,10 @@ describe('FrameProcessor', () => {
 
   describe('getFrameData', () => {
     it('should return null if no image data is available', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (frameProcessor as any)._ctx = {
         getImageData: jest.fn().mockReturnValue(null),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = (frameProcessor as any).getFrameData();
       expect(result).toBeNull();
     });
@@ -148,10 +142,9 @@ describe('FrameProcessor', () => {
       };
 
       // Mock the canvas context with getImageData returning imageData
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       (frameProcessor as any)._ctx = {
         getImageData: jest.fn().mockReturnValue(imageData),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
       const decodedData = { data: 'QR Code Data' };
@@ -160,7 +153,7 @@ describe('FrameProcessor', () => {
       mockDecoder.decode.mockReturnValue(decodedData);
 
       // Call the method
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const result = (frameProcessor as any).getFrameData();
 
       // Assert that the result is the decoded data

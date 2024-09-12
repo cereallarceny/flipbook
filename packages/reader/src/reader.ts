@@ -38,9 +38,10 @@ export class Reader {
   /**
    * Reads a frame using the frame processor.
    *
+   * @param {File} [file] - The file to read.
    * @returns {Promise<string>} - A promise that resolves to the read frame.
    */
-  async read(): Promise<string> {
-    return this.opts.frameProcessor.read();
+  async read(file?: File): Promise<string> {
+    return this.opts.frameProcessor.read(file);
   }
 }

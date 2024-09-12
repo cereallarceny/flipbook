@@ -108,18 +108,141 @@ describe('Writer', () => {
     });
   });
 
-  describe('compose', () => {
+  describe('toCanvas', () => {
+    let canvas: HTMLCanvasElement;
+    let ctx: CanvasRenderingContext2D;
+    const sampleString = 'abcdefghijklmnopqrstuvqxyz1234567890';
+
+    beforeEach(() => {
+      // Create a mock canvas and its 2D context
+      canvas = document.createElement('canvas');
+      ctx = canvas.getContext('2d')!;
+
+      // Mock the canvas context's methods for testing
+      jest.spyOn(ctx, 'clearRect').mockImplementation(() => {});
+      jest.spyOn(ctx, 'fillRect').mockImplementation(() => {});
+      jest.spyOn(ctx, 'fillStyle', 'set').mockImplementation(() => {});
+    });
+
+    it('should throw an error if write() has not been run', () => {
+      expect(() => writer.toCanvas([], canvas)).toThrow(
+        'Run writer.write() before running writer.toCanvas()'
+      );
+    });
+
+    it('should set the canvas size based on the QR code size', () => {
+      // Write some QR codes first
+      const qrs = writer.write(sampleString);
+
+      // Call the toCanvas method
+      writer.toCanvas(qrs, canvas);
+
+      // Expect canvas width and height to be set to the QR code size
+      expect(canvas.width).toBe((writer as any).size);
+      expect(canvas.height).toBe((writer as any).size);
+    });
+
+    it('should clear the canvas before drawing each frame', () => {
+      // Write some QR codes first
+      const qrs = writer.write(sampleString);
+
+      // Call the toCanvas method
+      writer.toCanvas(qrs, canvas);
+
+      // Simulate the first frame being drawn
+      requestAnimationFrame(() => {
+        expect(ctx.clearRect).toHaveBeenCalledWith(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      });
+    });
+
+    it('should draw each pixel of the QR code with the correct color', () => {
+      // Write some QR codes first
+      const qrs = writer.write(sampleString);
+
+      // Call the toCanvas method
+      writer.toCanvas(qrs, canvas);
+
+      // Simulate drawing a frame
+      requestAnimationFrame(() => {
+        const qrImage = qrs[0]!.image;
+
+        // Check that the pixels are drawn correctly
+        qrImage.forEach((row, y) => {
+          row.forEach((pixel, x) => {
+            // Expect fillStyle to be set to 'black' for 0 and 'white' for 1
+            if (pixel === 0) {
+              expect(ctx.fillStyle).toBe('black');
+            } else {
+              expect(ctx.fillStyle).toBe('white');
+            }
+            expect(ctx.fillRect).toHaveBeenCalledWith(x, y, 1, 1);
+          });
+        });
+      });
+    });
+
+    it('should animate the frames according to the delay option', () => {
+      jest
+        .spyOn(global, 'requestAnimationFrame')
+        .mockImplementation((callback) => {
+          setTimeout(callback, writer.opts.delay);
+          return 1; // Mock requestAnimationFrame ID
+        });
+
+      // Write some QR codes first
+      const qrs = writer.write(sampleString);
+
+      // Call the toCanvas method
+      writer.toCanvas(qrs, canvas);
+
+      // Check that the animation is advancing to the next frame after the delay
+      setTimeout(() => {
+        expect(ctx.clearRect).toHaveBeenCalledTimes(2); // Animation moved to the second frame
+      }, writer.opts.delay * 2);
+    });
+
+    it('should loop back to the first frame after reaching the last frame', () => {
+      jest
+        .spyOn(global, 'requestAnimationFrame')
+        .mockImplementation((callback) => {
+          setTimeout(callback, writer.opts.delay);
+          return 1; // Mock requestAnimationFrame ID
+        });
+
+      // Write some QR codes first
+      const qrs = writer.write(sampleString);
+
+      // Call the toCanvas method
+      writer.toCanvas(qrs, canvas);
+
+      // Simulate the animation reaching the last frame
+      setTimeout(
+        () => {
+          // Check that after the last frame, it loops back to the first
+          expect(ctx.clearRect).toHaveBeenCalledTimes(qrs.length + 1); // Number of frames + 1 loop
+        },
+        writer.opts.delay * (qrs.length + 1)
+      );
+    });
+  });
+
+  describe('toGif', () => {
     it('should throw an error if size is not set', () => {
-      expect(() => writer.compose([])).toThrow(
-        'Run writer.write() before writer.compose()'
+      expect(() => writer.toGif([])).toThrow(
+        'Run writer.write() before running writer.toGif()'
       );
     });
 
     it('should create a GIF from multiple QR codes', () => {
       const qrs = writer.write(sampleString);
-      const gifUrl = writer.compose(qrs);
+      const gif = writer.toGif(qrs);
 
-      expect(gifUrl).toContain('blob:');
+      expect(gif).toBeInstanceOf(Blob);
     });
   });
 });

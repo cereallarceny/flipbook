@@ -12,19 +12,14 @@ import { sliceFrames, sortFrames } from '../helpers';
  * @extends FrameProcessor
  */
 export class FileProcessor extends FrameProcessor {
-  protected _file: File;
+  protected _file?: File;
 
   /**
    * Constructs a new FileProcessor instance.
-   *
-   * @param {File} file - The file to be processed (e.g., an image file or a GIF).
    */
-  constructor(file: File) {
+  constructor() {
     // Initialize the processor
     super();
-
-    // Set the file to process
-    this._file = file;
   }
 
   /**
@@ -71,7 +66,7 @@ export class FileProcessor extends FrameProcessor {
    */
   protected async processAllFrames(): Promise<string[]> {
     // Convert the GIF file to an ArrayBuffer
-    const buffer = await convertFileToBuffer(this._file);
+    const buffer = await convertFileToBuffer(this._file!);
 
     // Create a reader
     const reader = new GifReader(new Uint8Array(buffer));
@@ -117,9 +112,13 @@ export class FileProcessor extends FrameProcessor {
   /**
    * Reads and processes the file (either single frame or GIF) to extract QR code data.
    *
+   * @param {File} file - The file to process.
    * @returns {Promise<string>} A promise that resolves to the processed QR code data as a string.
    */
-  async read(): Promise<string> {
+  async read(file: File): Promise<string> {
+    // Store the file
+    this._file = file;
+
     // If the file is a GIF, process all frames
     if (this.isGIF(this._file)) {
       const allFrames = await this.processAllFrames();

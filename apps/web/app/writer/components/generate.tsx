@@ -1,46 +1,25 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Writer, type WriterProps } from '@flipbookqr/writer';
+import { type WriterProps } from '@flipbookqr/writer';
 import { CogIcon } from '@heroicons/react/24/solid';
 import { Button, IconButton } from '../../components/button';
 import DialogBox from '../../components/dialog';
 import ConfigurationForm from './configuration-form';
 
 interface GenerateProps {
-  code: string;
-  setQR: (qr: string) => void;
   configuration: Partial<WriterProps>;
   setConfiguration: (config: Partial<WriterProps>) => void;
+  createQR: () => void;
 }
 
 export default function Generate({
-  code,
-  setQR,
   configuration,
   setConfiguration,
+  createQR,
 }: GenerateProps): JSX.Element {
   // State whether the dialog is open
   const [isOpen, setIsOpen] = useState(false);
-
-  // A function to create the QR code
-  const createQR = useCallback(() => {
-    try {
-      // Resetting whatever QR code was there before
-      setQR('');
-
-      // Write the QR code
-      const writer = new Writer(configuration);
-      const qrs = writer.write(code);
-      const result = writer.compose(qrs);
-
-      // Set the QR code
-      setQR(result);
-    } catch (e) {
-      // eslint-disable-next-line no-console -- Intentional
-      console.error(e);
-    }
-  }, [code, setQR, configuration]);
 
   // A function to launch the configuration dialog
   const launchDialog = useCallback(() => {

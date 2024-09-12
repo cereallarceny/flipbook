@@ -36,7 +36,7 @@ const getDisclosureClasses = (isActive: boolean): string => {
 
 const leftLinks = [
   { href: '/', label: 'Read' },
-  { href: '/writer', label: 'Create' },
+  { href: '/writer', label: 'Write' },
 ];
 
 const rightLinks = [

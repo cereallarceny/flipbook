@@ -24,7 +24,10 @@
     "test": "jest --coverage"
   },
   "jest": {
-    "preset": "@repo/jest-presets/browser"
+    "preset": "@repo/jest-presets/browser",
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   },
   "dependencies": {
     "@flipbookqr/shared": "workspace:*"

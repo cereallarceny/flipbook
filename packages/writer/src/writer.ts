@@ -1,11 +1,11 @@
+import { GifWriter } from 'omggif';
 import { createHeadTag, createIndexTag, getLogger } from '@flipbookqr/shared';
 import { Encoder, ErrorCorrectionLevel } from '@nuintun/qrcode';
-import { GifWriter } from 'omggif';
 import type { Logger, LogLevelDesc } from 'loglevel';
 
 interface WriterResult {
   code: string;
-  image: Encoder;
+  image: number[][];
 }
 
 export interface WriterProps {
@@ -27,6 +27,7 @@ export class Writer {
   private log: Logger;
   opts: WriterProps;
   private size?: number;
+  private numFrames?: number;
 
   /**
    * Creates a new Writer instance with the provided options or defaults.
@@ -203,6 +204,9 @@ export class Writer {
       this.opts.moduleSize * firstEncoder.getMatrixSize() +
       this.opts.margin * 2;
 
+    // Set the number of frames
+    this.numFrames = codes.length;
+
     this.log.debug('Size set', this.size);
 
     // Encode the remaining segments
@@ -218,24 +222,95 @@ export class Writer {
       // Get the encoder for the current segment
       const encoder = encoders[i]!;
 
+      // Convert the encoder to a 2d binary array
+      const image = this.encoderTo2dBinaryArray(encoder);
+
+      this.log.debug('Converted frame to a 2d binary array', image);
+
       // Return the segment and its corresponding encoder
-      return {
-        code,
-        image: encoder,
-      };
+      return { code, image };
     });
   }
 
   /**
-   * Composes multiple QR code frames into a GIF.
+   * Composes multiple QR code frames into a canvas animation.
    *
-   * @param {WriterResult[]} qrs - An array of QR code images to compose into a GIF.
-   * @returns {string} A URL pointing to the created GIF.
+   * @param {WriterResult[]} qrs - An array of QR code images to compose into a canvas animation.
+   * @param {HTMLCanvasElement} canvas - The canvas element to draw the composed QR code animation.
+   * @returns {HTMLCanvasElement} A canvas element containing the composed QR code animation.
    */
-  compose(qrs: WriterResult[]): string {
-    // If there's no size, throw an error
-    if (!this.size) {
-      throw new Error('Run writer.write() before writer.compose()');
+  toCanvas(qrs: WriterResult[], canvas: HTMLCanvasElement): HTMLCanvasElement {
+    // If there's no size or number of frames, throw an error
+    if (!this.size || !this.numFrames) {
+      throw new Error('Run writer.write() before running writer.toCanvas()');
+    }
+
+    // Set the canvas size
+    canvas.width = this.size;
+    canvas.height = this.size;
+
+    // Get the canvas context
+    const ctx = canvas.getContext('2d')!;
+
+    // Get the total number of frames, and store the current frame and last frame time
+    const totalFrames = qrs.length;
+    let currentFrame = 0;
+    let lastFrameTime = 0;
+
+    // Function to draw a specific QR code to the canvas
+    const drawFrame = (qr: WriterResult) => {
+      // Clear the canvas before drawing the next frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the QR code frame
+      for (let y = 0; y < this.size!; y++) {
+        for (let x = 0; x < this.size!; x++) {
+          if (qr.image[y]![x] === 0) {
+            ctx.fillStyle = 'black';
+          } else {
+            ctx.fillStyle = 'white';
+          }
+
+          // Draw each pixel (1x1) for the QR code
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    };
+
+    // Animation function using requestAnimationFrame
+    const animate = (timestamp: number) => {
+      // Check if it's time to advance to the next frame based on the delay
+      if (timestamp - lastFrameTime >= this.opts.delay) {
+        // Draw the current QR frame
+        drawFrame(qrs[currentFrame]!);
+
+        // Move to the next frame
+        currentFrame = (currentFrame + 1) % totalFrames;
+
+        // Update the last frame timestamp
+        lastFrameTime = timestamp;
+      }
+
+      // Continue the animation
+      requestAnimationFrame(animate);
+    };
+
+    // Start the animation by calling animate on the first frame
+    requestAnimationFrame(animate);
+
+    return canvas;
+  }
+
+  /**
+   * Composes multiple QR code frames into a GIF animation.
+   *
+   * @param {WriterResult[]} qrs - An array of QR code images to compose into a GIF
+   * @returns {Blob} A Blob object containing the GIF data.
+   */
+  toGif(qrs: WriterResult[]): Blob {
+    // If there's no size or number of frames, throw an error
+    if (!this.size || !this.numFrames) {
+      throw new Error('Run writer.write() before running writer.toGif()');
     }
 
     // Create a buffer big enough to contain the image
@@ -255,13 +330,8 @@ export class Writer {
       // Get the QR code
       const qr = qrs[i]!;
 
-      // Convert the matrix into a 2d binary array
-      const matrix = this.encoderTo2dBinaryArray(qr.image);
-
-      this.log.debug('Added frame to QR', matrix);
-
       // Add the frame to the GIF
-      writer.addFrame(0, 0, this.size, this.size, matrix.flat(), {
+      writer.addFrame(0, 0, this.size, this.size, qr.image.flat(), {
         delay: 100 / this.opts.delay,
       });
     }
@@ -272,6 +342,6 @@ export class Writer {
     this.log.debug('Final QR buffer', qr);
 
     // Return the GIF URL
-    return URL.createObjectURL(new Blob([qr]));
+    return new Blob([qr]);
   }
 }

@@ -87,5 +87,5 @@ export abstract class FrameProcessor {
     return results;
   }
 
-  abstract read(): Promise<string>;
+  abstract read(file?: File): Promise<string>;
 }

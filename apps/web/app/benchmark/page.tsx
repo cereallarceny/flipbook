@@ -1,24 +1,30 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useCallback } from 'react';
 import type { FormEventHandler, JSX } from 'react';
 import { Writer } from '@flipbookqr/writer';
 import { Reader, FileProcessor } from '@flipbookqr/reader';
+import Image from 'next/image';
 
 export default function File(): JSX.Element {
   const [decoded, setDecoded] = useState<string | null>(null);
   const [isDecoding, setIsDecoding] = useState(false);
   const [text, setText] = useState('');
-  const [qr, setQr] = useState('');
+  const [src, setSrc] = useState('');
 
-  const generate = useCallback(() => {
-    setQr('');
+  const generate = useCallback(async () => {
     const writer = new Writer();
     const qrs = writer.write(text);
-    const result = writer.compose(qrs);
 
-    setQr(result);
+    const blob = writer.toGif(qrs);
+    const url = URL.createObjectURL(blob);
+
+    setSrc(url);
+
+    // Create the link
+    const link = document.getElementById('download') as HTMLAnchorElement;
+    link.download = 'qr.gif';
+    link.href = url;
   }, [text]);
 
   const handleSubmit = async (event: Event): Promise<void> => {
@@ -30,10 +36,10 @@ export default function File(): JSX.Element {
       const file = formData.get('inputFile') as File;
 
       const reader = new Reader({
-        frameProcessor: new FileProcessor(file),
+        frameProcessor: new FileProcessor(),
       });
 
-      const decodedData = await reader.read();
+      const decodedData = await reader.read(file);
 
       setDecoded(decodedData);
     } catch (error) {
@@ -59,11 +65,14 @@ export default function File(): JSX.Element {
         Generate Flipbook
       </button>
       <br />
-      {qr ? (
-        <div>
-          <Image alt="QR Code" height={512} id="image" src={qr} width={512} />
-        </div>
-      ) : null}
+      {src && (
+        <>
+          <Image alt="QR code" id="image" src={src} width={200} height={200} />
+          <a id="download" type="button">
+            Download
+          </a>
+        </>
+      )}
 
       <hr style={{ marginTop: 20, marginBottom: 20 }} />
 

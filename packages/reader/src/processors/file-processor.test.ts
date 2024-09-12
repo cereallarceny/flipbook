@@ -36,13 +36,8 @@ describe('FileProcessor', () => {
     jest.clearAllMocks();
   });
 
-  it('should initialize with the provided file', () => {
-    const processor = new FileProcessor(mockFile);
-    expect(processor['_file']).toBe(mockFile);
-  });
-
   it('should remove canvas when destroy is called', () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
     processor['_canvas'] = {
       remove: jest.fn(),
     } as unknown as HTMLCanvasElement;
@@ -53,7 +48,7 @@ describe('FileProcessor', () => {
   });
 
   it('should process a single frame and extract QR code data', async () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
     const mockFrameData = 'mock-frame-data';
 
     // Mock getFrameData to return some mock frame data
@@ -88,7 +83,7 @@ describe('FileProcessor', () => {
   });
 
   it('should throw an error if processing a single frame fails', async () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
 
     const createObjectURLSpy = jest
       .spyOn(URL, 'createObjectURL')
@@ -104,7 +99,7 @@ describe('FileProcessor', () => {
   });
 
   it('should process all frames of a GIF file', async () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
 
     // Mock the helper functions
     const mockBuffer = new ArrayBuffer(10);
@@ -126,7 +121,7 @@ describe('FileProcessor', () => {
 
     const result = await processor['processAllFrames']();
 
-    expect(convertFileToBuffer).toHaveBeenCalledWith(mockFile);
+    expect(convertFileToBuffer).toHaveBeenCalled();
     expect(GifReader).toHaveBeenCalledWith(new Uint8Array(mockBuffer));
     expect(mockGifReader.numFrames).toHaveBeenCalled();
     expect(mockGifReader.decodeAndBlitFrameRGBA).toHaveBeenCalledTimes(3);
@@ -135,7 +130,7 @@ describe('FileProcessor', () => {
   });
 
   it('should check if a file is a GIF', () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
 
     const gifFile = new File(['dummy content'], 'dummy.gif', {
       type: 'image/gif',
@@ -149,7 +144,7 @@ describe('FileProcessor', () => {
   });
 
   it('should read and process all frames for a GIF file', async () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
 
     jest.spyOn(processor as any, 'isGIF').mockReturnValue(true);
     jest
@@ -157,7 +152,7 @@ describe('FileProcessor', () => {
       .spyOn(processor as any, 'processAllFrames')
       .mockResolvedValue(['QRData1', 'QRData2']);
 
-    const result = await processor.read();
+    const result = await processor.read(mockFile);
 
     expect(processor['isGIF']).toHaveBeenCalledWith(mockFile);
     expect(processor['processAllFrames']).toHaveBeenCalled();
@@ -165,7 +160,7 @@ describe('FileProcessor', () => {
   });
 
   it('should read and process a single frame for a non-GIF file', async () => {
-    const processor = new FileProcessor(mockFile);
+    const processor = new FileProcessor();
 
     jest.spyOn(processor as any, 'isGIF').mockReturnValue(false);
     jest
@@ -173,7 +168,7 @@ describe('FileProcessor', () => {
       .spyOn(processor as any, 'processSingleFrame')
       .mockResolvedValue('QRData');
 
-    const result = await processor.read();
+    const result = await processor.read(mockFile);
 
     expect(processor['isGIF']).toHaveBeenCalledWith(mockFile);
     expect(processor['processSingleFrame']).toHaveBeenCalledWith(mockFile);

@@ -118,10 +118,10 @@ export function Upload({
       if (!f) return;
 
       const reader = new Reader({
-        frameProcessor: new FileProcessor(f),
+        frameProcessor: new FileProcessor(),
       });
 
-      setResults(await reader.read());
+      setResults(await reader.read(f));
     };
 
     try {

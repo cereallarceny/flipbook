@@ -82,10 +82,10 @@ import { Reader, FileProcessor } from '@flipbookqr/reader';
 const file = new File(); // some file
 
 const reader = new Reader({
-  frameProcessor: new FileProcessor(file),
+  frameProcessor: new FileProcessor(),
 });
 
-const result = await reader.read();
+const result = await reader.read(file);
 ```
 
 The `result` is a is the original payload that was encoded into the series of QR codes.

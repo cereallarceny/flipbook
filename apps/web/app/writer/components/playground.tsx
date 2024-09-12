@@ -27,16 +27,23 @@ export default function Playground(): JSX.Element {
     [fileName]
   );
 
-  // Store the QR code
-  const [qr, setQR] = useState<string>('');
+  // Whether or no
+  const [qrExists, setQrExists] = useState<boolean>(false);
 
   // Store the configuration
   const [configuration, setConfiguration] = useState<Partial<WriterProps>>({
     ...new Writer().opts,
   });
 
-  if (qr !== '') {
-    return <Output configuration={configuration} qr={qr} setQR={setQR} />;
+  // If the QR code exists, show the output
+  if (qrExists) {
+    return (
+      <Output
+        code={code}
+        configuration={configuration}
+        reset={() => setQrExists(false)}
+      />
+    );
   }
 
   return (
@@ -72,10 +79,9 @@ export default function Playground(): JSX.Element {
             sampleCode={sampleCode}
           />
           <Generate
-            code={code}
             configuration={configuration}
             setConfiguration={setConfiguration}
-            setQR={setQR}
+            createQR={() => setQrExists(true)}
           />
         </div>
       </div>

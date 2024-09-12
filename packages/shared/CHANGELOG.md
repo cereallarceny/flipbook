@@ -1,5 +1,11 @@
 # @flipbookqr/shared
 
+## 0.2.0
+
+### Minor Changes
+
+- 2d0b8b1: Dramatically improving performance, browser support, and bundle size
+
 ## 0.1.5
 
 ### Patch Changes

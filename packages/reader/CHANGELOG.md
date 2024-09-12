@@ -1,5 +1,16 @@
 # @flipbookqr/reader
 
+## 0.2.0
+
+### Minor Changes
+
+- 2d0b8b1: Dramatically improving performance, browser support, and bundle size
+
+### Patch Changes
+
+- Updated dependencies [2d0b8b1]
+  - @flipbookqr/shared@0.2.0
+
 ## 0.1.5
 
 ### Patch Changes

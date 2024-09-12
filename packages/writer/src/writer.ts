@@ -342,6 +342,6 @@ export class Writer {
     this.log.debug('Final QR buffer', qr);
 
     // Return the GIF URL
-    return new Blob([qr]);
+    return new Blob([qr], { type: 'image/gif' });
   }
 }

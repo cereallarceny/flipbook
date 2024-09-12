@@ -20,11 +20,6 @@ export default function File(): JSX.Element {
     const url = URL.createObjectURL(blob);
 
     setSrc(url);
-
-    // Create the link
-    const link = document.getElementById('download') as HTMLAnchorElement;
-    link.download = 'qr.gif';
-    link.href = url;
   }, [text]);
 
   const handleSubmit = async (event: Event): Promise<void> => {
@@ -66,12 +61,7 @@ export default function File(): JSX.Element {
       </button>
       <br />
       {src && (
-        <>
-          <Image alt="QR code" id="image" src={src} width={200} height={200} />
-          <a id="download" type="button">
-            Download
-          </a>
-        </>
+        <Image alt="QR code" id="image" src={src} width={200} height={200} />
       )}
 
       <hr style={{ marginTop: 20, marginBottom: 20 }} />

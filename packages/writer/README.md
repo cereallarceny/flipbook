@@ -40,13 +40,17 @@ const payload = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';
 const writer = new Writer(optionalConfig);
 
 // Write the payload to a series of QR codes
-const qrs = await writer.write(payload);
+const qrs = writer.write(payload);
 
-// Compose a series of QR codes into a GIF
-const result = await writer.compose(qrs);
+// Create a new canvas element
+const canvas = document.createElement('canvas');
+
+// Compose a series of QR codes to a canvas element
+writer.toCanvas(qrs, canvas);
+
+// Or, compose a series of QR codes to a GIF
+writer.toGif(qrs);
 ```
-
-The `result` is a is a string containing a data URL of the animated GIF which can be rendered in a browser or saved to disk as a `.gif` file.
 
 ## Configuration
 
@@ -55,14 +59,12 @@ The `Writer` class accepts an optional configuration object that can be used to 
 ```typescript
 {
   logLevel: 'silent' | 'trace' | 'debug' | 'info' | 'warn' | 'error', // Default: 'silent'
-  qrOptions: {
-    errorCorrectionLevel: 'M',
-    type: 'image/png',
-  }, // See options: https://www.npmjs.com/package/qrcode#options-2
-  gifOptions: {
-    delay: 300,
-  }, // See options: https://www.npmjs.com/package/gif.js#addframe-options
-  size: integer, // Size of the image, default: 512
-  splitLength: interger, // Payload chunk size, default: 100
+  errorCorrectionLevel: number, // Level of error correction (see @nuintun/qrcode)
+  encodingHint: boolean, // Enable encoding hint (see @nuintun/qrcode)
+  version?: number, // QR code version (see @nuintun/qrcode)
+  moduleSize: number, // Size of each QR code module, default: 4 (see @nuintun/qrcode)
+  margin: number, // Margin around each QR code, default: 8 (see @nuintun/qrcode)
+  delay: number, // Delay between frames in milliseconds, default: 100
+  splitLength: integer, // Payload chunk size, default: 100
 }
 ```

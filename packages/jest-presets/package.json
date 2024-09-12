@@ -9,6 +9,7 @@
   ],
   "devDependencies": {
     "jest-environment-jsdom": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
     "ts-jest": "^29.2.5"
   }
 }

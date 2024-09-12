@@ -12,14 +12,6 @@ export default function Hero(): JSX.Element {
   return (
     <div className="px-6 lg:px-8">
       <div className="mx-auto max-w-3xl py-24 sm:py-36 lg:py-48">
-        <iframe
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="w-full aspect-video max-w-3xl mx-auto mb-8 lg:mb-12"
-          referrerPolicy="strict-origin-when-cross-origin"
-          src="https://www.youtube.com/embed/D4QD9DaISEs?si=-0S6GmPbqu6t9GGh&amp;controls=0"
-          title="Flipbook Video"
-        />
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
             {homepage.version}
@@ -64,6 +56,14 @@ export default function Hero(): JSX.Element {
               </div>
             </div>
           ) : null}
+          <iframe
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="w-full aspect-video max-w-3xl mx-auto mt-8 lg:mt-12"
+            referrerPolicy="strict-origin-when-cross-origin"
+            src="https://www.youtube.com/embed/D4QD9DaISEs?si=-0S6GmPbqu6t9GGh&amp;controls=0"
+            title="Flipbook Video"
+          />
         </div>
       </div>
     </div>

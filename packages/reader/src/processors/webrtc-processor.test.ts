@@ -1,187 +1,385 @@
-import jsqr from 'jsqr';
-import { setupJestCanvasMock } from 'jest-canvas-mock';
-import { WebRTCProcessor } from './index';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-jest.mock('jsqr', () => jest.fn());
+import { getHeadLength } from '@flipbookqr/shared';
+import { WebRTCProcessor } from './webrtc-processor'; // Adjust the path if needed
 
-class TestableWebRTCProcessor extends WebRTCProcessor {
-  public getCtx(): CanvasRenderingContext2D | null {
-    return this._ctx;
-  }
+// Mock dependencies
+jest.mock('@flipbookqr/shared', () => ({
+  ...jest.requireActual('@flipbookqr/shared'),
+  getHeadLength: jest.fn(),
+}));
 
-  public getCanvas(): HTMLCanvasElement {
-    return this._canvas;
-  }
+// Mock MediaStream and related Web API methods
+global.MediaStream = jest.fn(() => ({
+  getVideoTracks: jest.fn().mockReturnValue(['mockTrack']),
+})) as any;
 
-  public processAllFrames(): Promise<string[]> {
-    return this.processAllFrames();
-  }
-}
-
-beforeEach(() => {
-  jest.resetAllMocks();
-  setupJestCanvasMock();
-});
+// Mock HTMLVideoElement play method
+global.HTMLVideoElement.prototype.play = jest.fn().mockResolvedValue(undefined);
 
 describe('WebRTCProcessor', () => {
-  let cp: TestableWebRTCProcessor;
+  let processor: WebRTCProcessor;
+  let logSpy: jest.SpyInstance;
+  let errorSpy: jest.SpyInstance;
+  let playSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    jest.restoreAllMocks();
-    cp = new TestableWebRTCProcessor();
+    processor = new WebRTCProcessor('display', { video: true, audio: false });
+
+    // Spy on the logger
+    logSpy = jest
+      .spyOn(processor['_log'], 'debug')
+      .mockImplementation(jest.fn());
+    errorSpy = jest
+      .spyOn(processor['_log'], 'error')
+      .mockImplementation(jest.fn());
+
+    // Mock navigator.mediaDevices and its methods
+    Object.defineProperty(navigator, 'mediaDevices', {
+      writable: true,
+      value: {
+        getDisplayMedia: jest.fn().mockResolvedValue(new MediaStream()),
+        getUserMedia: jest.fn().mockResolvedValue(new MediaStream()),
+      },
+    });
+
+    // Mock document.body.appendChild
+    document.body.appendChild = jest.fn();
+
+    // Mock the HTMLVideoElement play method
+    playSpy = jest
+      .spyOn(HTMLVideoElement.prototype, 'play')
+      .mockResolvedValue(undefined);
   });
 
   afterEach(() => {
-    cp.destroy();
+    jest.clearAllMocks();
   });
 
-  describe('getFrameData', () => {
-    it('should return null if failed to get data from the frame input', () => {
-      const frame = new ImageBitmap();
-
-      cp.setFrame(frame);
-
-      const ctx = cp.getCtx();
-      if (!ctx) throw new Error('Failed to get canvas context');
-
-      jest
-        .spyOn(ctx, 'getImageData')
-        .mockReturnValue(undefined as unknown as ImageData);
-
-      const data = cp.getFrameData();
-
-      expect(data).toBeNull();
+  describe('startVideo', () => {
+    beforeEach(() => {
+      // Mock getDisplayMedia and getUserMedia
+      navigator.mediaDevices.getDisplayMedia = jest
+        .fn()
+        .mockResolvedValue(new MediaStream());
+      navigator.mediaDevices.getUserMedia = jest
+        .fn()
+        .mockResolvedValue(new MediaStream());
     });
 
-    it('should decode frame data if input a valid frame', () => {
-      const DECODED_DATA = 'DECODED_DATA';
+    it('should set the first track and create a video element', async () => {
+      await (processor as any).startVideo();
 
-      const frame = new ImageBitmap();
+      expect(processor['_track']).toBeDefined();
+      expect(processor['_video']).toBeDefined();
+      expect(document.body.appendChild).toHaveBeenCalled();
 
-      cp.setFrame(frame);
+      // Check the correct order of log calls
+      expect(logSpy).toHaveBeenCalledTimes(2);
+      // expect(logSpy).toHaveBeenNthCalledWith(1, 'Got capture stream', {
+      //   getVideoTracks: MediaStream,
+      // });
+      expect(logSpy).toHaveBeenNthCalledWith(
+        2,
+        'Got video element',
+        processor['_video']
+      );
+    });
 
-      const ctx = cp.getCtx();
-      if (!ctx) throw new Error('Failed to get canvas context');
+    it('should play the video when it is started', async () => {
+      await (processor as any).startVideo();
 
-      jest.spyOn(ctx, 'getImageData').mockReturnValue({} as ImageData);
-      (jsqr as jest.Mock).mockReturnValueOnce(DECODED_DATA);
-
-      const data = cp.getFrameData();
-
-      expect(data).toBe(DECODED_DATA);
+      // Check that the play() method is called
+      expect(playSpy).toHaveBeenCalled();
     });
   });
 
-  describe('setFrame', () => {
-    it('should set frame', () => {
-      const ctx = cp.getCtx();
-      if (!ctx) throw new Error('Failed to get canvas context');
+  describe('getStreamTracks', () => {
+    it('should get display media tracks when media type is "display"', async () => {
+      const mockMediaStream = new MediaStream();
+      navigator.mediaDevices.getDisplayMedia = jest
+        .fn()
+        .mockResolvedValue(mockMediaStream);
 
-      const frame = new ImageBitmap();
+      const tracks = await processor.getStreamTracks();
 
-      cp.setFrame(frame);
+      expect(tracks).toEqual(['mockTrack']);
+      expect(logSpy).toHaveBeenCalledWith(
+        'Got capture stream',
+        mockMediaStream
+      );
+    });
+
+    it('should get user media tracks when media type is "camera"', async () => {
+      const cameraProcessor = new WebRTCProcessor('camera', { video: true });
+      const mockMediaStream = new MediaStream();
+      navigator.mediaDevices.getUserMedia = jest
+        .fn()
+        .mockResolvedValue(mockMediaStream);
+
+      const tracks = await cameraProcessor.getStreamTracks();
+
+      expect(tracks).toEqual(['mockTrack']);
     });
   });
 
   describe('destroy', () => {
-    it('should destroy canvas', () => {
-      const canvas = cp.getCanvas();
+    let mockCanvas: HTMLCanvasElement;
+    let mockVideo: HTMLVideoElement;
 
-      canvas.remove = jest.fn();
-      cp.destroy();
+    beforeEach(() => {
+      // Create a mock canvas element
+      mockCanvas = document.createElement('canvas');
+      mockCanvas.remove = jest.fn();
 
-      expect(canvas.remove).toHaveBeenCalled();
+      // Create a mock video element
+      mockVideo = document.createElement('video');
+      mockVideo.remove = jest.fn();
+
+      // Assign the mock elements to the processor
+
+      (processor as any)._canvas = mockCanvas;
+
+      (processor as any)._video = mockVideo;
+    });
+
+    it('should remove the canvas and video elements', () => {
+      // Call destroy
+      (processor as any).destroy();
+
+      // Verify that the canvas and video elements' remove methods were called
+      expect(mockCanvas.remove).toHaveBeenCalled();
+      expect(mockVideo.remove).toHaveBeenCalled();
+    });
+
+    it('should remove the canvas element even if there is no video element', () => {
+      // Set the video to undefined
+      (processor as any)._video = undefined;
+
+      // Call destroy
+      (processor as any).destroy();
+
+      // Verify that only the canvas element's remove method was called
+      expect(mockCanvas.remove).toHaveBeenCalled();
     });
   });
 
-  describe('processAllFrames and read', () => {
-    beforeAll(() => {
-      class MediaStreamTrackMock {
-        stop = jest.fn();
-      }
+  describe('processSingleFrame', () => {
+    let mockCanvas: HTMLCanvasElement;
+    let mockVideo: HTMLVideoElement;
 
-      const mockGetDisplayMediaMock = jest.fn(async () => {
-        return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
-          (resolve) => {
-            resolve({
-              getVideoTracks: () => {
-                return [new MediaStreamTrackMock()];
-              },
-            });
-          }
-        );
-      });
+    beforeEach(() => {
+      // Mock canvas and video elements
+      mockCanvas = document.createElement('canvas');
+      mockVideo = document.createElement('video');
+      processor['_canvas'] = mockCanvas;
+      processor['_video'] = mockVideo;
 
-      Object.defineProperty(global.navigator, 'mediaDevices', {
-        value: {
-          getDisplayMedia: mockGetDisplayMediaMock,
-        },
-      });
+      // Mock getFrameData to return a QR code result
+      jest
+        .spyOn(processor as any, 'getFrameData')
+        .mockReturnValue({ data: 'mockQRCode' });
+
+      // Mock setFrame to set the video frame on the canvas
+      jest.spyOn(processor as any, 'setFrame').mockImplementation(() => {});
+
+      // Mock getHeadLength to return a head length
+      (getHeadLength as jest.Mock).mockReturnValue(5);
     });
 
-    it('should read frames', async () => {
-      const mockedData = ['A', 'B', 'C'];
-      const mockedDataPromise = new Promise((resolve) => {
-        resolve(mockedData);
-      });
+    it('should process a single frame and add the QR code data to the set', () => {
+      // Call processSingleFrame
+      (processor as any).processSingleFrame();
 
-      class MediaStreamTrackMock {
-        stop = jest.fn();
-      }
-
-      const mockGetDisplayMediaMock = jest.fn(async () => {
-        return new Promise<{ getVideoTracks: () => MediaStreamTrackMock[] }>(
-          (resolve) => {
-            resolve({
-              getVideoTracks: () => {
-                return [new MediaStreamTrackMock()];
-              },
-            });
-          }
-        );
-      });
-
-      jest
-        .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
-        .mockImplementation(
-          () => mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
-        );
-
-      jest
-        .spyOn(cp, 'processAllFrames')
-        .mockReturnValueOnce(mockedDataPromise as Promise<string[]>);
-
-      const result = await cp.read();
-
-      expect(result).toBe('ABC');
+      // Verify that the QR code data was added to the set
+      expect(processor['_allFrames'].has('mockQRCode')).toBe(true);
     });
 
-    it('should throw an error if track if there is no track', async () => {
-      const ERROR_MESSAGE = 'Failed to read frames';
+    it('should update the number of expected frames if head length is found', () => {
+      // Call processSingleFrame
+      (processor as any).processSingleFrame();
 
-      try {
-        const mockGetDisplayMediaMock = jest.fn(async () => {
-          return new Promise<{ getVideoTracks: () => unknown[] }>((resolve) => {
-            resolve({
-              getVideoTracks: () => {
-                return [];
-              },
-            });
-          });
+      // Verify that the number of expected frames is updated
+      expect(processor['_numExpectedFrames']).toBe(5);
+    });
+
+    it('should not add empty QR code data to the set', () => {
+      // Mock getFrameData to return an empty string
+      jest
+        .spyOn(processor as any, 'getFrameData')
+        .mockReturnValue({ data: '' });
+
+      // Call processSingleFrame
+      (processor as any).processSingleFrame();
+
+      // Verify that no data was added to the set
+      expect(processor['_allFrames'].size).toBe(0);
+    });
+
+    it('should handle errors and log them', () => {
+      // Mock setFrame to throw an error
+      jest.spyOn(processor as any, 'setFrame').mockImplementation(() => {
+        throw new Error('mockError');
+      });
+
+      // Call processSingleFrame
+      (processor as any).processSingleFrame();
+
+      // Verify that the error was logged
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Error processing frame:',
+        new Error('mockError')
+      );
+    });
+  });
+
+  describe('processAllFrames', () => {
+    let requestAnimationFrameSpy: jest.SpyInstance;
+    let processSingleFrameSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      jest.useFakeTimers(); // Use fake timers to control requestAnimationFrame
+
+      // Mock requestAnimationFrame globally
+      requestAnimationFrameSpy = jest
+        .spyOn(window, 'requestAnimationFrame')
+        .mockImplementation((callback) => {
+          setTimeout(() => callback(0), 16); // Simulate a frame every 16ms (roughly 60fps)
+          return 1; // Return a mock animation frame ID
         });
 
-        jest
-          .spyOn(global.navigator.mediaDevices, 'getDisplayMedia')
-          .mockImplementation(
-            () => mockGetDisplayMediaMock() as unknown as Promise<MediaStream>
+      // Spy on processSingleFrame method
+      processSingleFrameSpy = jest
+        .spyOn(processor as any, 'processSingleFrame')
+        .mockImplementation(() => {
+          // Simulate processing of a frame and adding it to the set
+          processor['_allFrames'].add(
+            `mockQRCodeData${processor['_allFrames'].size + 1}`
           );
+        });
+    });
 
-        await cp.read();
-      } catch (error) {
-        if (error && typeof error === 'object' && 'message' in error) {
-          expect(error.message).toBe(ERROR_MESSAGE);
-        }
-      }
+    afterEach(() => {
+      jest.clearAllMocks();
+      jest.useRealTimers(); // Restore timers after each test
+    });
+
+    it('should resolve with an empty array if no video element is present', async () => {
+      // Set video to undefined
+      processor['_video'] = undefined;
+
+      const result = await (processor as any).processAllFrames();
+
+      // Check that an empty array is returned
+      expect(result).toEqual([]);
+
+      // Check that the "Processing all frames" message is logged first
+      expect(logSpy).toHaveBeenCalledWith('Processing all frames');
+
+      // Check that the "No video element to process" message is logged next
+      expect(errorSpy).toHaveBeenCalledWith('No video element to process');
+    });
+
+    it('should process frames until the expected number of frames is reached', async () => {
+      processor['_video'] = document.createElement('video'); // Mock video element
+      processor['_numExpectedFrames'] = 3; // Simulate expecting 3 frames
+
+      const resultPromise = (processor as any).processAllFrames();
+
+      // Simulate the passage of time and frame processing
+      expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
+      jest.advanceTimersByTime(16); // Move time forward for frame 1
+      expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
+      jest.advanceTimersByTime(16); // Move time forward for frame 2
+      expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(3);
+      jest.advanceTimersByTime(16); // Move time forward for frame 3
+
+      // Await the promise resolution
+      const result = await resultPromise;
+
+      // Check that processSingleFrame was called the correct number of times
+      expect(processSingleFrameSpy).toHaveBeenCalledTimes(3);
+
+      // Ensure all frames are returned as an array
+      expect(result).toEqual([
+        'mockQRCodeData1',
+        'mockQRCodeData2',
+        'mockQRCodeData3',
+      ]);
+
+      // Ensure logging for frame processing was done
+      expect(logSpy).toHaveBeenCalledWith('All frames processed');
+    });
+  });
+
+  describe('read', () => {
+    let startVideoSpy: jest.SpyInstance;
+    let processAllFramesSpy: jest.SpyInstance;
+    let destroySpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      // Mock MediaStreamTrack globally with a stop method
+      global.MediaStreamTrack = jest.fn().mockImplementation(() => ({
+        stop: jest.fn(), // Mock the stop method
+      })) as any;
+
+      // Spy on the startVideo, processAllFrames, and destroy methods
+      startVideoSpy = jest
+        .spyOn(processor as any, 'startVideo')
+        .mockResolvedValue(undefined);
+      processAllFramesSpy = jest
+        .spyOn(processor as any, 'processAllFrames')
+        .mockResolvedValue(['frame1', 'frame2', 'frame3']);
+      destroySpy = jest
+        .spyOn(processor as any, 'destroy')
+        .mockImplementation(() => {});
+
+      processor['_track'] = new MediaStreamTrack(); // Mock a track
+      processor['_video'] = document.createElement('video'); // Mock a video element
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should call startVideo if video or track is not initialized', async () => {
+      processor['_video'] = undefined; // Simulate no video
+
+      await processor.read();
+
+      expect(startVideoSpy).toHaveBeenCalled();
+    });
+
+    it('should process all frames and return sorted QR code data', async () => {
+      const result = await processor.read();
+
+      // Verify that processAllFrames is called
+      expect(processAllFramesSpy).toHaveBeenCalled();
+
+      // Ensure frames are processed, sorted, sliced, and joined
+      expect(result).toBe('frame1frame2frame3');
+    });
+
+    it('should stop the video track after processing', async () => {
+      await processor.read();
+
+      // Check that the stop method was called
+      expect(processor['_track']!.stop).toHaveBeenCalled();
+      expect(destroySpy).toHaveBeenCalled();
+    });
+
+    it('should reject if an error occurs', async () => {
+      // Force an error to occur
+      processAllFramesSpy.mockRejectedValue(new Error('mockError'));
+
+      await expect(processor.read()).rejects.toThrow('mockError');
+    });
+
+    it('should not call startVideo if video and track are already initialized', async () => {
+      await processor.read();
+
+      // Ensure startVideo is not called since video and track are already initialized
+      expect(startVideoSpy).not.toHaveBeenCalled();
     });
   });
 });

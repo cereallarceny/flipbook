@@ -9,6 +9,9 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -27,14 +30,11 @@
     ]
   },
   "dependencies": {
-    "@flipbookqr/shared": "workspace:*",
-    "jsqr": "^1.4.0",
-    "gifuct-js": "^2.1.2"
+    "@flipbookqr/shared": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/jest-presets": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "jest-canvas-mock": "^2.5.2"
+    "@repo/typescript-config": "workspace:*"
   }
 }

@@ -1,9 +1,6 @@
 {
   "name": "@flipbookqr/writer",
   "version": "0.1.5",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -12,6 +9,9 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -24,12 +24,13 @@
     "test": "jest --coverage"
   },
   "jest": {
-    "preset": "@repo/jest-presets/browser"
+    "preset": "@repo/jest-presets/browser",
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   },
   "dependencies": {
-    "@flipbookqr/shared": "workspace:*",
-    "gif.js": "^0.2.0",
-    "qrcode": "1.5.3"
+    "@flipbookqr/shared": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

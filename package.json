@@ -25,16 +25,17 @@
     "release": "changeset publish"
   },
   "dependencies": {
+    "@nuintun/qrcode": "3.0.1",
+    "omggif": "^1.0.10",
     "loglevel": "^1.9.2"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.8",
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
-    "@types/gif.js": "^0.2.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.16.5",
-    "@types/qrcode": "^1.5.5",
+    "@types/omggif": "^1.0.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/w3c-image-capture": "^1.0.10",

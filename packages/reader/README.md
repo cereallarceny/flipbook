@@ -30,7 +30,11 @@ bun add @flipbookqr/reader
 
 ## Usage
 
-```typescript
+### Screenshare
+
+The following will read a QR code via the `getDisplayMedia` (screenshare) API:
+
+```ts
 import { Reader } from '@flipbookqr/reader';
 
 // Create a new instance of the Flipbook reader
@@ -42,19 +46,49 @@ const result = await reader.read();
 
 The `result` is a is the original payload that was encoded into the series of QR codes.
 
-**Please note:** The default configuration of the reader is to read the QR codes visible on the screen using WebRTC's `getUserMedia` API. This means that the reader will ask for permission to view the user's screen. You may want to use a different `frameProcessor` if you want to read the QR codes from a different source, such as a file. You can change the `frameProcessor` like this:
+### Camera
+
+The following will read a QR code via the `getUserMedia` (camera) API:
+
+```ts
+import { Reader, WebRTCProcessor } from '@flipbookqr/reader';
+
+// Create a new instance of the Flipbook reader
+const reader = new Reader({
+  frameProcessor: new WebRTCProcessor('camera'),
+});
+
+// Get a list of all available camera sources
+const sources = await reader.opts.frameProcessor.getStreamTracks();
+
+// Select a camera source
+reader.opts.frameProcessor.setStreamTrack(sources[0]);
+
+// Note: If you don't do the above two commands, it will default to the first camera source
+
+// Read the Flipbook visible on the screen
+const result = await reader.read();
+```
+
+The `result` is a is the original payload that was encoded into the series of QR codes.
+
+### File upload
+
+The following will read a QR code from a file:
 
 ```ts
 import { Reader, FileProcessor } from '@flipbookqr/reader';
 
-const file = // some file
+const file = new File(); // some file
 
 const reader = new Reader({
-  frameProcessor: new FileProcessor(file)
+  frameProcessor: new FileProcessor(),
 });
 
-const result = await reader.read()
+const result = await reader.read(file);
 ```
+
+The `result` is a is the original payload that was encoded into the series of QR codes.
 
 ## Configuration
 

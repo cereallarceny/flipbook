@@ -1,178 +1,177 @@
-import { FileProcessor } from './index';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-class TestableFileProcessor extends FileProcessor {
-  public constructor(file: File) {
-    super(file);
-  }
+import { GifReader } from 'omggif';
+import { FileProcessor } from './file-processor';
+import {
+  convertFileToBuffer,
+  convertUnit8ClampedArrayToFile,
+} from '@flipbookqr/shared';
 
-  public get _canvasElement(): HTMLCanvasElement {
-    return this.canvasElement;
-  }
+// Mock dependencies
+jest.mock('omggif', () => ({
+  GifReader: jest.fn(),
+}));
 
-  public get _canvasContext(): CanvasRenderingContext2D | null {
-    return this.canvasContext;
-  }
+// Mock the entire @flipbookqr/shared module
+jest.mock('@flipbookqr/shared', () => ({
+  ...jest.requireActual('@flipbookqr/shared'),
+  convertFileToBuffer: jest.fn(),
+  convertUnit8ClampedArrayToFile: jest.fn(),
+}));
 
-  public set _canvasContext(value: CanvasRenderingContext2D | null) {
-    this._canvasContext = value;
-  }
+global.URL.createObjectURL = jest.fn(
+  (blob: Blob) => `blob:${blob.size}#t=${Date.now()}`
+);
 
-  public _isGif(file: File): boolean {
-    return this.isGIF(file);
-  }
-
-  public set _setIsGif(value: unknown) {
-    this.isGIF = jest.fn().mockReturnValue(value);
-  }
-
-  public set _setProcessSingleFrame(fn: () => Promise<string>) {
-    this.processSingleFrame = fn;
-  }
-
-  public _processSingleFrame(): Promise<string> {
-    return this.processSingleFrame();
-  }
-
-  public _convertFileToBuffer(file: File): Promise<ArrayBuffer> {
-    return this.convertFileToBuffer(file);
-  }
-
-  public set _mockConvertUnit8ClampedArrayToFile(fn: () => File) {
-    this.convertUnit8ClampedArrayToFile = fn;
-  }
-
-  public _convertUnit8ClampedArrayToFile(
-    imageData: Uint8ClampedArray,
-    width: number,
-    height: number,
-    fileName: string
-  ): File {
-    return this.convertUnit8ClampedArrayToFile(
-      imageData,
-      width,
-      height,
-      fileName
-    );
-  }
-}
-
-let fp: TestableFileProcessor;
 describe('FileProcessor', () => {
+  let mockFile: File;
+
   beforeEach(() => {
+    // Create a mock File object
+    mockFile = new File(['dummy content'], 'dummy.png', {
+      type: 'image/png',
+    });
+
+    // Clear all mocks
     jest.clearAllMocks();
-
-    fp = new TestableFileProcessor(new File([], 'test.gif'));
   });
 
-  it('should return an instance of FileProcessor when called with a GIF file as input', () => {
-    expect(new TestableFileProcessor(new File([], 'test.gif'))).toBeInstanceOf(
-      FileProcessor
+  it('should remove canvas when destroy is called', () => {
+    const processor = new FileProcessor();
+    processor['_canvas'] = {
+      remove: jest.fn(),
+    } as unknown as HTMLCanvasElement;
+
+    processor['destroy']();
+
+    expect(processor['_canvas'].remove).toHaveBeenCalled();
+  });
+
+  it('should process a single frame and extract QR code data', async () => {
+    const processor = new FileProcessor();
+    const mockFrameData = 'mock-frame-data';
+
+    // Mock getFrameData to return some mock frame data
+    const setFrameSpy = jest
+
+      .spyOn(processor as any, 'setFrame')
+      .mockImplementation(() => {});
+    const getFrameDataSpy = jest
+
+      .spyOn(processor as any, 'getFrameData')
+      .mockReturnValue({ data: mockFrameData });
+
+    // Mock the Image constructor and simulate onload event
+    const mockImage = {
+      onload: jest.fn(),
+      onerror: jest.fn(),
+      src: '',
+    };
+
+    (global as any).Image = jest.fn(() => mockImage); // Mock the Image object
+
+    const processSingleFramePromise = processor['processSingleFrame'](mockFile);
+
+    // Simulate the image loading by calling the onload function
+    mockImage.onload();
+
+    const result = await processSingleFramePromise;
+
+    expect(setFrameSpy).toHaveBeenCalled();
+    expect(getFrameDataSpy).toHaveBeenCalled();
+    expect(result).toBe(mockFrameData);
+  });
+
+  it('should throw an error if processing a single frame fails', async () => {
+    const processor = new FileProcessor();
+
+    const createObjectURLSpy = jest
+      .spyOn(URL, 'createObjectURL')
+      .mockImplementation(() => {
+        throw new Error('Failed to process frame');
+      });
+
+    await expect(processor['processSingleFrame'](mockFile)).rejects.toThrow(
+      'Failed to process frame'
     );
+
+    expect(createObjectURLSpy).toHaveBeenCalled();
   });
 
-  describe('setFrame', () => {
-    it('should set the frame on the canvas', () => {
-      const frame = new Image();
+  it('should process all frames of a GIF file', async () => {
+    const processor = new FileProcessor();
 
-      frame.width = 100;
-      frame.height = 200;
+    // Mock the helper functions
+    const mockBuffer = new ArrayBuffer(10);
+    (convertFileToBuffer as jest.Mock).mockResolvedValue(mockBuffer);
 
-      fp.setFrame(frame);
+    const mockGifReader = {
+      numFrames: jest.fn().mockReturnValue(3),
+      decodeAndBlitFrameRGBA: jest.fn(),
+      width: 100,
+      height: 100,
+    };
+    (GifReader as jest.Mock).mockImplementation(() => mockGifReader);
 
-      expect(fp._canvasElement.width).toEqual(100);
-      expect(fp._canvasElement.height).toEqual(200);
-    });
+    // Mock single frame processing
+    jest
 
-    it('should throw an error if the frame is not an Image', () => {
-      expect(() => {
-        fp.setFrame(null as unknown as ImageBitmap);
-      }).toThrow();
-    });
+      .spyOn(processor as any, 'processSingleFrame')
+      .mockResolvedValue('QRData');
+
+    const result = await processor['processAllFrames']();
+
+    expect(convertFileToBuffer).toHaveBeenCalled();
+    expect(GifReader).toHaveBeenCalledWith(new Uint8Array(mockBuffer));
+    expect(mockGifReader.numFrames).toHaveBeenCalled();
+    expect(mockGifReader.decodeAndBlitFrameRGBA).toHaveBeenCalledTimes(3);
+    expect(convertUnit8ClampedArrayToFile).toHaveBeenCalledTimes(3);
+    expect(result).toEqual(['QRData', 'QRData', 'QRData']);
   });
 
-  describe('destroy', () => {
-    it('should destroy the canvas', () => {
-      const canvas = fp._canvasElement;
-      canvas.remove = jest.fn();
-      fp.destroy();
-      expect(canvas.remove).toHaveBeenCalled();
+  it('should check if a file is a GIF', () => {
+    const processor = new FileProcessor();
+
+    const gifFile = new File(['dummy content'], 'dummy.gif', {
+      type: 'image/gif',
     });
+    const nonGifFile = new File(['dummy content'], 'dummy.png', {
+      type: 'image/png',
+    });
+
+    expect(processor['isGIF'](gifFile)).toBe(true);
+    expect(processor['isGIF'](nonGifFile)).toBe(false);
   });
 
-  describe('read', () => {
-    it('should read the file with processAllFrames if input is a GIF', async () => {
-      const MOCKED_VALUE = 'XYZ';
+  it('should read and process all frames for a GIF file', async () => {
+    const processor = new FileProcessor();
 
-      fp.processAllFrames = jest.fn().mockResolvedValue([MOCKED_VALUE]);
-      const result = await fp.read();
+    jest.spyOn(processor as any, 'isGIF').mockReturnValue(true);
+    jest
 
-      expect(result).toBe(MOCKED_VALUE);
-    });
+      .spyOn(processor as any, 'processAllFrames')
+      .mockResolvedValue(['QRData1', 'QRData2']);
 
-    it('should throw an error if there is no data', async () => {
-      fp.processAllFrames = jest.fn().mockResolvedValue([]);
-      await expect(fp.read()).rejects.toThrow();
-    });
+    const result = await processor.read(mockFile);
 
-    it('should read the file with getFrameData if input is not a GIF', async () => {
-      fp._setIsGif = false;
-      fp._setProcessSingleFrame = jest.fn().mockResolvedValue('XYZ');
-
-      const result = await fp.read();
-
-      expect(result).toBe('XYZ');
-    });
+    expect(processor['isGIF']).toHaveBeenCalledWith(mockFile);
+    expect(processor['processAllFrames']).toHaveBeenCalled();
+    expect(result).toBe('QRData1QRData2');
   });
 
-  describe('isGif', () => {
-    it('should return true if the file is a GIF', () => {
-      expect(fp._isGif(new File([], 'test.gif'))).toBe(true);
-    });
+  it('should read and process a single frame for a non-GIF file', async () => {
+    const processor = new FileProcessor();
 
-    it('should not return true if the file is not a GIF', () => {
-      expect(fp._isGif(new File([], 'test.jpg'))).toBe(false);
-    });
-  });
+    jest.spyOn(processor as any, 'isGIF').mockReturnValue(false);
+    jest
 
-  describe('convertFileToBuffer', () => {
-    it('should convert the file to a buffer', async () => {
-      const buffer = await fp._convertFileToBuffer(new File([], 'test.jpg'));
-      expect(buffer).toBeInstanceOf(Buffer);
-    });
-  });
+      .spyOn(processor as any, 'processSingleFrame')
+      .mockResolvedValue('QRData');
 
-  describe('convertUnit8ClampedArrayToFile', () => {
-    it('should convert the unit8ClampedArray to a file', () => {
-      const pixelCount = 100 * 200; // Calculate total number of pixels
-      const pixelData = new Uint8ClampedArray(pixelCount * 4); // Each pixel has RGBA values
+    const result = await processor.read(mockFile);
 
-      // Fill pixelData with some example RGBA values
-      for (let i = 0; i < pixelCount * 4; i += 4) {
-        pixelData[i] = i; // Red value
-        pixelData[i + 1] = i + 1; // Green value
-        pixelData[i + 2] = i + 2; // Blue value
-        pixelData[i + 3] = 255; // Alpha value (fully opaque)
-      }
-
-      const file = fp._convertUnit8ClampedArrayToFile(
-        pixelData,
-        100,
-        200,
-        'test.jpg'
-      );
-      expect(file).toBeInstanceOf(File);
-    });
-  });
-
-  describe('processAllFrames', () => {
-    it('should run without errors', async () => {
-      const file = new File([], 'test.jpg');
-
-      const processor = new FileProcessor(file);
-
-      const results = await processor.processAllFrames();
-
-      expect(results).toBeInstanceOf(Array);
-    });
+    expect(processor['isGIF']).toHaveBeenCalledWith(mockFile);
+    expect(processor['processSingleFrame']).toHaveBeenCalledWith(mockFile);
+    expect(result).toBe('QRData');
   });
 });

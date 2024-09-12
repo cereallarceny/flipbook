@@ -9,6 +9,9 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -21,7 +24,10 @@
     "test": "jest --coverage"
   },
   "jest": {
-    "preset": "@repo/jest-presets/browser"
+    "preset": "@repo/jest-presets/browser",
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

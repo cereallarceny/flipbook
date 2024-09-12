@@ -172,6 +172,9 @@ importers:
 
   packages/jest-presets:
     devDependencies:
+      jest-canvas-mock:
+        specifier: ^2.5.2
+        version: 2.5.2
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -194,9 +197,6 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      jest-canvas-mock:
-        specifier: ^2.5.2
-        version: 2.5.2
 
   packages/shared:
     devDependencies:

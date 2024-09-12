@@ -11,7 +11,12 @@ module.exports = {
   ],
   preset: 'ts-jest',
   collectCoverage: true,
-  collectCoverageFrom: ['**/*.ts', '!**/node_modules/**', '!**/*.config.ts'],
+  collectCoverageFrom: [
+    '**/*.ts',
+    '!**/node_modules/**',
+    '!**/*.config.ts',
+    '!**/src/**/index.ts',
+  ],
   coverageThreshold: {
     global: {
       branches: 80,

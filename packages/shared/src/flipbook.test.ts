@@ -4,7 +4,7 @@ import {
   createHeadTag,
   getIndex,
   getHeadLength,
-} from './index';
+} from './flipbook';
 
 describe('Shared', () => {
   describe('isHead', () => {

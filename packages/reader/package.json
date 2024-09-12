@@ -32,7 +32,6 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/jest-presets": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "jest-canvas-mock": "^2.5.2"
+    "@repo/typescript-config": "workspace:*"
   }
 }

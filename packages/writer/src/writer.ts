@@ -122,14 +122,12 @@ export class Writer {
    * @
    */
   private encoderTo2dBinaryArray(encoder: Encoder): number[][] {
-    // If there is no size, throw an error
-    if (!this.size) {
-      throw new Error('Cannot encode 2d binary array if size is unset');
-    }
+    const size: number = this.size!;
+    const { margin, moduleSize } = this.opts;
 
     function isDark(matrix: boolean[][], row: number, col: number): boolean {
-      if (matrix[row]![col] !== null) {
-        return matrix[row]![col]!;
+      if (matrix[row] && matrix[row][col] !== null) {
+        return matrix[row][col]!;
       } else {
         return false;
       }
@@ -142,22 +140,22 @@ export class Writer {
     const finalMatrix: number[][] = [];
 
     // For each row
-    for (let y = 0; y < this.size; y++) {
+    for (let y = 0; y < size; y++) {
       // Create an array
       const row: number[] = [];
 
       // For each column
-      for (let x = 0; x < this.size; x++) {
+      for (let x = 0; x < size; x++) {
         // Check if the value is black and within the margins, push a 0
         if (
-          this.opts.margin <= x &&
-          x < this.size - this.opts.margin &&
-          this.opts.margin <= y &&
-          y < this.size - this.opts.margin &&
+          margin <= x &&
+          x < size - margin &&
+          margin <= y &&
+          y < size - margin &&
           isDark(
             matrix,
-            ((y - this.opts.margin) / this.opts.moduleSize) >> 0,
-            ((x - this.opts.margin) / this.opts.moduleSize) >> 0
+            ((y - margin) / moduleSize) >> 0,
+            ((x - margin) / moduleSize) >> 0
           )
         ) {
           row.push(0);
@@ -197,6 +195,7 @@ export class Writer {
     // Encode the first segment to determine the highest version
     const firstEncoder = this.createEncoder(codes[0]!, this.opts.version);
     const highestVersion = firstEncoder.getVersion();
+    this.opts.version = highestVersion;
     encoders.push(firstEncoder);
 
     // Set the size of the QR code
@@ -217,12 +216,7 @@ export class Writer {
     // Convert QR codes to data URLs
     return codes.map((code, i) => {
       // Get the encoder for the current segment
-      const encoder = encoders[i];
-
-      // If the encoder is not found, throw an error
-      if (!encoder) {
-        throw new Error('Encoder not found');
-      }
+      const encoder = encoders[i]!;
 
       // Return the segment and its corresponding encoder
       return {
@@ -259,12 +253,7 @@ export class Writer {
     // For each qr code, add a frame to the gif
     for (let i = 0; i < qrs.length; i++) {
       // Get the QR code
-      const qr = qrs[i];
-
-      // If the QR code is not found, throw an error
-      if (!qr) {
-        throw new Error('QR code not found');
-      }
+      const qr = qrs[i]!;
 
       // Convert the matrix into a 2d binary array
       const matrix = this.encoderTo2dBinaryArray(qr.image);

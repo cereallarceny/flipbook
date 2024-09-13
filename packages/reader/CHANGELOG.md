@@ -1,5 +1,13 @@
 # @flipbookqr/reader
 
+## 0.2.1
+
+### Patch Changes
+
+- 26b793d: Adding back types to libraries for import
+- Updated dependencies [26b793d]
+  - @flipbookqr/shared@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # web
 
+## 0.1.1
+
+### Patch Changes
+
+- 26b793d: Adding back types to libraries for import
+- Updated dependencies [26b793d]
+  - @flipbookqr/reader@0.2.1
+  - @flipbookqr/shared@0.2.1
+  - @flipbookqr/writer@0.2.1
+
 ## 0.1.0
 
 ### Minor Changes

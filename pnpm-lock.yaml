@@ -170,22 +170,6 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
 
-  packages/flipbookqr:
-    dependencies:
-      '@flipbookqr/reader':
-        specifier: workspace:*
-        version: link:../reader
-      '@flipbookqr/shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@flipbookqr/writer':
-        specifier: workspace:*
-        version: link:../writer
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-
   packages/jest-presets:
     devDependencies:
       jest-canvas-mock:

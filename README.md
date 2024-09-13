@@ -5,11 +5,13 @@
 </p>
 
 [![Status](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml)
-[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
+[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;[![install size](https://packagephobia.com/badge?p=@flipbookqr/writer@latest)](https://packagephobia.com/result?p=@flipbookqr/writer@latest)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)&nbsp;&nbsp;[![install size](https://packagephobia.com/badge?p=@flipbookqr/reader@latest)](https://packagephobia.com/result?p=@flipbookqr/reader@latest)
 
 ## Getting Started
 
 Flipbook is a series of libraries that you can use in any web, mobile, or desktop application that enable the writing and reading of QR codes that contain larger payloads than traditional QR codes. This is done by creating a series of QR codes that are stitched together into an animated GIF, called a "Flipbook". This Flipbook can then be scanned by the reader library and subsequently reassembled into the original payload.
+
+[View a CodeSandbox example](https://codesandbox.io/p/sandbox/n6hrwl)
 
 ![Flipbook Example](./docs/flipbook-qr.gif)
 

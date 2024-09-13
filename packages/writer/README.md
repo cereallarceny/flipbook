@@ -30,6 +30,8 @@ bun add @flipbookqr/writer
 
 ## Usage
 
+[View a CodeSandbox example](https://codesandbox.io/p/sandbox/n6hrwl)
+
 ```typescript
 import { Writer } from '@flipbookqr/writer';
 

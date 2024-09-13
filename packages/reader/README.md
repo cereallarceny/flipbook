@@ -30,6 +30,8 @@ bun add @flipbookqr/reader
 
 ## Usage
 
+[View a CodeSandbox example](https://codesandbox.io/p/sandbox/n6hrwl)
+
 ### Screenshare
 
 The following will read a QR code via the `getDisplayMedia` (screenshare) API:

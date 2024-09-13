@@ -11,6 +11,8 @@
 
 Flipbook is a series of libraries that you can use in any web, mobile, or desktop application that enable the writing and reading of QR codes that contain larger payloads than traditional QR codes. This is done by creating a series of QR codes that are stitched together into an animated GIF, called a "Flipbook". This Flipbook can then be scanned by the reader library and subsequently reassembled into the original payload.
 
+[View a CodeSandbox example](https://codesandbox.io/p/sandbox/n6hrwl)
+
 ![Flipbook Example](./docs/flipbook-qr.gif)
 
 **[Download Reader](https://flipbook.codes)**

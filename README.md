@@ -5,7 +5,7 @@
 </p>
 
 [![Status](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml/badge.svg)](https://github.com/cereallarceny/flipbook/actions/workflows/ci.yml)
-[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)
+[![License](https://badgen.net/npm/license/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;|&nbsp;&nbsp;**Writer:** [![Writer Version](https://badgen.net/npm/v/@flipbookqr/writer)](https://npmjs.com/package/@flipbookqr/writer)&nbsp;&nbsp;[![install size](https://packagephobia.com/badge?p=@flipbookqr/writer@latest)](https://packagephobia.com/result?p=@flipbookqr/writer@latest)&nbsp;&nbsp;|&nbsp;&nbsp;**Reader:** [![Reader Version](https://badgen.net/npm/v/@flipbookqr/reader)](https://npmjs.com/package/@flipbookqr/reader)&nbsp;&nbsp;[![install size](https://packagephobia.com/badge?p=@flipbookqr/reader@latest)](https://packagephobia.com/result?p=@flipbookqr/reader@latest)
 
 ## Getting Started
 

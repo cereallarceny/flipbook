@@ -9,7 +9,7 @@
   "private": true,
   "packageManager": "pnpm@9.0.6",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "build": "turbo run build",
@@ -36,8 +36,8 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.16.5",
     "@types/omggif": "^1.0.5",
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@types/w3c-image-capture": "^1.0.10",
     "husky": "^8.0.3",
     "jest": "^29.7.0",

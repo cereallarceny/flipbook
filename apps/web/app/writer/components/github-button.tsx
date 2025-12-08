@@ -2,7 +2,7 @@
 
 import GitHubButton from 'react-github-btn';
 
-export function Star(): JSX.Element {
+export function Star(): React.ReactNode {
   return (
     <GitHubButton
       aria-label="Star cereallarceny/flipbook on GitHub"
@@ -17,7 +17,7 @@ export function Star(): JSX.Element {
   );
 }
 
-export function Sponsor(): JSX.Element {
+export function Sponsor(): React.ReactNode {
   return (
     <GitHubButton
       aria-label="Sponsor @cereallarceny on GitHub"

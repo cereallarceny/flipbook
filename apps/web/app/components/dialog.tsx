@@ -24,7 +24,7 @@ export default function DialogBox({
   setIsOpen,
   width = 'md',
   children,
-}: DialogBoxProps): JSX.Element {
+}: DialogBoxProps): React.ReactNode {
   const widthClass = {
     sm: 'max-w-sm',
     md: 'max-w-md',

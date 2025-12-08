@@ -6,7 +6,7 @@ import { homepage } from './content';
 import { CameraScan, ScreenScan, Upload } from './method-buttons';
 import { IconButton } from './components/button';
 
-export default function Hero(): JSX.Element {
+export default function Hero(): React.ReactNode {
   const [results, setResults] = useState('');
 
   return (

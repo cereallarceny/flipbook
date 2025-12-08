@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 function NumberInputElem(
   { className = '', ...props }: InputHTMLAttributes<HTMLInputElement>,
   ref: LegacyRef<HTMLInputElement>
-): JSX.Element {
+): React.ReactNode {
   return (
     <input
       {...props}

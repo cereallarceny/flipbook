@@ -13,7 +13,7 @@ export default function Editor({
   fileName,
   onChange,
   sampleCode,
-}: EditorProps): JSX.Element {
+}: EditorProps): React.ReactNode {
   return (
     <MonacoEditor
       className="h-64 mb-10 mt-2 -ml-4"

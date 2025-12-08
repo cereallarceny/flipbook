@@ -12,7 +12,7 @@ function BaseButton<T extends React.ElementType>({
   className = '',
   color = 'primary',
   ...props
-}: ButtonProps<T>): JSX.Element {
+}: ButtonProps<T>): React.ReactNode {
   // The `as` prop allows us to render a different component
   const Component = asComponent || 'button';
 
@@ -46,7 +46,7 @@ export function Button<T extends React.ElementType>({
   as: asComponent,
   className = '',
   ...props
-}: ButtonProps<T>): JSX.Element {
+}: ButtonProps<T>): React.ReactNode {
   return (
     <BaseButton
       as={asComponent || 'button'}
@@ -60,7 +60,7 @@ export function IconButton<T extends React.ElementType>({
   as: asComponent,
   className = '',
   ...props
-}: ButtonProps<T>): JSX.Element {
+}: ButtonProps<T>): React.ReactNode {
   return (
     <BaseButton
       as={asComponent || 'button'}

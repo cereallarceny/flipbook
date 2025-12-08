@@ -14,7 +14,7 @@ interface MethodButtonProps {
 export function CameraScan({
   setResults,
   children,
-}: MethodButtonProps): JSX.Element {
+}: MethodButtonProps): React.ReactNode {
   // Get the navigator support
   const supports = useNavigatorSupport();
 
@@ -90,7 +90,7 @@ export function CameraScan({
 export function Upload({
   setResults,
   children,
-}: MethodButtonProps): JSX.Element {
+}: MethodButtonProps): React.ReactNode {
   // Store the file in state
   const [file, setFile] = useState<File | null>(null);
 
@@ -137,7 +137,7 @@ export function Upload({
 export function ScreenScan({
   setResults,
   children,
-}: MethodButtonProps): JSX.Element {
+}: MethodButtonProps): React.ReactNode {
   // Get the navigator support
   const supports = useNavigatorSupport();
 

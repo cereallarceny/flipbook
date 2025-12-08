@@ -15,7 +15,7 @@ interface ConfigurationFormProps {
 export default function ConfigurationForm({
   defaultValues,
   onSubmit,
-}: ConfigurationFormProps): JSX.Element {
+}: ConfigurationFormProps): React.ReactNode {
   const { register, handleSubmit } = useForm({ defaultValues });
 
   const errorLevels = useMemo(() => {

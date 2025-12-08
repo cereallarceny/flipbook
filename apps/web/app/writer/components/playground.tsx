@@ -14,7 +14,7 @@ const sampleCode = `const fibbonacci = (n: number): number => {
 
 fibbonacci(10);`;
 
-export default function Playground(): JSX.Element {
+export default function Playground(): React.ReactNode {
   // The result of the editor
   const [code, setCode] = useState<string>(sampleCode);
 

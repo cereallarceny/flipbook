@@ -20,7 +20,7 @@ export default function Output({
   code,
   configuration,
   reset,
-}: OutputProps): JSX.Element {
+}: OutputProps): React.ReactNode {
   // Get the navigator support
   const supports = useNavigatorSupport();
 

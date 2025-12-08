@@ -4,7 +4,7 @@ import Hero from './hero';
 import Playground from './components/playground';
 import { Sponsor, Star } from './components/github-button';
 
-export default function Page(): JSX.Element {
+export default function Page(): React.ReactNode {
   return (
     <div>
       <Hero

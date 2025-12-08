@@ -17,7 +17,7 @@ export default function Generate({
   configuration,
   setConfiguration,
   createQR,
-}: GenerateProps): JSX.Element {
+}: GenerateProps): React.ReactNode {
   // State whether the dialog is open
   const [isOpen, setIsOpen] = useState(false);
 

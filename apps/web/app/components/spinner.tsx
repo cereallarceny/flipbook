@@ -1,4 +1,4 @@
-export default function Spinner(): JSX.Element {
+export default function Spinner(): React.ReactNode {
   return (
     <div role="status">
       <svg

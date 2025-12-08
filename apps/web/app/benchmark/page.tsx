@@ -6,7 +6,7 @@ import { Writer } from '@flipbookqr/writer';
 import { Reader, FileProcessor } from '@flipbookqr/reader';
 import Image from 'next/image';
 
-export default function File(): JSX.Element {
+export default function File(): React.ReactNode {
   const [decoded, setDecoded] = useState<string | null>(null);
   const [isDecoding, setIsDecoding] = useState(false);
   const [text, setText] = useState('');

@@ -8,7 +8,7 @@ export default function InputGroup({
   className = '',
   label,
   children,
-}: InputGroupProps): JSX.Element {
+}: InputGroupProps): React.ReactNode {
   return (
     <div className={className}>
       <label className="block text-sm font-medium leading-6 text-gray-900">

@@ -43,7 +43,7 @@ const rightLinks = [
   { href: 'https://github.com/cereallarceny/flipbook', label: 'GitHub' },
 ];
 
-export default function Navbar(): JSX.Element | null {
+export default function Navbar(): React.ReactNode | null {
   const pathname = usePathname();
   const search = useSearchParams();
 

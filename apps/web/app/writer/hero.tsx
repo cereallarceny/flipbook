@@ -1,10 +1,10 @@
 import Image from 'next/image';
 
 interface HeroProps {
-  buttons: { id: string; children: JSX.Element }[];
+  buttons: { id: string; children: React.ReactNode }[];
   description: string;
   title: string;
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 
 export default function Hero({
@@ -12,7 +12,7 @@ export default function Hero({
   description,
   title,
   children,
-}: HeroProps): JSX.Element {
+}: HeroProps): React.ReactNode {
   return (
     <div className="bg-white pt-16 sm:pt-24 lg:pt-0">
       <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20">
